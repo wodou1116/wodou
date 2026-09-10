@@ -643,6 +643,7 @@ function BattleManager:ConfigureDebugScenario(mode, projectileCount)
         self:SpawnEnemy("jiuweihu", 1180, 620)
     elseif mode == "peer_comparison" then
         self.debugInvulnerable = true
+        self.attackTimer = 999999
         local kinds = { "bifang", "jiuweihu", "kui" }
         for group = 1, 3 do
             for index = 1, 4 do
@@ -654,6 +655,8 @@ function BattleManager:ConfigureDebugScenario(mode, projectileCount)
         self:SpawnEnemy("spring_elite", 1135, 805)
         self.eliteSpawned = true
     elseif mode == "boss" then
+        self.debugInvulnerable = true
+        self.attackTimer = 999999
         self:SpawnEnemy("bifang", 520, 500)
         self:SpawnEnemy("jiuweihu", 650, 760)
         self:SpawnEnemy("kui", 1250, 760)
