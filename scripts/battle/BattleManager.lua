@@ -86,6 +86,7 @@ function BattleManager:Init()
     self.resultDelay = 0
     self.debugScenario = nil
     self.debugFreezeSpawning = false
+    self.debugFreezeEnemyPositions = false
     self.debugProjectileTarget = nil
     self.debugEnemyTarget = nil
     self.debugInvulnerable = false
@@ -122,6 +123,7 @@ function BattleManager:ResetBattle()
     self.resultDelay = 0
     self.debugScenario = nil
     self.debugFreezeSpawning = false
+    self.debugFreezeEnemyPositions = false
     self.debugProjectileTarget = nil
     self.debugEnemyTarget = nil
     self.debugInvulnerable = false
@@ -439,8 +441,10 @@ function BattleManager:UpdateEnemies(timeStep)
 
         if enemy.motion then
             local command = EnemyMotion.Step(enemy.motion, enemy, player, timeStep)
-            enemy.x = command.x
-            enemy.y = command.y
+            if not self.debugFreezeEnemyPositions then
+                enemy.x = command.x
+                enemy.y = command.y
+            end
             enemy.facing = command.facing
             enemy.facingX = command.facingX
             enemy.motionState = command.motionState
@@ -620,6 +624,7 @@ function BattleManager:ConfigureDebugScenario(mode, projectileCount)
     self.deathEffects = {}
     self.impacts = {}
     self.debugFreezeSpawning = true
+    self.debugFreezeEnemyPositions = mode ~= "combat_stress"
     self.debugProjectileTarget = nil
     self.debugEnemyTarget = nil
     self.debugInvulnerable = false
