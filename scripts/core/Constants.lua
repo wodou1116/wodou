@@ -5,7 +5,7 @@ local Constants = {
     DEFAULT_CHARACTER_ID = "shi_yu_zhe",
     DEFAULT_SEASON_ID = "spring",
     DEBUG_ENABLED = false,
-    QA_AUTORUN_MODE = "peer_comparison",
+    QA_AUTORUN_MODE = "combat_stress",
     QA_AUTORUN_PROJECTILES = 50,
 }
 
