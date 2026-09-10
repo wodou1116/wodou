@@ -1,15 +1,42 @@
 local AssetCatalog = {
     characters = {
-        shi_yu_zhe = "image/characters/shi_yu_zhe",
-        si_chen_zhe = "image/characters/si_chen_zhe",
+        shi_yu_zhe = "image/characters/shi_yu_zhe.png",
+        si_chen_zhe = "image/characters/si_chen_zhe.png",
     },
-    wheel = "image/characters/four_seasons_wheel",
-    enemies = "image/enemies",
-    bosses = "image/bosses",
-    environments = "image/environments",
-    ui = "image/ui",
-    vfx = "image/vfx",
-    audio = "audio",
+    wheel = {
+        outer = "image/wheel/outer.png",
+        middle = "image/wheel/middle.png",
+        inner = "image/wheel/inner.png",
+        core = "image/wheel/core.png",
+        marks = "image/wheel/marks.png",
+    },
+    enemies = {
+        bifang = "image/enemies/bifang.png",
+        jiuweihu = "image/enemies/jiuweihu.png",
+        kui = "image/enemies/kui.png",
+        spring_elite = "image/enemies/spring_elite.png",
+    },
+    bosses = {
+        jumang = "image/bosses/jumang.png",
+    },
+    environments = {
+        spring = "image/environments/spring_arena.png",
+    },
+    ui = {
+        playerStatus = "image/ui/player_status.png",
+        bossBar = "image/ui/boss_bar.png",
+        choiceCard = "image/ui/choice_card.png",
+        roleCardLeft = "image/ui/role_card_left.png",
+        roleCardRight = "image/ui/role_card_right.png",
+    },
+    warnings = {
+        circle = "image/vfx/warnings/circle.png",
+        fan = "image/vfx/warnings/fan.png",
+        line = "image/vfx/warnings/line.png",
+        point = "image/vfx/warnings/point.png",
+        cross = "image/vfx/warnings/cross.png",
+        rootLine = "image/vfx/warnings/root_line.png",
+    },
 }
 
 return AssetCatalog

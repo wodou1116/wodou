@@ -1,199 +1,170 @@
 local UI = require("urhox-libs/UI")
+local AssetCatalog = require("core.AssetCatalog")
 local Constants = require("core.Constants")
 local Characters = require("data.Characters")
-local Seasons = require("data.Seasons")
 
 local MainMenu = {}
 
 local COLORS = {
-    background = { 18, 23, 24, 255 },
-    surface = { 31, 38, 37, 244 },
-    surfaceMuted = { 40, 48, 46, 230 },
-    bronze = { 150, 124, 81, 255 },
-    jade = { 93, 131, 117, 255 },
-    text = { 232, 229, 215, 255 },
-    textMuted = { 164, 169, 158, 255 },
+    ink = { 15, 24, 22, 255 },
+    surface = { 20, 34, 31, 235 },
+    surfaceStrong = { 28, 45, 40, 248 },
+    bronze = { 180, 142, 78, 255 },
+    bronzeMuted = { 104, 82, 50, 255 },
+    jade = { 112, 169, 141, 255 },
+    text = { 244, 238, 215, 255 },
+    textMuted = { 184, 193, 175, 255 },
 }
 
-local function CreateRoleButton(character, game, selectedLabel, statusLabel)
-    return UI.Button {
-        width = 260,
-        height = 64,
-        text = character.name,
-        variant = "secondary",
-        fontSize = 22,
+local function RoleCard(character, image, cardImage, game, onSelected)
+    local selected = character.id == game.selectedCharacterId
+    local button
+    button = UI.Button {
+        width = 420,
+        height = 610,
+        padding = 22,
+        backgroundImage = cardImage,
+        backgroundFit = "fill",
+        backgroundColor = selected and COLORS.surfaceStrong or COLORS.surface,
+        borderColor = selected and COLORS.jade or COLORS.bronzeMuted,
+        borderWidth = selected and 4 or 2,
+        borderRadius = 18,
+        flexDirection = "column",
+        justifyContent = "flex-end",
+        alignItems = "center",
         onClick = function()
-            local ok, message = game:SelectCharacter(character.id)
-            if ok then
-                selectedLabel:SetText(character.name .. "｜" .. character.description)
-                statusLabel:SetText("已选择：" .. message)
-            else
-                statusLabel:SetText(message)
-            end
+            game:SelectCharacter(character.id)
+            onSelected(character)
         end,
+        children = {
+            UI.Panel {
+                position = "absolute",
+                left = 40,
+                top = 30,
+                width = 340,
+                height = 410,
+                backgroundImage = image,
+                backgroundFit = "contain",
+                pointerEvents = "none",
+            },
+            UI.Label {
+                text = character.name,
+                width = "100%",
+                fontSize = 34,
+                fontWeight = "bold",
+                fontColor = COLORS.text,
+                textAlign = "center",
+                pointerEvents = "none",
+            },
+            UI.Label {
+                text = character.description,
+                width = "100%",
+                minHeight = 82,
+                marginTop = 10,
+                fontSize = 18,
+                fontColor = COLORS.textMuted,
+                textAlign = "center",
+                whiteSpace = "normal",
+                pointerEvents = "none",
+            },
+        },
     }
+    return button
 end
 
-local function CreateSeasonButtons(statusLabel)
-    local children = {}
-    local seasons = Seasons.List()
-
-    for index = 1, #seasons do
-        local season = seasons[index]
-        table.insert(children, UI.Button {
-            width = 180,
-            height = 56,
-            text = season.name,
-            variant = season.unlocked and "primary" or "secondary",
-            disabled = not season.unlocked,
-            fontSize = 18,
-            onClick = function()
-                statusLabel:SetText("当前行歌：" .. season.name)
-            end,
-        })
-    end
-
-    return UI.Panel {
-        flexDirection = "row",
-        flexWrap = "wrap",
-        justifyContent = "center",
-        gap = 16,
-        children = children,
-    }
-end
-
-function MainMenu.Build(game)
-    local selectedCharacter = game:GetSelectedCharacter()
-    local selectedLabel = UI.Label {
-        text = selectedCharacter.name .. "｜" .. selectedCharacter.description,
-        width = "100%",
+function MainMenu.Build(game, onStart)
+    local characters = Characters.List()
+    local statusLabel = UI.Label {
+        text = "选择行歌者，进入春季异境",
         fontSize = 18,
         fontColor = COLORS.textMuted,
         textAlign = "center",
-        whiteSpace = "normal",
-    }
-    local statusLabel = UI.Label {
-        text = "基础架构已就绪，当前使用程序占位界面。",
-        fontSize = 16,
-        fontColor = COLORS.textMuted,
-        textAlign = "center",
     }
 
-    local roleButtons = {}
-    local characters = Characters.List()
-    for index = 1, #characters do
-        table.insert(roleButtons, CreateRoleButton(characters[index], game, selectedLabel, statusLabel))
+    local cardsPanel = UI.Panel {
+        width = 900,
+        height = 620,
+        flexDirection = "row",
+        justifyContent = "space-between",
+        alignItems = "center",
+    }
+
+    local function RebuildCards(selectedCharacter)
+        cardsPanel:RemoveAllChildren()
+        cardsPanel:AddChild(RoleCard(characters[1], AssetCatalog.characters.shi_yu_zhe, AssetCatalog.ui.roleCardLeft, game, RebuildCards))
+        cardsPanel:AddChild(RoleCard(characters[2], AssetCatalog.characters.si_chen_zhe, AssetCatalog.ui.roleCardRight, game, RebuildCards))
+        if selectedCharacter then
+            statusLabel:SetText("已选择：" .. selectedCharacter.name)
+        end
     end
 
-    local startButton = UI.Button {
-        width = 360,
-        height = 72,
-        text = "开始行歌",
-        variant = "primary",
-        fontSize = 24,
-        onClick = function()
-            local ok, message = game:StartRun(Constants.DEFAULT_SEASON_ID)
-            if ok then
-                statusLabel:SetText("已进入基础流程：" .. message .. "（战斗资产待接入）")
-            else
-                statusLabel:SetText(message)
-            end
-        end,
-    }
+    RebuildCards(nil)
 
-    return UI.Panel {
-        id = "gameRoot",
+    local root = UI.Panel {
+        id = "mainMenu",
         width = "100%",
         height = "100%",
-        backgroundColor = COLORS.background,
-        pointerEvents = "box-none",
+        position = "absolute",
+        left = 0,
+        top = 0,
+        backgroundImage = AssetCatalog.environments.spring,
+        backgroundFit = "cover",
+        backgroundColor = COLORS.ink,
         children = {
+            UI.Panel {
+                position = "absolute",
+                left = 0,
+                top = 0,
+                width = "100%",
+                height = "100%",
+                backgroundColor = { 7, 15, 13, 150 },
+                pointerEvents = "none",
+            },
             UI.SafeAreaView {
                 width = "100%",
                 height = "100%",
                 nativeMenuInset = true,
-                padding = 40,
-                justifyContent = "center",
                 alignItems = "center",
-                children = {
-                    UI.Panel {
-                        width = "82%",
-                        maxWidth = 1220,
-                        padding = 44,
-                        gap = 24,
-                        alignItems = "center",
-                        backgroundColor = COLORS.surface,
-                        borderColor = COLORS.bronze,
-                        borderWidth = 2,
-                        borderRadius = 24,
-                        children = {
-                            UI.Label {
-                                text = Constants.GAME_TITLE,
-                                fontSize = 44,
-                                fontWeight = "bold",
-                                fontColor = COLORS.text,
-                                textAlign = "center",
-                            },
-                            UI.Label {
-                                text = "一局一季，六节气构筑",
-                                fontSize = 20,
-                                fontColor = COLORS.jade,
-                                textAlign = "center",
-                            },
-                            UI.Panel {
-                                width = 190,
-                                height = 190,
-                                borderRadius = 95,
-                                borderWidth = 5,
-                                borderColor = COLORS.bronze,
-                                backgroundColor = COLORS.surfaceMuted,
-                                justifyContent = "center",
-                                alignItems = "center",
-                                children = {
-                                    UI.Label {
-                                        text = "四时轮\n资产占位",
-                                        fontSize = 22,
-                                        fontColor = COLORS.textMuted,
-                                        textAlign = "center",
-                                        whiteSpace = "normal",
-                                    },
-                                },
-                            },
-                            UI.Panel {
-                                flexDirection = "row",
-                                flexWrap = "wrap",
-                                justifyContent = "center",
-                                gap = 20,
-                                children = roleButtons,
-                            },
-                            selectedLabel,
-                            CreateSeasonButtons(statusLabel),
-                            startButton,
-                            statusLabel,
-                        },
-                    },
-                },
-            },
-            UI.Panel {
-                id = "debugPanel",
-                visible = Constants.DEBUG_ENABLED,
-                position = "absolute",
-                top = 24,
-                left = 24,
-                padding = 12,
-                backgroundColor = { 0, 0, 0, 170 },
-                borderRadius = 8,
-                pointerEvents = "none",
+                paddingTop = 34,
                 children = {
                     UI.Label {
-                        text = "DEBUG｜1920×1080｜Z 隐藏",
-                        fontSize = 14,
+                        text = Constants.GAME_TITLE,
+                        fontSize = 50,
+                        fontWeight = "bold",
                         fontColor = COLORS.text,
+                        textAlign = "center",
                     },
+                    UI.Label {
+                        text = "春序初试｜一局一季，六节气构筑",
+                        marginTop = 6,
+                        marginBottom = 18,
+                        fontSize = 20,
+                        fontColor = COLORS.jade,
+                        textAlign = "center",
+                    },
+                    cardsPanel,
+                    UI.Button {
+                        width = 360,
+                        height = 70,
+                        marginTop = 16,
+                        text = "启程 · 春季异境",
+                        variant = "primary",
+                        fontSize = 25,
+                        onClick = function()
+                            local ok, message = game:StartRun(Constants.DEFAULT_SEASON_ID)
+                            statusLabel:SetText(message)
+                            if ok and onStart then
+                                onStart()
+                            end
+                        end,
+                    },
+                    statusLabel,
                 },
             },
         },
     }
+
+    return root
 end
 
 return MainMenu

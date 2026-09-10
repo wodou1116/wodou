@@ -13,7 +13,8 @@ CLAUDE.md
 engine-docs/
 examples/
 schemas/
-skills/
+/skills/
+/.tmp/
 templates/
 tools/
 urhox-libs/

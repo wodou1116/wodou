@@ -41,9 +41,14 @@ function Game:Stop()
     self.eventBus:Clear()
 end
 
-function Game:Update(timeStep)
+function Game:Update(timeStep, moveX, moveY)
     if self.state == Game.State.BATTLE then
-        self.battleManager:Update(timeStep)
+        self.battleManager:Update(timeStep, moveX, moveY)
+        if self.battleManager.result then
+            self.state = Game.State.RESULT
+            self.runManager:Finish()
+            self.eventBus:Emit("run_finished", self.battleManager.result)
+        end
     end
 end
 
@@ -73,6 +78,34 @@ function Game:StartRun(seasonId)
     self.state = Game.State.BATTLE
     self.eventBus:Emit("run_started", self.runManager:GetSnapshot())
     return true, season.name .. " / " .. season.solarTerms[1]
+end
+
+function Game:ChooseSkill(index)
+    return self.battleManager:ChooseSkill(index)
+end
+
+function Game:TogglePause()
+    if self.state ~= Game.State.BATTLE then
+        return false
+    end
+    return self.battleManager:TogglePause()
+end
+
+function Game:RestartRun()
+    if not self.battleManager.run then
+        return false
+    end
+    self.runManager:Begin(self.selectedCharacterId, Constants.DEFAULT_SEASON_ID)
+    self.battleManager:Prepare(self.runManager:GetSnapshot())
+    self.battleManager:Start()
+    self.state = Game.State.BATTLE
+    return true
+end
+
+function Game:ReturnToMenu()
+    self.battleManager:Stop()
+    self.runManager:Finish()
+    self.state = Game.State.MENU
 end
 
 function Game:GetSelectedCharacter()
