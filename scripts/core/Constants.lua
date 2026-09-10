@@ -5,6 +5,8 @@ local Constants = {
     DEFAULT_CHARACTER_ID = "shi_yu_zhe",
     DEFAULT_SEASON_ID = "spring",
     DEBUG_ENABLED = false,
+    QA_AUTORUN_MODE = "single",
+    QA_AUTORUN_PROJECTILES = 50,
 }
 
 return Constants

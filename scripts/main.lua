@@ -40,6 +40,16 @@ function Start()
     }
     UI.SetRoot(uiRoot_)
 
+    if Constants.QA_AUTORUN_MODE then
+        game_:StartRun(Constants.DEFAULT_SEASON_ID)
+        menuWidget_:SetVisible(false)
+        battleView_:Show()
+        game_.battleManager:ConfigureDebugScenario(
+            Constants.QA_AUTORUN_MODE,
+            Constants.QA_AUTORUN_PROJECTILES
+        )
+    end
+
     SubscribeToEvent("Update", "HandleUpdate")
     SubscribeToEvent("KeyDown", "HandleKeyDown")
 
