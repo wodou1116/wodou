@@ -638,6 +638,8 @@ function BattleManager:ConfigureDebugScenario(mode, projectileCount)
     self.player.animation = AnimationState.New()
 
     if mode == "single" then
+        self.debugInvulnerable = true
+        self.attackTimer = 999999
         self:SpawnEnemy("jiuweihu", 1180, 620)
     elseif mode == "peer_comparison" then
         self.debugInvulnerable = true
