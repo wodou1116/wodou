@@ -4,11 +4,11 @@ local TWO_PI = math.pi * 2
 
 RuntimePresentation.WheelLayers = {
     -- A-08 各层共享竖向画布但主体中心不同，offset 用于运行时聚合校准。
-    { id = "outer", width = 104, height = 174, offsetX = -3, offsetY = 18, rotationPerSecond = 0, opacity = 0.58 },
-    { id = "marks", width = 105, height = 175, offsetX = 6, offsetY = 3, rotationPerSecond = -10, opacity = 0.72 },
-    { id = "middle", width = 98, height = 164, offsetX = -6, offsetY = 3, rotationPerSecond = 14, opacity = 0.76 },
-    { id = "inner", width = 96, height = 160, offsetX = 0, offsetY = 0, rotationPerSecond = -18, opacity = 0.82 },
-    { id = "core", width = 64, height = 107, offsetX = 5, offsetY = 1, rotationPerSecond = 9, opacity = 0.90 },
+    { id = "outer", width = 104, height = 174, offsetX = 0, offsetY = 2, rotationPerSecond = 0, opacity = 0.58 },
+    { id = "marks", width = 105, height = 175, offsetX = 4, offsetY = 3, rotationPerSecond = -10, opacity = 0.72 },
+    { id = "middle", width = 98, height = 164, offsetX = 0, offsetY = 19, rotationPerSecond = 14, opacity = 0.76 },
+    { id = "inner", width = 96, height = 160, offsetX = -1, offsetY = 20, rotationPerSecond = -18, opacity = 0.82 },
+    { id = "core", width = 64, height = 107, offsetX = 4, offsetY = 13, rotationPerSecond = 9, opacity = 0.90 },
 }
 
 local ENEMY_MOTION = {

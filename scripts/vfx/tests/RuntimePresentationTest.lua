@@ -23,6 +23,7 @@ assert(death.complete and near(death.opacity, 0) and near(death.scale, 0.82))
 local wheel = Presentation.Wheel(1, 0)
 assert(#wheel == 5 and wheel[1].rotation == 0 and wheel[2].rotation == -10)
 assert(wheel[1].width < 138 and wheel[5].width < wheel[1].width)
+assert(wheel[1].offsetY == 2 and wheel[3].offsetY == 19 and wheel[4].offsetY == 20 and wheel[5].offsetY == 13)
 
 local attackWheel = Presentation.Wheel(1, 0.18)
 assert(attackWheel[5].scale > wheel[5].scale and attackWheel[5].opacity >= wheel[5].opacity)
