@@ -1,0 +1,42 @@
+{
+  "deterministic": true,
+  "asset_count": 3,
+  "pairs": [
+    {
+      "left": "assets\\image\\enemies\\bifang.png",
+      "right": "assets\\image\\enemies\\jiuweihu.png",
+      "confusion_score": 89.54,
+      "level": "regenerate",
+      "evidence": {
+        "luminance_similarity": 0.8026,
+        "saturation_similarity": 0.9682,
+        "edge_similarity": 0.9466,
+        "occupancy_similarity": 0.898
+      }
+    },
+    {
+      "left": "assets\\image\\enemies\\bifang.png",
+      "right": "assets\\image\\enemies\\kui.png",
+      "confusion_score": 97.22,
+      "level": "regenerate",
+      "evidence": {
+        "luminance_similarity": 0.9928,
+        "saturation_similarity": 0.9672,
+        "edge_similarity": 0.9874,
+        "occupancy_similarity": 0.914
+      }
+    },
+    {
+      "left": "assets\\image\\enemies\\jiuweihu.png",
+      "right": "assets\\image\\enemies\\kui.png",
+      "confusion_score": 91.25,
+      "level": "regenerate",
+      "evidence": {
+        "luminance_similarity": 0.7954,
+        "saturation_similarity": 0.999,
+        "edge_similarity": 0.934,
+        "occupancy_similarity": 0.984
+      }
+    }
+  ]
+}

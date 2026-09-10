@@ -1,0 +1,35 @@
+{
+  "qa_stage": "T0",
+  "total": 34,
+  "statuses": {
+    "T0_PASS": 34
+  },
+  "actions": {
+    "PASS": 34
+  },
+  "hard_fail_count": 0,
+  "hard_fail_asset_ids": [],
+  "lowest_scores": [
+    {
+      "asset_id": "A-03",
+      "final_score": 100
+    },
+    {
+      "asset_id": "A-04",
+      "final_score": 100
+    },
+    {
+      "asset_id": "A-07-03",
+      "final_score": 100
+    },
+    {
+      "asset_id": "A-07-05",
+      "final_score": 100
+    },
+    {
+      "asset_id": "A-08-01",
+      "final_score": 100
+    }
+  ],
+  "spring_confusion_matrix": []
+}

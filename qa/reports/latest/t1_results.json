@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "asset_qa_skill_version": "1.0",
+  "rubric_version": "1.0",
+  "qa_stage": "T1",
+  "deterministic": false,
+  "status": "PENDING_CAPTURE",
+  "capture_required": "scenes/qa/AssetReadabilityTestScene.json",
+  "results": [],
+  "summary": {"total": 0, "PENDING_CAPTURE": 0, "hard_fail_count": 0}
+}

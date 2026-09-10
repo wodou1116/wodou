@@ -1,0 +1,21 @@
+{
+  "scene_id": "AssetReadabilityTestScene",
+  "format": "metadata_only",
+  "executable": false,
+  "executable_module": "scenes/qa/AssetReadabilityTestScene.lua",
+  "capture_module": "scripts/qa/capture_asset_test_scene.lua",
+  "purpose": "Demo 0.2 资产可读性回归元数据；不可作为可执行场景。",
+  "source_assets_read_only": true,
+  "capture_status": "PENDING_CAPTURE",
+  "capture_api": "unavailable",
+  "background": "assets/image/environments/spring_arena.png",
+  "modes": {
+    "single": ["player", "one_monster", "spring_background"],
+    "peer_comparison": {"jiuweihu": 4, "bifang": 4, "kui": 4, "spring_elite": 2},
+    "combat_stress": {"monsters": 20, "projectiles": "20-50", "vfx": 3, "elite": true, "telegraph": true},
+    "boss": ["player", "jumang", "telegraph", "player_vfx", "target_marker"],
+    "screen_ratios": ["4:3", "16:9", "18:9", "19.5:9", "20:9", "21:9"]
+  },
+  "t1_checks": ["background_separation", "small_scale_readability", "shadow", "elite_hierarchy", "boss_separation"],
+  "capture_output": "qa/reports/latest/t1_results.json"
+}

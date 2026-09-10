@@ -1,5 +1,6 @@
 local UI = require("urhox-libs/UI")
 local AssetCatalog = require("core.AssetCatalog")
+local RuntimePresentation = require("vfx.RuntimePresentation")
 
 local BattleView = {}
 BattleView.__index = BattleView
@@ -17,6 +18,7 @@ local COLORS = {
 
 local ENEMY_WIDGET_COUNT = 34
 local PROJECTILE_WIDGET_COUNT = 56
+local DEATH_WIDGET_COUNT = 12
 
 local function TouchButton(text, left, top, direction, touchState)
     return UI.Button {
@@ -48,9 +50,13 @@ function BattleView.New(game, onReturnToMenu)
     self.root = nil
     self.arena = nil
     self.playerWidget = nil
+    self.playerShadow = nil
     self.wheelWidgets = {}
     self.enemyWidgets = {}
+    self.enemyShadows = {}
+    self.eliteRings = {}
     self.projectileWidgets = {}
+    self.deathWidgets = {}
     self.touchState = { left = false, right = false, up = false, down = false }
     self.choiceIcons = {}
     self.choiceNames = {}
@@ -105,6 +111,42 @@ function BattleView:BuildArena()
     }
     self.arena:AddChild(self.warningWidget)
 
+    self.playerShadow = UI.Panel {
+        position = "absolute",
+        width = 90,
+        height = 24,
+        borderRadius = 12,
+        backgroundColor = { 4, 9, 7, 110 },
+        pointerEvents = "none",
+    }
+    self.arena:AddChild(self.playerShadow)
+
+    for index = 1, ENEMY_WIDGET_COUNT do
+        local shadow = UI.Panel {
+            visible = false,
+            position = "absolute",
+            borderRadius = 30,
+            backgroundColor = { 4, 9, 7, 100 },
+            pointerEvents = "none",
+        }
+        self.enemyShadows[index] = shadow
+        self.arena:AddChild(shadow)
+    end
+
+    for index = 1, ENEMY_WIDGET_COUNT do
+        local ring = UI.Panel {
+            visible = false,
+            position = "absolute",
+            borderColor = COLORS.bronze,
+            borderWidth = 5,
+            borderRadius = 80,
+            backgroundColor = { 184, 143, 76, 28 },
+            pointerEvents = "none",
+        }
+        self.eliteRings[index] = ring
+        self.arena:AddChild(ring)
+    end
+
     for index = 1, ENEMY_WIDGET_COUNT do
         local widget = UI.Panel {
             visible = false,
@@ -115,6 +157,18 @@ function BattleView:BuildArena()
             pointerEvents = "none",
         }
         self.enemyWidgets[index] = widget
+        self.arena:AddChild(widget)
+    end
+
+    for index = 1, DEATH_WIDGET_COUNT do
+        local widget = UI.Panel {
+            visible = false,
+            position = "absolute",
+            backgroundFit = "contain",
+            transformOrigin = "center",
+            pointerEvents = "none",
+        }
+        self.deathWidgets[index] = widget
         self.arena:AddChild(widget)
     end
 
@@ -134,23 +188,24 @@ function BattleView:BuildArena()
         self.arena:AddChild(widget)
     end
 
-    local wheelDefinitions = {
-        { image = AssetCatalog.wheel.outer, width = 270, height = 380, speed = 10 },
-        { image = AssetCatalog.wheel.marks, width = 250, height = 250, speed = -18 },
-        { image = AssetCatalog.wheel.middle, width = 235, height = 235, speed = 24 },
-        { image = AssetCatalog.wheel.inner, width = 205, height = 205, speed = -30 },
-        { image = AssetCatalog.wheel.core, width = 160, height = 160, speed = 15 },
+    local wheelImages = {
+        outer = AssetCatalog.wheel.outer,
+        marks = AssetCatalog.wheel.marks,
+        middle = AssetCatalog.wheel.middle,
+        inner = AssetCatalog.wheel.inner,
+        core = AssetCatalog.wheel.core,
     }
+    local wheelDefinitions = RuntimePresentation.WheelLayers
     for index = 1, #wheelDefinitions do
         local definition = wheelDefinitions[index]
         local widget = UI.Panel {
             position = "absolute",
             width = definition.width,
             height = definition.height,
-            backgroundImage = definition.image,
+            backgroundImage = wheelImages[definition.id],
             backgroundFit = "contain",
             transformOrigin = "center",
-            opacity = index == 1 and 0.78 or 0.9,
+            opacity = definition.opacity,
             pointerEvents = "none",
         }
         widget.wheelDefinition = definition
@@ -518,18 +573,53 @@ function BattleView:UpdatePools()
     local battle = self.game.battleManager
     for index = 1, ENEMY_WIDGET_COUNT do
         local widget = self.enemyWidgets[index]
+        local shadowWidget = self.enemyShadows[index]
+        local ringWidget = self.eliteRings[index]
         local enemy = battle.enemies[index]
         if enemy then
+            local motion = RuntimePresentation.Enemy(enemy.kind, battle.elapsed, enemy.visualPhase)
+            local hit = enemy.hitElapsed and RuntimePresentation.Hit(enemy.hitElapsed, 0.16) or nil
+            local visualY = enemy.y + motion.offsetY
             widget:SetStyle({
                 left = enemy.x - enemy.size * 0.5,
-                top = enemy.y - enemy.size * 0.5,
+                top = visualY - enemy.size * 0.5,
                 width = enemy.size,
                 height = enemy.size,
                 backgroundImage = enemy.sprite,
+                rotate = motion.rotation + (enemy.facing == "left" and -1.5 or 1.5),
+                scale = hit and hit.scale or 1,
             })
             widget:SetVisible(true)
+
+            local elevation = enemy.kind == "bifang" and 0.72 or 0.08
+            local shadow = RuntimePresentation.Shadow(enemy.size, elevation)
+            shadowWidget:SetStyle({
+                left = enemy.x - shadow.width * 0.5,
+                top = enemy.y + shadow.offsetY - shadow.height * 0.5,
+                width = shadow.width,
+                height = shadow.height,
+                borderRadius = shadow.height * 0.5,
+                opacity = shadow.opacity,
+            })
+            shadowWidget:SetVisible(true)
+
+            local elite = enemy.kind == "spring_elite"
+            if elite then
+                local ringSize = enemy.size * (1.08 + math.abs(math.sin(battle.elapsed * 3.2)) * 0.08)
+                ringWidget:SetStyle({
+                    left = enemy.x - ringSize * 0.5,
+                    top = enemy.y - ringSize * 0.5,
+                    width = ringSize,
+                    height = ringSize,
+                    borderRadius = ringSize * 0.5,
+                    opacity = 0.72,
+                })
+            end
+            ringWidget:SetVisible(elite)
         else
             widget:SetVisible(false)
+            shadowWidget:SetVisible(false)
+            ringWidget:SetVisible(false)
         end
     end
 
@@ -550,6 +640,26 @@ function BattleView:UpdatePools()
             widget:SetVisible(false)
         end
     end
+
+    for index = 1, DEATH_WIDGET_COUNT do
+        local widget = self.deathWidgets[index]
+        local effect = battle.deathEffects[index]
+        if effect then
+            local visual = RuntimePresentation.Death(effect.elapsed, effect.duration)
+            widget:SetStyle({
+                left = effect.x - effect.size * 0.5,
+                top = effect.y - effect.size * 0.5 + visual.offsetY,
+                width = effect.size,
+                height = effect.size,
+                backgroundImage = effect.sprite,
+                opacity = visual.opacity,
+                scale = visual.scale,
+            })
+            widget:SetVisible(true)
+        else
+            widget:SetVisible(false)
+        end
+    end
 end
 
 function BattleView:UpdatePlayer()
@@ -561,18 +671,36 @@ function BattleView:UpdatePlayer()
 
     local playerWidth = 138
     local playerHeight = 190
+    local idle = RuntimePresentation.Player(battle.elapsed, player.isMoving)
+    local hit = player.hitElapsed and RuntimePresentation.Hit(player.hitElapsed, 0.16) or nil
     self.playerWidget:SetStyle({
         left = player.x - playerWidth * 0.5,
-        top = player.y - playerHeight * 0.62,
+        top = player.y - playerHeight * 0.62 + idle.offsetY,
+        rotate = idle.rotation + (player.facing == "left" and -1.2 or 1.2),
+        scale = hit and hit.scale or 1,
     })
 
+    local shadow = RuntimePresentation.Shadow(playerWidth, 0.06)
+    self.playerShadow:SetStyle({
+        left = player.x - shadow.width * 0.5,
+        top = player.y + shadow.offsetY - shadow.height * 0.5,
+        width = shadow.width,
+        height = shadow.height,
+        borderRadius = shadow.height * 0.5,
+        opacity = shadow.opacity,
+    })
+
+    local wheelVisuals = RuntimePresentation.Wheel(battle.elapsed, battle.attackPulse)
     for index = 1, #self.wheelWidgets do
         local widget = self.wheelWidgets[index]
         local definition = widget.wheelDefinition
+        local visual = wheelVisuals[index]
         widget:SetStyle({
-            left = player.x - definition.width * 0.5,
-            top = player.y - definition.height * 0.5,
-            rotate = math.fmod(battle.elapsed * definition.speed, 360),
+            left = player.x - definition.width * 0.5 + visual.offsetX,
+            top = player.y - definition.height * 0.5 + visual.offsetY,
+            rotate = visual.rotation,
+            opacity = visual.opacity,
+            scale = visual.scale,
         })
     end
 

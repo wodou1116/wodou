@@ -1,0 +1,314 @@
+{
+  "manifest_version": "1.0",
+  "asset_root": "image",
+  "read_only": true,
+  "mapping_required": false,
+  "assets": [
+    {
+      "asset_id": "AUTO-001",
+      "name": "jumang",
+      "path": "bosses/jumang.png",
+      "type": "boss",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-002",
+      "name": "shi_yu_zhe",
+      "path": "characters/shi_yu_zhe.png",
+      "type": "character",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-003",
+      "name": "si_chen_zhe",
+      "path": "characters/si_chen_zhe.png",
+      "type": "character",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-004",
+      "name": "bifang",
+      "path": "enemies/bifang.png",
+      "type": "monster",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-005",
+      "name": "jiuweihu",
+      "path": "enemies/jiuweihu.png",
+      "type": "monster",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-006",
+      "name": "kui",
+      "path": "enemies/kui.png",
+      "type": "monster",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-007",
+      "name": "spring_elite",
+      "path": "enemies/spring_elite.png",
+      "type": "monster",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-008",
+      "name": "spring_arena",
+      "path": "environments/spring_arena.png",
+      "type": "scene",
+      "season": "unknown",
+      "alpha_required": false,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-009",
+      "name": "01_jingzhe",
+      "path": "icons/skills/01_jingzhe.png",
+      "type": "icon",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-010",
+      "name": "02_guyu",
+      "path": "icons/skills/02_guyu.png",
+      "type": "icon",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-011",
+      "name": "03_roots",
+      "path": "icons/skills/03_roots.png",
+      "type": "icon",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-012",
+      "name": "04_fire_seed",
+      "path": "icons/skills/04_fire_seed.png",
+      "type": "icon",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-013",
+      "name": "05_fire_burst",
+      "path": "icons/skills/05_fire_burst.png",
+      "type": "icon",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-014",
+      "name": "06_metal_blade",
+      "path": "icons/skills/06_metal_blade.png",
+      "type": "icon",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-015",
+      "name": "07_water_mirror",
+      "path": "icons/skills/07_water_mirror.png",
+      "type": "icon",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-016",
+      "name": "08_frost_breath",
+      "path": "icons/skills/08_frost_breath.png",
+      "type": "icon",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-017",
+      "name": "09_earth_shock",
+      "path": "icons/skills/09_earth_shock.png",
+      "type": "icon",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-018",
+      "name": "10_stone_guard",
+      "path": "icons/skills/10_stone_guard.png",
+      "type": "icon",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-019",
+      "name": "boss_bar",
+      "path": "ui/boss_bar.png",
+      "type": "ui",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-020",
+      "name": "choice_card",
+      "path": "ui/choice_card.png",
+      "type": "ui",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-021",
+      "name": "player_status",
+      "path": "ui/player_status.png",
+      "type": "ui",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-022",
+      "name": "role_card_left",
+      "path": "ui/role_card_left.png",
+      "type": "ui",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-023",
+      "name": "role_card_right",
+      "path": "ui/role_card_right.png",
+      "type": "ui",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-024",
+      "name": "circle",
+      "path": "vfx/warnings/circle.png",
+      "type": "vfx",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-025",
+      "name": "cross",
+      "path": "vfx/warnings/cross.png",
+      "type": "vfx",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-026",
+      "name": "fan",
+      "path": "vfx/warnings/fan.png",
+      "type": "vfx",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-027",
+      "name": "line",
+      "path": "vfx/warnings/line.png",
+      "type": "vfx",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-028",
+      "name": "point",
+      "path": "vfx/warnings/point.png",
+      "type": "vfx",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-029",
+      "name": "root_line",
+      "path": "vfx/warnings/root_line.png",
+      "type": "vfx",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-030",
+      "name": "core",
+      "path": "wheel/core.png",
+      "type": "wheel",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-031",
+      "name": "inner",
+      "path": "wheel/inner.png",
+      "type": "wheel",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-032",
+      "name": "marks",
+      "path": "wheel/marks.png",
+      "type": "wheel",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-033",
+      "name": "middle",
+      "path": "wheel/middle.png",
+      "type": "wheel",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    },
+    {
+      "asset_id": "AUTO-034",
+      "name": "outer",
+      "path": "wheel/outer.png",
+      "type": "wheel",
+      "season": "unknown",
+      "alpha_required": true,
+      "mapping_required": false
+    }
+  ]
+}

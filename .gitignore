@@ -3,6 +3,14 @@
 .claude/
 .cli/
 .codex/
+!.codex/
+.codex/*
+!.codex/skills/
+.codex/skills/*
+!.codex/skills/asset-qa/
+!.codex/skills/asset-qa/**
+__pycache__/
+*.pyc
 .cursor/
 .emmylua/
 .gemini/
