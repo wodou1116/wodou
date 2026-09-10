@@ -14,6 +14,8 @@ BattleManager.__index = BattleManager
 local ARENA = BattleBounds.DEFAULT
 local MAX_ENEMIES = 34
 local MAX_PROJECTILES = 56
+local MAX_IMPACTS = 24
+local DEBUG_RING_POSITIONS
 
 local ENEMY_TYPES = {
     bifang = { hp = 54, speed = 92, damage = 7, radius = 38, size = 105, xp = 1, sprite = AssetCatalog.enemies.bifang },
@@ -72,12 +74,21 @@ function BattleManager:Init()
     self.enemies = {}
     self.projectiles = {}
     self.deathEffects = {}
+    self.impacts = {}
     self.pendingChoices = {}
     self.acquiredSkills = {}
     self.kills = 0
     self.spawnSerial = 0
     self.attackPulse = 0
     self.player = nil
+    self.finishing = false
+    self.pendingResult = nil
+    self.resultDelay = 0
+    self.debugScenario = nil
+    self.debugFreezeSpawning = false
+    self.debugProjectileTarget = nil
+    self.debugEnemyTarget = nil
+    self.debugInvulnerable = false
 end
 
 function BattleManager:Prepare(runSnapshot)
@@ -100,11 +111,20 @@ function BattleManager:ResetBattle()
     self.enemies = {}
     self.projectiles = {}
     self.deathEffects = {}
+    self.impacts = {}
     self.pendingChoices = {}
     self.acquiredSkills = {}
     self.kills = 0
     self.spawnSerial = 0
     self.attackPulse = 0
+    self.finishing = false
+    self.pendingResult = nil
+    self.resultDelay = 0
+    self.debugScenario = nil
+    self.debugFreezeSpawning = false
+    self.debugProjectileTarget = nil
+    self.debugEnemyTarget = nil
+    self.debugInvulnerable = false
 
     local characterId = self.run and self.run.characterId or "shi_yu_zhe"
     self.player = {
@@ -133,6 +153,7 @@ function BattleManager:ResetBattle()
         isMoving = false,
         animation = AnimationState.New(),
         hitElapsed = nil,
+        deathElapsed = nil,
     }
 end
 
@@ -169,16 +190,13 @@ function BattleManager:SpawnEnemy(kind, x, y)
     end
 
     if not x or not y then
-        local edge = math.random(4)
-        if edge == 1 then
-            x, y = ARENA.left, math.random(ARENA.top, ARENA.bottom)
-        elseif edge == 2 then
-            x, y = ARENA.right, math.random(ARENA.top, ARENA.bottom)
-        elseif edge == 3 then
-            x, y = math.random(ARENA.left, ARENA.right), ARENA.top
-        else
-            x, y = math.random(ARENA.left, ARENA.right), ARENA.bottom
-        end
+        local edgeNames = { "left", "right", "top", "bottom" }
+        local edge = edgeNames[math.random(#edgeNames)]
+        local lane = (edge == "left" or edge == "right")
+            and math.random(ARENA.top, ARENA.bottom)
+            or math.random(ARENA.left, ARENA.right)
+        local entry = BattleBounds.GetEnemyEntry(ARENA, edge, lane, config.radius, 30)
+        x, y = entry.spawnX, entry.spawnY
     end
 
     self.spawnSerial = self.spawnSerial + 1
@@ -221,10 +239,13 @@ function BattleManager:SpawnProjectile(target, angleOffset)
     table.insert(self.projectiles, {
         x = player.x,
         y = player.y,
+        prevX = player.x,
+        prevY = player.y,
         vx = math.cos(baseAngle) * player.projectileSpeed,
         vy = math.sin(baseAngle) * player.projectileSpeed,
         radius = player.projectileRadius,
         life = player.projectileLife,
+        maxLife = player.projectileLife,
         damage = player.damage,
         hitsLeft = player.pierce + 1,
     })
@@ -245,6 +266,8 @@ function BattleManager:Attack()
     if not target then
         return
     end
+
+    PlayerFacing.FaceAttack(self.player, target.x - self.player.x, target.y - self.player.y)
 
     local count = self.player.projectileCount
     for index = 1, count do
@@ -285,14 +308,43 @@ end
 
 function BattleManager:DamagePlayer(amount)
     local player = self.player
+    if player.hp <= 0 then
+        return
+    end
+    if self.debugInvulnerable then
+        player.hitElapsed = 0
+        player.animation:Hit()
+        return
+    end
     player.hp = math.max(0, player.hp - amount * player.damageTaken)
     player.hitElapsed = 0
     player.animation:Hit()
     if player.hp <= 0 then
         player.animation:Die()
-        self.active = false
-        self.result = "defeat"
+        player.deathElapsed = 0
+        self:BeginFinish("defeat", 0.65)
     end
+end
+
+function BattleManager:BeginFinish(result, delay)
+    self.active = false
+    self.finishing = true
+    self.pendingResult = result
+    self.resultDelay = delay or 0
+end
+
+function BattleManager:AddImpact(x, y, radius, kind)
+    if #self.impacts >= MAX_IMPACTS then
+        table.remove(self.impacts, 1)
+    end
+    table.insert(self.impacts, {
+        x = x,
+        y = y,
+        radius = radius or 18,
+        kind = kind or "hit",
+        elapsed = 0,
+        duration = 0.18,
+    })
 end
 
 function BattleManager:KillEnemy(index)
@@ -305,18 +357,22 @@ function BattleManager:KillEnemy(index)
         sprite = enemy.sprite,
         elapsed = 0,
         duration = enemy.boss and 0.55 or 0.34,
+        kind = enemy.kind,
+        facing = enemy.facing,
     })
     self.kills = self.kills + 1
     table.remove(self.enemies, index)
     if enemy.boss then
-        self.active = false
-        self.result = "victory"
-    else
+        self:BeginFinish("victory", 0.62)
+    elseif not self.debugFreezeSpawning then
         self:GainXp(enemy.xp)
     end
 end
 
 function BattleManager:UpdateSpawning(timeStep)
+    if self.debugFreezeSpawning then
+        return
+    end
     if not self.bossSpawned then
         self.spawnTimer = self.spawnTimer - timeStep
         if self.spawnTimer <= 0 then
@@ -386,7 +442,11 @@ function BattleManager:UpdateEnemies(timeStep)
             enemy.x = command.x
             enemy.y = command.y
             enemy.facing = command.facing
+            enemy.facingX = command.facingX
             enemy.motionState = command.motionState
+            enemy.elevation = command.elevation
+            enemy.step = command.step
+            enemy.lean = command.lean
         else
             local dx, dy = Normalize(player.x - enemy.x, player.y - enemy.y)
             enemy.x = enemy.x + dx * enemy.speed * timeStep
@@ -409,15 +469,19 @@ end
 function BattleManager:UpdateProjectiles(timeStep)
     for projectileIndex = #self.projectiles, 1, -1 do
         local projectile = self.projectiles[projectileIndex]
+        projectile.prevX = projectile.x
+        projectile.prevY = projectile.y
         projectile.x = projectile.x + projectile.vx * timeStep
         projectile.y = projectile.y + projectile.vy * timeStep
         projectile.life = projectile.life - timeStep
 
         local removeProjectile = projectile.life <= 0
+            or BattleBounds.ShouldRecycleProjectile(ARENA, projectile.x, projectile.y, projectile.radius, 180)
         if not removeProjectile then
             for enemyIndex = #self.enemies, 1, -1 do
                 local enemy = self.enemies[enemyIndex]
                 if CirclesOverlap(projectile.x, projectile.y, projectile.radius, enemy.x, enemy.y, enemy.radius) then
+                    self:AddImpact(projectile.x, projectile.y, projectile.radius * 1.8, "projectile")
                     enemy.hp = enemy.hp - projectile.damage
                     enemy.hitElapsed = 0
                     enemy.animation:Hit()
@@ -439,6 +503,38 @@ function BattleManager:UpdateProjectiles(timeStep)
     end
 end
 
+function BattleManager:MaintainDebugStress()
+    if not self.debugEnemyTarget or not self.debugProjectileTarget then
+        return
+    end
+
+    local kinds = { "bifang", "jiuweihu", "kui" }
+    while #self.enemies < self.debugEnemyTarget do
+        local index = #self.enemies + 1
+        local position = DEBUG_RING_POSITIONS[index]
+        self:SpawnEnemy(kinds[(index - 1) % #kinds + 1], position[1], position[2])
+    end
+
+    local target = self.enemies[(self.spawnSerial % #self.enemies) + 1]
+    while #self.projectiles > self.debugProjectileTarget do
+        table.remove(self.projectiles)
+    end
+    while #self.projectiles < self.debugProjectileTarget do
+        local index = #self.projectiles + 1
+        self:SpawnProjectile(target, (index - (self.debugProjectileTarget + 1) * 0.5) * 0.055)
+    end
+end
+
+function BattleManager:UpdateImpacts(timeStep)
+    for index = #self.impacts, 1, -1 do
+        local impact = self.impacts[index]
+        impact.elapsed = impact.elapsed + timeStep
+        if impact.elapsed >= impact.duration then
+            table.remove(self.impacts, index)
+        end
+    end
+end
+
 function BattleManager:UpdateDeathEffects(timeStep)
     for index = #self.deathEffects, 1, -1 do
         local effect = self.deathEffects[index]
@@ -450,13 +546,29 @@ function BattleManager:UpdateDeathEffects(timeStep)
 end
 
 function BattleManager:Update(timeStep, moveX, moveY)
+    if self.finishing then
+        self.resultDelay = math.max(0, self.resultDelay - timeStep)
+        self.attackPulse = math.max(0, self.attackPulse - timeStep)
+        if self.player and self.player.deathElapsed then
+            self.player.deathElapsed = self.player.deathElapsed + timeStep
+            self.player.animation:Update(timeStep, false)
+        end
+        self:UpdateDeathEffects(timeStep)
+        self:UpdateImpacts(timeStep)
+        if self.resultDelay <= 0 then
+            self.result = self.pendingResult
+            self.pendingResult = nil
+            self.finishing = false
+        end
+        return
+    end
     if not self.active or self.paused or self.choosing then
         return
     end
 
     local player = self.player
-    local directionX = PlayerMover.Update(player, moveX, moveY, timeStep, ARENA)
-    PlayerFacing.Update(player, directionX)
+    local directionX, directionY = PlayerMover.Update(player, moveX, moveY, timeStep, ARENA)
+    PlayerFacing.Update(player, directionX, directionY)
     if player.hitElapsed then
         player.hitElapsed = player.hitElapsed + timeStep
         if player.hitElapsed >= 0.16 then
@@ -468,6 +580,7 @@ function BattleManager:Update(timeStep, moveX, moveY)
     self.elapsed = self.elapsed + timeStep
     self.attackPulse = math.max(0, self.attackPulse - timeStep)
     self:UpdateDeathEffects(timeStep)
+    self:UpdateImpacts(timeStep)
     self.attackTimer = self.attackTimer - timeStep
     if self.attackTimer <= 0 then
         self:Attack()
@@ -482,7 +595,93 @@ function BattleManager:Update(timeStep, moveX, moveY)
     self:UpdateEnemies(timeStep)
     if self.active then
         self:UpdateProjectiles(timeStep)
+        self:MaintainDebugStress()
     end
+end
+
+
+DEBUG_RING_POSITIONS = {
+    { 520, 330 }, { 760, 300 }, { 1000, 300 }, { 1240, 330 }, { 1440, 410 },
+    { 1510, 590 }, { 1450, 760 }, { 1230, 850 }, { 990, 875 }, { 750, 850 },
+    { 520, 770 }, { 420, 600 }, { 470, 470 }, { 680, 450 }, { 900, 430 },
+    { 1120, 450 }, { 1320, 500 }, { 1300, 690 }, { 1050, 720 }, { 760, 700 },
+}
+
+function BattleManager:ConfigureDebugScenario(mode, projectileCount)
+    assert(self.player, "debug scenario requires a prepared battle")
+    self.active = true
+    self.paused = false
+    self.choosing = false
+    self.result = nil
+    self.finishing = false
+    self.pendingResult = nil
+    self.enemies = {}
+    self.projectiles = {}
+    self.deathEffects = {}
+    self.impacts = {}
+    self.debugFreezeSpawning = true
+    self.debugProjectileTarget = nil
+    self.debugEnemyTarget = nil
+    self.debugInvulnerable = false
+    self.elapsed = 0
+    self.attackTimer = 0.2
+    self.attackPulse = 0
+    self.eliteSpawned = false
+    self.bossSpawned = false
+    self.warning = nil
+    self.warningTimer = 3.5
+    self.player.x = 960
+    self.player.y = 640
+    self.player.hp = self.player.maxHp
+    self.player.hitElapsed = nil
+    self.player.deathElapsed = nil
+    self.player.animation = AnimationState.New()
+
+    if mode == "single" then
+        self:SpawnEnemy("jiuweihu", 1180, 620)
+    elseif mode == "peer_comparison" then
+        self.debugInvulnerable = true
+        local kinds = { "bifang", "jiuweihu", "kui" }
+        for group = 1, 3 do
+            for index = 1, 4 do
+                self:SpawnEnemy(kinds[group], 570 + (group - 1) * 390 + ((index - 1) % 2) * 105,
+                    360 + math.floor((index - 1) / 2) * 150)
+            end
+        end
+        self:SpawnEnemy("spring_elite", 785, 805)
+        self:SpawnEnemy("spring_elite", 1135, 805)
+        self.eliteSpawned = true
+    elseif mode == "boss" then
+        self:SpawnEnemy("bifang", 520, 500)
+        self:SpawnEnemy("jiuweihu", 650, 760)
+        self:SpawnEnemy("kui", 1250, 760)
+        self:SpawnEnemy("spring_elite", 1420, 520)
+        self:SpawnEnemy("jumang", 1060, 430)
+        self.bossSpawned = true
+    elseif mode == "combat_stress" then
+        self.debugInvulnerable = true
+        self.attackTimer = 999999
+        local kinds = { "bifang", "jiuweihu", "kui" }
+        for index = 1, #DEBUG_RING_POSITIONS do
+            local position = DEBUG_RING_POSITIONS[index]
+            self:SpawnEnemy(kinds[(index - 1) % #kinds + 1], position[1], position[2])
+        end
+        local count = math.max(0, math.min(MAX_PROJECTILES, projectileCount or 35))
+        self.debugEnemyTarget = #DEBUG_RING_POSITIONS
+        self.debugProjectileTarget = count
+        local target = self.enemies[1]
+        for index = 1, count do
+            self:SpawnProjectile(target, (index - (count + 1) * 0.5) * 0.035)
+        end
+        self.debugScenario = "combat_stress_" .. tostring(count)
+        self:MaintainDebugStress()
+        return self.debugScenario
+    else
+        error("unknown debug scenario: " .. tostring(mode))
+    end
+
+    self.debugScenario = mode
+    return self.debugScenario
 end
 
 function BattleManager:GetBoss()

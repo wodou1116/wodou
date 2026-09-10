@@ -8,6 +8,13 @@ AnimationState.States = {
     Death = "Death",
 }
 
+AnimationState.Priority = {
+    [AnimationState.States.Idle] = 1,
+    [AnimationState.States.Move] = 2,
+    [AnimationState.States.Hit] = 3,
+    [AnimationState.States.Death] = 4,
+}
+
 local VALID_STATES = {
     [AnimationState.States.Idle] = true,
     [AnimationState.States.Move] = true,
@@ -30,6 +37,9 @@ end
 
 function AnimationState:Set(state)
     assert(VALID_STATES[state], "unknown animation state: " .. tostring(state))
+    if self.state == AnimationState.States.Death and state ~= AnimationState.States.Death then
+        return self.state
+    end
     if self.state ~= state then
         self.state = state
         self.time = 0
@@ -40,7 +50,8 @@ end
 function AnimationState:Hit(duration)
     if self.state ~= AnimationState.States.Death then
         self.hitDuration = duration or self.hitDuration
-        self:Set(AnimationState.States.Hit)
+        self.state = AnimationState.States.Hit
+        self.time = 0
     end
     return self.state
 end

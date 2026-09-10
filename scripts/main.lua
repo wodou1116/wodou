@@ -71,5 +71,21 @@ function HandleKeyDown(eventType, eventData)
         battleView_:Show()
     elseif key == KEY_Z then
         game_:ToggleDebug()
+    elseif game_:GetDebugEnabled() and battleView_ then
+        if key == KEY_F4 then
+            battleView_:ToggleShadows()
+        elseif key == KEY_F5 then
+            game_:ConfigureDebugScenario("single")
+        elseif key == KEY_F6 then
+            game_:ConfigureDebugScenario("peer_comparison")
+        elseif key == KEY_F7 then
+            game_:ConfigureDebugScenario("combat_stress", 20)
+        elseif key == KEY_F8 then
+            game_:ConfigureDebugScenario("combat_stress", 35)
+        elseif key == KEY_F9 then
+            game_:ConfigureDebugScenario("combat_stress", 50)
+        elseif key == KEY_F10 then
+            game_:ConfigureDebugScenario("boss")
+        end
     end
 end

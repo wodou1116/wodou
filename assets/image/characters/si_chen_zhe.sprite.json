@@ -1,0 +1,14 @@
+{
+  "frames": {
+    "si_chen_zhe_pose": {
+      "frame": { "x": 0, "y": 0, "w": 512, "h": 768 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 512, "h": 768 },
+      "sourceSize": { "w": 512, "h": 768 },
+      "duration": 1000
+    }
+  },
+  "animations": [
+    { "name": "si_chen_zhe", "frames": ["si_chen_zhe_pose"], "repeat": 0, "pivot": { "x": 0.5, "y": 0.98 } }
+  ],
+  "meta": { "image": "si_chen_zhe.png", "size": { "w": 512, "h": 768 }, "pivot": { "x": 0.5, "y": 0.98 } }
+}

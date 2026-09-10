@@ -1,0 +1,14 @@
+{
+  "frames": {
+    "shi_yu_zhe_pose": {
+      "frame": { "x": 0, "y": 0, "w": 512, "h": 768 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 512, "h": 768 },
+      "sourceSize": { "w": 512, "h": 768 },
+      "duration": 1000
+    }
+  },
+  "animations": [
+    { "name": "shi_yu_zhe", "frames": ["shi_yu_zhe_pose"], "repeat": 0, "pivot": { "x": 0.5, "y": 0.985 } }
+  ],
+  "meta": { "image": "shi_yu_zhe.png", "size": { "w": 512, "h": 768 }, "pivot": { "x": 0.5, "y": 0.985 } }
+}

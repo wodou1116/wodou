@@ -4,7 +4,7 @@ local Constants = {
     DESIGN_HEIGHT = 1080,
     DEFAULT_CHARACTER_ID = "shi_yu_zhe",
     DEFAULT_SEASON_ID = "spring",
-    DEBUG_ENABLED = true,
+    DEBUG_ENABLED = false,
 }
 
 return Constants

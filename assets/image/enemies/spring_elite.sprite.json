@@ -1,0 +1,14 @@
+{
+  "frames": {
+    "spring_elite_pose": {
+      "frame": { "x": 0, "y": 0, "w": 512, "h": 512 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 512, "h": 512 },
+      "sourceSize": { "w": 512, "h": 512 },
+      "duration": 1000
+    }
+  },
+  "animations": [
+    { "name": "spring_elite", "frames": ["spring_elite_pose"], "repeat": 0, "pivot": { "x": 0.5, "y": 0.915 } }
+  ],
+  "meta": { "image": "spring_elite.png", "size": { "w": 512, "h": 512 }, "pivot": { "x": 0.5, "y": 0.915 } }
+}

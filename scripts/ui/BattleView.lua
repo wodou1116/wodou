@@ -1,5 +1,6 @@
 local UI = require("urhox-libs/UI")
 local AssetCatalog = require("core.AssetCatalog")
+local ProjectilePresentation = require("vfx.ProjectilePresentation")
 local RuntimePresentation = require("vfx.RuntimePresentation")
 
 local BattleView = {}
@@ -19,9 +20,20 @@ local COLORS = {
 local ENEMY_WIDGET_COUNT = 34
 local PROJECTILE_WIDGET_COUNT = 56
 local DEATH_WIDGET_COUNT = 12
+local IMPACT_WIDGET_COUNT = 24
+local TRAIL_SEGMENT_COUNT = 3
+
+local ENEMY_SPRITES = {
+    bifang = AssetCatalog.enemySprites.bifang,
+    jiuweihu = AssetCatalog.enemySprites.jiuweihu,
+    kui = AssetCatalog.enemySprites.kui,
+    spring_elite = AssetCatalog.enemySprites.spring_elite,
+    jumang = AssetCatalog.bossSprites.jumang,
+}
 
 local function TouchButton(text, left, top, direction, touchState)
     return UI.Button {
+        visible = false,
         position = "absolute",
         left = left,
         top = top,
@@ -32,7 +44,9 @@ local function TouchButton(text, left, top, direction, touchState)
         variant = "secondary",
         opacity = 0.72,
         onPointerDown = function()
-            touchState[direction] = true
+            if touchState.enabled then
+                touchState[direction] = true
+            end
         end,
         onPointerUp = function()
             touchState[direction] = false
@@ -56,8 +70,16 @@ function BattleView.New(game, onReturnToMenu)
     self.enemyShadows = {}
     self.eliteRings = {}
     self.projectileWidgets = {}
+    self.projectileTrails = {}
+    self.impactWidgets = {}
     self.deathWidgets = {}
-    self.touchState = { left = false, right = false, up = false, down = false }
+    self.enemyHitWidgets = {}
+    self.debugControls = {}
+    self.debugLabel = nil
+    self.playerHitWidget = nil
+    self.targetMarker = nil
+    self.touchState = { left = false, right = false, up = false, down = false, enabled = false }
+    self.shadowsEnabled = true
     self.choiceIcons = {}
     self.choiceNames = {}
     self.choiceDescriptions = {}
@@ -121,6 +143,16 @@ function BattleView:BuildArena()
     }
     self.arena:AddChild(self.playerShadow)
 
+    self.targetMarker = UI.Panel {
+        visible = false,
+        position = "absolute",
+        borderColor = COLORS.jade,
+        borderWidth = 3,
+        backgroundColor = { 91, 174, 131, 18 },
+        pointerEvents = "none",
+    }
+    self.arena:AddChild(self.targetMarker)
+
     for index = 1, ENEMY_WIDGET_COUNT do
         local shadow = UI.Panel {
             visible = false,
@@ -148,12 +180,28 @@ function BattleView:BuildArena()
     end
 
     for index = 1, ENEMY_WIDGET_COUNT do
-        local widget = UI.Panel {
+        local hit = UI.Panel {
+            visible = false,
+            position = "absolute",
+            borderColor = { 255, 255, 255, 245 },
+            borderWidth = 5,
+            backgroundColor = { 255, 255, 255, 34 },
+            pointerEvents = "none",
+        }
+        self.enemyHitWidgets[index] = hit
+        self.arena:AddChild(hit)
+    end
+
+    for index = 1, ENEMY_WIDGET_COUNT do
+        local widget = UI.Sprite {
             visible = false,
             position = "absolute",
             width = 100,
             height = 100,
-            backgroundFit = "contain",
+            animations = ENEMY_SPRITES,
+            defaultAnimation = "bifang",
+            objectFit = "contain",
+            applyPivotInAbsolute = true,
             pointerEvents = "none",
         }
         self.enemyWidgets[index] = widget
@@ -161,11 +209,15 @@ function BattleView:BuildArena()
     end
 
     for index = 1, DEATH_WIDGET_COUNT do
-        local widget = UI.Panel {
+        local widget = UI.Sprite {
             visible = false,
             position = "absolute",
-            backgroundFit = "contain",
-            transformOrigin = "center",
+            width = 100,
+            height = 100,
+            animations = ENEMY_SPRITES,
+            defaultAnimation = "bifang",
+            objectFit = "contain",
+            applyPivotInAbsolute = true,
             pointerEvents = "none",
         }
         self.deathWidgets[index] = widget
@@ -173,19 +225,44 @@ function BattleView:BuildArena()
     end
 
     for index = 1, PROJECTILE_WIDGET_COUNT do
+        self.projectileTrails[index] = {}
+        for segment = TRAIL_SEGMENT_COUNT, 1, -1 do
+            local trail = UI.Panel {
+                visible = false,
+                position = "absolute",
+                backgroundImage = AssetCatalog.wheel.core,
+                backgroundFit = "contain",
+                pointerEvents = "none",
+            }
+            self.projectileTrails[index][segment] = trail
+            self.arena:AddChild(trail)
+        end
+
         local widget = UI.Panel {
             visible = false,
             position = "absolute",
             width = 24,
             height = 24,
-            borderRadius = 12,
-            backgroundColor = COLORS.projectile,
-            borderColor = COLORS.pale,
-            borderWidth = 2,
+            backgroundImage = AssetCatalog.wheel.core,
+            backgroundFit = "contain",
+            transformOrigin = "center",
             pointerEvents = "none",
         }
         self.projectileWidgets[index] = widget
         self.arena:AddChild(widget)
+    end
+
+    for index = 1, IMPACT_WIDGET_COUNT do
+        local impact = UI.Panel {
+            visible = false,
+            position = "absolute",
+            borderColor = COLORS.pale,
+            borderWidth = 5,
+            backgroundColor = { 246, 239, 211, 42 },
+            pointerEvents = "none",
+        }
+        self.impactWidgets[index] = impact
+        self.arena:AddChild(impact)
     end
 
     local wheelImages = {
@@ -213,14 +290,27 @@ function BattleView:BuildArena()
         self.arena:AddChild(widget)
     end
 
-    self.playerWidget = UI.Panel {
+    self.playerWidget = UI.Sprite {
         position = "absolute",
         width = 138,
         height = 190,
-        backgroundFit = "contain",
+        animations = AssetCatalog.characterSprites,
+        defaultAnimation = "shi_yu_zhe",
+        objectFit = "contain",
+        applyPivotInAbsolute = true,
         pointerEvents = "none",
     }
     self.arena:AddChild(self.playerWidget)
+
+    self.playerHitWidget = UI.Panel {
+        visible = false,
+        position = "absolute",
+        borderColor = { 255, 255, 255, 250 },
+        borderWidth = 6,
+        backgroundColor = { 255, 255, 255, 38 },
+        pointerEvents = "none",
+    }
+    self.arena:AddChild(self.playerHitWidget)
     return self.arena
 end
 
@@ -486,6 +576,23 @@ end
 
 function BattleView:Build()
     local hudChildren = self:BuildHud()
+    self.debugControls = {
+        TouchButton("←", 92, 876, "left", self.touchState),
+        TouchButton("→", 266, 876, "right", self.touchState),
+        TouchButton("↑", 179, 789, "up", self.touchState),
+        TouchButton("↓", 179, 963, "down", self.touchState),
+    }
+    self.debugLabel = UI.Label {
+        visible = false,
+        position = "absolute",
+        left = 28,
+        bottom = 24,
+        width = 720,
+        fontSize = 17,
+        fontColor = COLORS.pale,
+        text = "DEBUG",
+        pointerEvents = "none",
+    }
     self.pauseOverlay = UI.Panel {
         visible = false,
         position = "absolute",
@@ -534,10 +641,11 @@ function BattleView:Build()
                     self.game:TogglePause()
                 end,
             },
-            TouchButton("←", 92, 876, "left", self.touchState),
-            TouchButton("→", 266, 876, "right", self.touchState),
-            TouchButton("↑", 179, 789, "up", self.touchState),
-            TouchButton("↓", 179, 963, "down", self.touchState),
+            self.debugControls[1],
+            self.debugControls[2],
+            self.debugControls[3],
+            self.debugControls[4],
+            self.debugLabel,
             self.pauseOverlay,
             self:BuildChoices(),
             self:BuildResult(),
@@ -549,7 +657,8 @@ end
 function BattleView:Show()
     local battle = self.game.battleManager
     local characterId = battle.run and battle.run.characterId or "shi_yu_zhe"
-    self.playerWidget:SetStyle({ backgroundImage = AssetCatalog.characters[characterId] })
+    self.playerWidget:Play(characterId)
+    self.playerWidget.currentKind = characterId
     self.choiceWasVisible = false
     self.resultOverlay:SetVisible(false)
     self.root:SetVisible(true)
@@ -569,30 +678,76 @@ function BattleView:GetMovement()
     return (right and 1 or 0) - (left and 1 or 0), (down and 1 or 0) - (up and 1 or 0)
 end
 
+function BattleView:UpdateDebugControls()
+    local enabled = self.game:GetDebugEnabled()
+    self.touchState.enabled = enabled
+    if not enabled then
+        self.touchState.left = false
+        self.touchState.right = false
+        self.touchState.up = false
+        self.touchState.down = false
+    end
+    for index = 1, #self.debugControls do
+        self.debugControls[index]:SetVisible(enabled)
+    end
+    self.debugLabel:SetVisible(enabled)
+    if enabled then
+        local battle = self.game.battleManager
+        self.debugLabel:SetText(string.format(
+            "DEBUG｜%s｜怪 %d｜弹 %d｜Impact %d｜F4 阴影 F5 单体 F6 对比 F7/F8/F9 压力 F10 Boss",
+            battle.debugScenario or "normal",
+            #battle.enemies,
+            #battle.projectiles,
+            #battle.impacts
+        ))
+    end
+end
+
 function BattleView:UpdatePools()
     local battle = self.game.battleManager
+    local target = battle:FindNearestEnemy()
+    if target then
+        local markerSize = target.size * 0.82
+        self.targetMarker:SetStyle({
+            left = target.x - markerSize * 0.5,
+            top = target.y - markerSize * 0.18,
+            width = markerSize,
+            height = markerSize * 0.28,
+            borderRadius = markerSize * 0.14,
+            opacity = 0.48 + math.abs(math.sin(battle.elapsed * 4)) * 0.28,
+        })
+        self.targetMarker:SetVisible(true)
+    else
+        self.targetMarker:SetVisible(false)
+    end
+
     for index = 1, ENEMY_WIDGET_COUNT do
         local widget = self.enemyWidgets[index]
         local shadowWidget = self.enemyShadows[index]
         local ringWidget = self.eliteRings[index]
+        local hitWidget = self.enemyHitWidgets[index]
         local enemy = battle.enemies[index]
         if enemy then
             local motion = RuntimePresentation.Enemy(enemy.kind, battle.elapsed, enemy.visualPhase)
             local hit = enemy.hitElapsed and RuntimePresentation.Hit(enemy.hitElapsed, 0.16) or nil
             local visualY = enemy.y + motion.offsetY
+            if widget.currentKind ~= enemy.kind then
+                widget:Play(enemy.kind)
+                widget.currentKind = enemy.kind
+            end
+            widget:SetFlipX(enemy.facing == "left")
             widget:SetStyle({
-                left = enemy.x - enemy.size * 0.5,
-                top = visualY - enemy.size * 0.5,
+                left = enemy.x,
+                top = visualY,
                 width = enemy.size,
                 height = enemy.size,
-                backgroundImage = enemy.sprite,
-                rotate = motion.rotation + (enemy.facing == "left" and -1.5 or 1.5),
+                rotate = motion.rotation + (enemy.lean or 0),
                 scale = hit and hit.scale or 1,
+                opacity = 1,
             })
             widget:SetVisible(true)
 
-            local elevation = enemy.kind == "bifang" and 0.72 or 0.08
-            local shadow = RuntimePresentation.Shadow(enemy.size, elevation)
+            local shadow = RuntimePresentation.EnemyShadow(enemy.kind, enemy.size, battle.elapsed, enemy.visualPhase)
             shadowWidget:SetStyle({
                 left = enemy.x - shadow.width * 0.5,
                 top = enemy.y + shadow.offsetY - shadow.height * 0.5,
@@ -601,7 +756,22 @@ function BattleView:UpdatePools()
                 borderRadius = shadow.height * 0.5,
                 opacity = shadow.opacity,
             })
-            shadowWidget:SetVisible(true)
+            shadowWidget:SetVisible(self.shadowsEnabled)
+
+            if hit then
+                local hitSize = enemy.size * (0.84 + hit.flashWhite * 0.12)
+                hitWidget:SetStyle({
+                    left = enemy.x - hitSize * 0.5,
+                    top = visualY - hitSize * 0.54,
+                    width = hitSize,
+                    height = hitSize,
+                    borderRadius = hitSize * 0.5,
+                    opacity = hit.flashWhite,
+                })
+                hitWidget:SetVisible(true)
+            else
+                hitWidget:SetVisible(false)
+            end
 
             local elite = enemy.kind == "spring_elite"
             if elite then
@@ -620,24 +790,45 @@ function BattleView:UpdatePools()
             widget:SetVisible(false)
             shadowWidget:SetVisible(false)
             ringWidget:SetVisible(false)
+            hitWidget:SetVisible(false)
         end
     end
 
     for index = 1, PROJECTILE_WIDGET_COUNT do
         local widget = self.projectileWidgets[index]
+        local trails = self.projectileTrails[index]
         local projectile = battle.projectiles[index]
         if projectile then
-            local size = projectile.radius * 2
+            local presentation = ProjectilePresentation.Compute(projectile, projectile.maxLife)
+            local head = presentation.head
             widget:SetStyle({
-                left = projectile.x - projectile.radius,
-                top = projectile.y - projectile.radius,
-                width = size,
-                height = size,
-                borderRadius = projectile.radius,
+                left = head.left,
+                top = head.top,
+                width = head.width,
+                height = head.height,
+                rotate = head.rotation,
+                scale = head.scale,
+                opacity = head.opacity,
             })
             widget:SetVisible(true)
+            for segment = 1, TRAIL_SEGMENT_COUNT do
+                local trail = presentation.tail[segment]
+                trails[segment]:SetStyle({
+                    left = trail.left,
+                    top = trail.top,
+                    width = trail.width,
+                    height = trail.height,
+                    rotate = trail.rotation,
+                    scale = trail.scale,
+                    opacity = trail.opacity,
+                })
+                trails[segment]:SetVisible(true)
+            end
         else
             widget:SetVisible(false)
+            for segment = 1, TRAIL_SEGMENT_COUNT do
+                trails[segment]:SetVisible(false)
+            end
         end
     end
 
@@ -646,14 +837,40 @@ function BattleView:UpdatePools()
         local effect = battle.deathEffects[index]
         if effect then
             local visual = RuntimePresentation.Death(effect.elapsed, effect.duration)
+            if widget.currentKind ~= effect.kind then
+                widget:Play(effect.kind)
+                widget.currentKind = effect.kind
+            end
+            widget:SetFlipX(effect.facing == "left")
             widget:SetStyle({
-                left = effect.x - effect.size * 0.5,
-                top = effect.y - effect.size * 0.5 + visual.offsetY,
+                left = effect.x,
+                top = effect.y + visual.offsetY,
                 width = effect.size,
                 height = effect.size,
-                backgroundImage = effect.sprite,
                 opacity = visual.opacity,
                 scale = visual.scale,
+            })
+            widget:SetVisible(true)
+        else
+            widget:SetVisible(false)
+        end
+    end
+
+    for index = 1, IMPACT_WIDGET_COUNT do
+        local widget = self.impactWidgets[index]
+        local impact = battle.impacts[index]
+        if impact then
+            local visual = ProjectilePresentation.Impact(impact, impact.elapsed)
+            local width = visual.ringWidth * visual.ringScale
+            local height = visual.ringHeight * visual.ringScale
+            widget:SetStyle({
+                left = visual.x - width * 0.5,
+                top = visual.y - height * 0.5,
+                width = width,
+                height = height,
+                borderRadius = width * 0.5,
+                opacity = visual.ringOpacity,
+                scale = visual.coreScale,
             })
             widget:SetVisible(true)
         else
@@ -671,14 +888,38 @@ function BattleView:UpdatePlayer()
 
     local playerWidth = 138
     local playerHeight = 190
-    local idle = RuntimePresentation.Player(battle.elapsed, player.isMoving)
-    local hit = player.hitElapsed and RuntimePresentation.Hit(player.hitElapsed, 0.16) or nil
+    local state = player.animation:Get()
+    local stateDuration = state == "Death" and 0.65 or 0.16
+    local visual = RuntimePresentation.Player(
+        battle.elapsed,
+        player.isMoving,
+        state,
+        player.animation.time,
+        stateDuration
+    )
+    self.playerWidget:SetFlipX(player.facing == "left")
     self.playerWidget:SetStyle({
-        left = player.x - playerWidth * 0.5,
-        top = player.y - playerHeight * 0.62 + idle.offsetY,
-        rotate = idle.rotation + (player.facing == "left" and -1.2 or 1.2),
-        scale = hit and hit.scale or 1,
+        left = player.x,
+        top = player.y + visual.offsetY,
+        rotate = visual.rotation,
+        scale = visual.scale,
+        opacity = visual.opacity,
     })
+
+    if visual.flashWhite > 0 then
+        local hitSize = playerWidth * (0.92 + visual.flashWhite * 0.12)
+        self.playerHitWidget:SetStyle({
+            left = player.x - hitSize * 0.5,
+            top = player.y - playerHeight * 0.72,
+            width = hitSize,
+            height = playerHeight * 0.82,
+            borderRadius = hitSize * 0.5,
+            opacity = visual.flashWhite,
+        })
+        self.playerHitWidget:SetVisible(true)
+    else
+        self.playerHitWidget:SetVisible(false)
+    end
 
     local shadow = RuntimePresentation.Shadow(playerWidth, 0.06)
     self.playerShadow:SetStyle({
@@ -689,6 +930,7 @@ function BattleView:UpdatePlayer()
         borderRadius = shadow.height * 0.5,
         opacity = shadow.opacity,
     })
+    self.playerShadow:SetVisible(self.shadowsEnabled and visual.opacity > 0.05)
 
     local wheelVisuals = RuntimePresentation.Wheel(battle.elapsed, battle.attackPulse)
     for index = 1, #self.wheelWidgets do
@@ -699,7 +941,7 @@ function BattleView:UpdatePlayer()
             left = player.x - definition.width * 0.5 + visual.offsetX,
             top = player.y - definition.height * 0.5 + visual.offsetY,
             rotate = visual.rotation,
-            opacity = visual.opacity,
+            opacity = visual.opacity * (0.45 + 0.55 * visual.opacity),
             scale = visual.scale,
         })
     end
@@ -772,11 +1014,17 @@ function BattleView:UpdateOverlays()
     end
 end
 
+function BattleView:ToggleShadows()
+    self.shadowsEnabled = not self.shadowsEnabled
+    return self.shadowsEnabled
+end
+
 function BattleView:Update(timeStep)
     if not self.root or not self.visible then
         return
     end
 
+    self:UpdateDebugControls()
     local moveX, moveY = self:GetMovement()
     self.game:Update(timeStep, moveX, moveY)
     self:UpdatePools()

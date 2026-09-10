@@ -49,6 +49,10 @@ local target = battle:FindNearestEnemy()
 assert(target ~= nil, "target selector must find an in-range enemy")
 battle:Attack()
 assert(#battle.projectiles > 0 and battle.attackPulse > 0, "attack must create projectile and wheel pulse")
+local spawnedProjectile = battle.projectiles[1]
+assert(spawnedProjectile.prevX == spawnedProjectile.x and spawnedProjectile.prevY == spawnedProjectile.y,
+    "projectile must retain a previous position for trail presentation")
+assert(spawnedProjectile.maxLife == spawnedProjectile.life, "projectile must expose its initial lifetime")
 
 local firstEnemy = battle.enemies[1]
 firstEnemy.hp = 1
@@ -72,5 +76,33 @@ for _ = 1, 30 do
     battle:Update(1 / 60, 0, 0)
 end
 assert(#battle.enemies <= 34 and #battle.projectiles <= 56, "runtime pools must stay bounded")
+
+battle:ConfigureDebugScenario("combat_stress", 50)
+assert(#battle.enemies == 20 and #battle.projectiles == 50, "debug stress scenario must be deterministic")
+assert(battle.debugScenario == "combat_stress_50", "debug scenario must expose its active fixture")
+
+battle:ConfigureDebugScenario("single")
+local victim = battle.enemies[1]
+battle.projectiles = {{
+    x = victim.x,
+    y = victim.y,
+    prevX = victim.x - 12,
+    prevY = victim.y,
+    vx = 100,
+    vy = 0,
+    radius = 12,
+    life = 1,
+    maxLife = 1,
+    damage = victim.hp + 1,
+    hitsLeft = 1,
+}}
+battle:UpdateProjectiles(0)
+assert(#battle.impacts == 1, "projectile collision must create one impact presentation record")
+
+battle:Restart()
+battle:DamagePlayer(battle.player.maxHp)
+assert(battle.result == nil and battle.finishing, "player death must delay the result overlay")
+battle:Update(0.7, 0, 0)
+assert(battle.result == "defeat" and not battle.finishing, "death presentation must finish before result")
 
 print("BattleManagerIntegrationTest: Demo 0.2 logic and 20/50 stress passed")

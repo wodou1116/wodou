@@ -3,6 +3,10 @@ local AssetCatalog = {
         shi_yu_zhe = "image/characters/shi_yu_zhe.png",
         si_chen_zhe = "image/characters/si_chen_zhe.png",
     },
+    characterSprites = {
+        shi_yu_zhe = "image/characters/shi_yu_zhe.sprite.json",
+        si_chen_zhe = "image/characters/si_chen_zhe.sprite.json",
+    },
     wheel = {
         outer = "image/wheel/outer.png",
         middle = "image/wheel/middle.png",
@@ -16,8 +20,17 @@ local AssetCatalog = {
         kui = "image/enemies/kui.png",
         spring_elite = "image/enemies/spring_elite.png",
     },
+    enemySprites = {
+        bifang = "image/enemies/bifang.sprite.json",
+        jiuweihu = "image/enemies/jiuweihu.sprite.json",
+        kui = "image/enemies/kui.sprite.json",
+        spring_elite = "image/enemies/spring_elite.sprite.json",
+    },
     bosses = {
         jumang = "image/bosses/jumang.png",
+    },
+    bossSprites = {
+        jumang = "image/bosses/jumang.sprite.json",
     },
     environments = {
         spring = "image/environments/spring_arena.png",

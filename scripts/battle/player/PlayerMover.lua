@@ -18,12 +18,18 @@ function PlayerMover.Update(player, inputX, inputY, timeStep, bounds)
 
     local directionX, directionY = Normalize(inputX or 0, inputY or 0)
     local speed = player.moveSpeed or 0
+    local arena = bounds or BattleBounds.DEFAULT
     local nextX = player.x + directionX * speed * timeStep
     local nextY = player.y + directionY * speed * timeStep
-    local arena = bounds or BattleBounds.DEFAULT
-    player.x, player.y = BattleBounds.ClampPosition(arena, nextX, nextY, player.radius)
+    local clampedX, clampedY = BattleBounds.ClampPosition(arena, nextX, nextY, player.radius)
+
+    player.x, player.y = clampedX, clampedY
     player.moveX, player.moveY = directionX, directionY
-    player.isMoving = directionX ~= 0 or directionY ~= 0
+    player.didMove = directionX ~= 0 or directionY ~= 0
+    player.isMoving = player.didMove
+    if player.didMove then
+        player.lastMoveX, player.lastMoveY = directionX, directionY
+    end
 
     return directionX, directionY, player.isMoving
 end

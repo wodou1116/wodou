@@ -1,0 +1,14 @@
+{
+  "frames": {
+    "bifang_pose": {
+      "frame": { "x": 0, "y": 0, "w": 384, "h": 384 },
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 384, "h": 384 },
+      "sourceSize": { "w": 384, "h": 384 },
+      "duration": 1000
+    }
+  },
+  "animations": [
+    { "name": "bifang", "frames": ["bifang_pose"], "repeat": 0, "pivot": { "x": 0.5, "y": 0.96 } }
+  ],
+  "meta": { "image": "bifang.png", "size": { "w": 384, "h": 384 }, "pivot": { "x": 0.5, "y": 0.96 } }
+}

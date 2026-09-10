@@ -122,4 +122,12 @@ function Game:ToggleDebug()
     return self.debugEnabled
 end
 
+function Game:ConfigureDebugScenario(mode, projectileCount)
+    if not self.debugEnabled or self.state ~= Game.State.BATTLE then
+        return false
+    end
+    self.battleManager:ConfigureDebugScenario(mode, projectileCount)
+    return true
+end
+
 return Game
