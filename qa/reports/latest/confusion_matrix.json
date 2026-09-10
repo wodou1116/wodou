@@ -1,12 +1,16 @@
 {
   "deterministic": true,
+  "metric_only": true,
   "asset_count": 3,
   "pairs": [
     {
       "left": "assets\\image\\enemies\\bifang.png",
       "right": "assets\\image\\enemies\\jiuweihu.png",
-      "confusion_score": 89.54,
-      "level": "regenerate",
+      "metric_similarity_score": 89.54,
+      "risk_band": "high",
+      "requires_vision_review": true,
+      "vision_confusion_score": null,
+      "decision": "PENDING_VISION_REVIEW",
       "evidence": {
         "luminance_similarity": 0.8026,
         "saturation_similarity": 0.9682,
@@ -17,8 +21,11 @@
     {
       "left": "assets\\image\\enemies\\bifang.png",
       "right": "assets\\image\\enemies\\kui.png",
-      "confusion_score": 97.22,
-      "level": "regenerate",
+      "metric_similarity_score": 97.22,
+      "risk_band": "high",
+      "requires_vision_review": true,
+      "vision_confusion_score": null,
+      "decision": "PENDING_VISION_REVIEW",
       "evidence": {
         "luminance_similarity": 0.9928,
         "saturation_similarity": 0.9672,
@@ -29,8 +36,11 @@
     {
       "left": "assets\\image\\enemies\\jiuweihu.png",
       "right": "assets\\image\\enemies\\kui.png",
-      "confusion_score": 91.25,
-      "level": "regenerate",
+      "metric_similarity_score": 91.25,
+      "risk_band": "high",
+      "requires_vision_review": true,
+      "vision_confusion_score": null,
+      "decision": "PENDING_VISION_REVIEW",
       "evidence": {
         "luminance_similarity": 0.7954,
         "saturation_similarity": 0.999,
@@ -38,5 +48,6 @@
         "occupancy_similarity": 0.984
       }
     }
-  ]
+  ],
+  "note": "机器相似度只用于筛选视觉复核，不得直接决定返工或 PASS。"
 }

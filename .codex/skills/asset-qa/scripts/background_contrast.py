@@ -10,8 +10,12 @@ from PIL import Image
 import numpy as np
 
 
-def _pixels(path: str | Path, subject: bool) -> np.ndarray:
-    array = np.asarray(Image.open(path).convert("RGBA"), dtype=np.float32)
+def _pixels(path: str | Path, subject: bool, roi: tuple[int, int, int, int] | None = None) -> np.ndarray:
+    image = Image.open(path).convert("RGBA")
+    if roi is not None:
+        x, y, width, height = roi
+        image = image.crop((x, y, x + width, y + height))
+    array = np.asarray(image, dtype=np.float32)
     if subject and (array[..., 3] > 8).any():
         return array[..., :3][array[..., 3] > 8]
     return array[..., :3].reshape(-1, 3)
@@ -37,21 +41,28 @@ def _histogram(pixels: np.ndarray) -> np.ndarray:
     return np.histogramdd((hue, saturation, value), bins=(12, 4, 4), range=((0, 1), (0, 1), (0, 1)))[0].ravel() / len(pixels)
 
 
-def background_contrast(subject_path: str | Path, background_path: str | Path) -> dict:
-    subject, background = _pixels(subject_path, True), _pixels(background_path, False)
+def background_contrast(subject_path: str | Path, background_path: str | Path,
+                        background_roi: tuple[int, int, int, int] | None = None) -> dict:
+    subject = _pixels(subject_path, True)
+    background = _pixels(background_path, False, background_roi)
     subject_luma, background_luma = _luma(subject), _luma(background)
     overlap = float(np.minimum(_histogram(subject), _histogram(background)).sum())
     delta = abs(float(subject_luma.mean()) - float(background_luma.mean()))
     return {"mean_luminance_delta": round(delta, 4),
             "local_contrast": round(float(subject_luma.std()), 4),
             "hsv_histogram_overlap": round(overlap, 4),
-            "background_separation_risk": bool(delta < 0.10 and overlap > 0.65)}
+            "background_separation_risk": bool(delta < 0.10 and overlap > 0.65) if background_roi else None,
+            "roi_mode": "runtime_local_roi" if background_roi else "global_reference_only",
+            "t1_eligible": background_roi is not None}
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--subject", required=True, type=Path)
     parser.add_argument("--background", required=True, type=Path)
+    parser.add_argument("--roi", help="运行时背景 ROI：x,y,width,height")
     args = parser.parse_args()
-    print(json.dumps(background_contrast(args.subject, args.background), ensure_ascii=False, indent=2))
-
+    roi = tuple(int(value) for value in args.roi.split(",")) if args.roi else None
+    if roi is not None and (len(roi) != 4 or roi[2] <= 0 or roi[3] <= 0):
+        parser.error("--roi 必须是 x,y,width,height，且宽高大于 0")
+    print(json.dumps(background_contrast(args.subject, args.background, roi), ensure_ascii=False, indent=2))

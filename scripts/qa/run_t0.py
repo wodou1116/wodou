@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import itertools
 import json
 import sys
 from pathlib import Path
@@ -15,6 +16,7 @@ SCRIPT_ROOT = SKILL_ROOT / "scripts"
 sys.path.insert(0, str(SCRIPT_ROOT))
 
 from alpha_bounds import alpha_bounds  # noqa: E402
+from compare_assets import compare  # noqa: E402
 from image_metrics import image_metrics  # noqa: E402
 
 
@@ -81,6 +83,15 @@ def main() -> int:
     args = parser.parse_args()
     manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
     results = [check_asset({**asset, "asset_root": manifest["asset_root"]}) for asset in manifest["assets"]]
+    monsters = [asset for asset in manifest["assets"] if asset["type"] == "monster"]
+    confusion_pairs = []
+    for left, right in itertools.combinations(monsters, 2):
+        pair = compare(GAME_ROOT / manifest["asset_root"] / left["path"], GAME_ROOT / manifest["asset_root"] / right["path"])
+        pair["left"] = left["path"]
+        pair["right"] = right["path"]
+        pair["left_asset_id"] = left["asset_id"]
+        pair["right_asset_id"] = right["asset_id"]
+        confusion_pairs.append(pair)
     summary = {"total": len(results), "T0_PASS": 0, "T0_FIX": 0, "T0_REGENERATE": 0}
     for result in results:
         summary[result["status"]] += 1
@@ -93,6 +104,11 @@ def main() -> int:
         "manifest_asset_count": len(manifest["assets"]),
         "results": results,
         "summary": summary,
+        "spring_confusion_matrix": {
+            "metric_only": True,
+            "pairs": confusion_pairs,
+            "next_action": "T1_VISION_REVIEW",
+        },
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

@@ -73,6 +73,8 @@ description: 对游戏图片资产执行只读、分阶段、确定性的 T0-T4 
 - 需要 Alpha 的资产无 Alpha 或主体为空：Hard Fail `HF-10`，动作 `REGENERATE`。
 - 场景可为 RGB，不因没有 Alpha 失败。
 - 指标是机器证据，不替代轮廓、战斗语义和实机可读性的 Vision 判断。
+- `compare_assets.py` 的 `metric_similarity_score` 只筛选 T1 视觉复核对象，禁止直接映射为返工或 PASS。
+- `background_contrast.py` 只有使用 Maker 截图中的实体局部 ROI 时才具备 T1 判定资格；整图比较仅作参考。
 
 普通主体不包括大范围 `telegraph`/`vfx`/`wheel` 底材；这些资产按对应 rubric 判断。
 
