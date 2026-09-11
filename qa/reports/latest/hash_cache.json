@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "files": {
+    "E:/四时风物/Game/assets/image/enemies/bifang.png": {
+      "size": 171256,
+      "mtime_ns": 1789009837654812800,
+      "sha256": "0651e5989c4b0ad83cb2d8a1fa1f926c3fe7c3619fda8a3d10b3a50c634bb6d1"
+    },
+    "E:/四时风物/Game/assets/image/environments/spring_arena.png": {
+      "size": 3155165,
+      "mtime_ns": 1788962337414960100,
+      "sha256": "425152b94da4a7375d8ecedfd8ca981e5957bc6cc093019a0ba86afa096969f9"
+    },
+    "E:/四时风物/Game/assets/image/characters/shi_yu_zhe.png": {
+      "size": 418594,
+      "mtime_ns": 1789009837548300700,
+      "sha256": "5b63afd1743474c57fd4f13690775e3c212ffd7eb12b848e57bde37bda0a2e31"
+    },
+    "E:/四时风物/Game/assets/image/characters/si_chen_zhe.png": {
+      "size": 471015,
+      "mtime_ns": 1789009837612300200,
+      "sha256": "008cfb3e80f4144e64b038d0049e8a94d7456fc0bf2a359684f7be379dcddc28"
+    },
+    "E:/四时风物/Game/assets/image/enemies/jiuweihu.png": {
+      "size": 209181,
+      "mtime_ns": 1789009837702814900,
+      "sha256": "9b5b30af1731b0123c948ce2111a5c7531021a0452640476ce3a63dc5b77049c"
+    },
+    "E:/四时风物/Game/assets/image/enemies/kui.png": {
+      "size": 169969,
+      "mtime_ns": 1789009837745331600,
+      "sha256": "4f0fa4a68bc2c5d15c15065fee1ed110c2743dc0d8747cc1468c798c67e71f8c"
+    },
+    "E:/四时风物/Game/assets/image/enemies/spring_elite.png": {
+      "size": 400022,
+      "mtime_ns": 1789009837799330900,
+      "sha256": "7e3bb73514ead95dca2d15cf25b56ae38c7c35687d1ef803cac1519144f6c346"
+    },
+    "E:/四时风物/Game/assets/image/bosses/jumang.png": {
+      "size": 782622,
+      "mtime_ns": 1789009837876853100,
+      "sha256": "f07f20c32261b2334fc6c68d7708a9e9a27a8c4eb85a8531e53db04647601840"
+    }
+  }
+}

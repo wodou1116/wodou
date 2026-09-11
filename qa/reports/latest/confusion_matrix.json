@@ -1,8 +1,77 @@
 {
+  "qa_stage": "T1",
+  "status": "PENDING_VISION_REVIEW",
+  "asset_map": {
+    "bifang.png": "A-11",
+    "jiuweihu.png": "A-12",
+    "kui.png": "A-13",
+    "spring_elite.png": "A-14",
+    "jumang.png": "A-15"
+  },
   "deterministic": true,
   "metric_only": true,
-  "asset_count": 3,
+  "asset_count": 5,
   "pairs": [
+    {
+      "left": "assets\\image\\bosses\\jumang.png",
+      "right": "assets\\image\\enemies\\bifang.png",
+      "metric_similarity_score": 88.73,
+      "risk_band": "high",
+      "requires_vision_review": true,
+      "vision_confusion_score": null,
+      "decision": "PENDING_VISION_REVIEW",
+      "evidence": {
+        "luminance_similarity": 0.9576,
+        "saturation_similarity": 0.9346,
+        "edge_similarity": 0.8456,
+        "occupancy_similarity": 0.684
+      }
+    },
+    {
+      "left": "assets\\image\\bosses\\jumang.png",
+      "right": "assets\\image\\enemies\\jiuweihu.png",
+      "metric_similarity_score": 82.31,
+      "risk_band": "high",
+      "requires_vision_review": true,
+      "vision_confusion_score": null,
+      "decision": "PENDING_VISION_REVIEW",
+      "evidence": {
+        "luminance_similarity": 0.7602,
+        "saturation_similarity": 0.9664,
+        "edge_similarity": 0.899,
+        "occupancy_similarity": 0.582
+      }
+    },
+    {
+      "left": "assets\\image\\bosses\\jumang.png",
+      "right": "assets\\image\\enemies\\kui.png",
+      "metric_similarity_score": 88.42,
+      "risk_band": "high",
+      "requires_vision_review": true,
+      "vision_confusion_score": null,
+      "decision": "PENDING_VISION_REVIEW",
+      "evidence": {
+        "luminance_similarity": 0.9648,
+        "saturation_similarity": 0.9674,
+        "edge_similarity": 0.833,
+        "occupancy_similarity": 0.598
+      }
+    },
+    {
+      "left": "assets\\image\\bosses\\jumang.png",
+      "right": "assets\\image\\enemies\\spring_elite.png",
+      "metric_similarity_score": 84.85,
+      "risk_band": "high",
+      "requires_vision_review": true,
+      "vision_confusion_score": null,
+      "decision": "PENDING_VISION_REVIEW",
+      "evidence": {
+        "luminance_similarity": 0.8296,
+        "saturation_similarity": 0.8959,
+        "edge_similarity": 0.9298,
+        "occupancy_similarity": 0.6894
+      }
+    },
     {
       "left": "assets\\image\\enemies\\bifang.png",
       "right": "assets\\image\\enemies\\jiuweihu.png",
@@ -34,6 +103,21 @@
       }
     },
     {
+      "left": "assets\\image\\enemies\\bifang.png",
+      "right": "assets\\image\\enemies\\spring_elite.png",
+      "metric_similarity_score": 92.59,
+      "risk_band": "high",
+      "requires_vision_review": true,
+      "vision_confusion_score": null,
+      "decision": "PENDING_VISION_REVIEW",
+      "evidence": {
+        "luminance_similarity": 0.872,
+        "saturation_similarity": 0.9613,
+        "edge_similarity": 0.9158,
+        "occupancy_similarity": 0.9946
+      }
+    },
+    {
       "left": "assets\\image\\enemies\\jiuweihu.png",
       "right": "assets\\image\\enemies\\kui.png",
       "metric_similarity_score": 91.25,
@@ -46,6 +130,36 @@
         "saturation_similarity": 0.999,
         "edge_similarity": 0.934,
         "occupancy_similarity": 0.984
+      }
+    },
+    {
+      "left": "assets\\image\\enemies\\jiuweihu.png",
+      "right": "assets\\image\\enemies\\spring_elite.png",
+      "metric_similarity_score": 93.23,
+      "risk_band": "high",
+      "requires_vision_review": true,
+      "vision_confusion_score": null,
+      "decision": "PENDING_VISION_REVIEW",
+      "evidence": {
+        "luminance_similarity": 0.9306,
+        "saturation_similarity": 0.9295,
+        "edge_similarity": 0.9692,
+        "occupancy_similarity": 0.8926
+      }
+    },
+    {
+      "left": "assets\\image\\enemies\\kui.png",
+      "right": "assets\\image\\enemies\\spring_elite.png",
+      "metric_similarity_score": 89.82,
+      "risk_band": "high",
+      "requires_vision_review": true,
+      "vision_confusion_score": null,
+      "decision": "PENDING_VISION_REVIEW",
+      "evidence": {
+        "luminance_similarity": 0.8648,
+        "saturation_similarity": 0.9285,
+        "edge_similarity": 0.9032,
+        "occupancy_similarity": 0.9086
       }
     }
   ],

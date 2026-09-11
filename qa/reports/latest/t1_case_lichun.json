@@ -1,0 +1,14 @@
+{
+  "case_id": "demo02.t1.peer_comparison.16x9.lichun",
+  "stage": "T1",
+  "mode": "peer_comparison",
+  "ratio": "16:9",
+  "state": {
+    "solarTermId": "lichun",
+    "animationPhase": 0.5,
+    "freeze": true,
+    "seed": 20260911
+  },
+  "asset_refs": ["A-03", "A-10", "A-11", "A-12", "A-13", "A-14"],
+  "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua"
+}

@@ -1,11 +1,23 @@
 {
   "schema_version": "1.0",
-  "asset_qa_skill_version": "1.0",
+  "asset_qa_skill_version": "1.3",
   "rubric_version": "1.0",
   "qa_stage": "T1",
-  "deterministic": false,
+  "deterministic": true,
   "status": "PENDING_CAPTURE",
-  "capture_required": "scenes/qa/AssetReadabilityTestScene.json",
-  "results": [],
-  "summary": {"total": 0, "PENDING_CAPTURE": 0, "hard_fail_count": 0}
+  "case_id": "demo02.t1.peer_comparison.16x9.lichun",
+  "qa_case_hash": "be4bdea23685f2bf933948923e699d24b0f7f0db8c4d192285bb851f29d947a2",
+  "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
+  "results": [
+    {"asset_id":"A-03","asset_name":"时御者","asset_type":"character","status":"PENDING_CAPTURE","action":"ESCALATE","vision_score":null,"metric_score":100,"final_score":null,"confidence":0.60,"hard_fail":false,"hard_fail_codes":[],"next_gate":"PENDING_NATIVE_CAPTURE"},
+    {"asset_id":"A-04","asset_name":"司辰者","asset_type":"character","status":"PENDING_CAPTURE","action":"ESCALATE","vision_score":null,"metric_score":100,"final_score":null,"confidence":0.60,"hard_fail":false,"hard_fail_codes":[],"next_gate":"PENDING_NATIVE_CAPTURE"},
+    {"asset_id":"A-10","asset_name":"春季基础战场","asset_type":"scene","status":"PENDING_CAPTURE","action":"ESCALATE","vision_score":null,"metric_score":100,"final_score":null,"confidence":0.60,"hard_fail":false,"hard_fail_codes":[],"next_gate":"PENDING_NATIVE_CAPTURE"},
+    {"asset_id":"A-11","asset_name":"毕方","asset_type":"monster","status":"PENDING_CAPTURE","action":"ESCALATE","vision_score":null,"metric_score":100,"final_score":null,"confidence":0.60,"hard_fail":false,"hard_fail_codes":[],"next_gate":"PENDING_NATIVE_CAPTURE"},
+    {"asset_id":"A-12","asset_name":"九尾狐","asset_type":"monster","status":"PENDING_CAPTURE","action":"ESCALATE","vision_score":null,"metric_score":100,"final_score":null,"confidence":0.68,"hard_fail":false,"hard_fail_codes":[],"issues":["旧版 Maker ROI 的背景亮度差偏低，需用 V1.3 原生比例截图复核 Shadow 与轮廓"],"recommended_fixes":["优先复核现有 Shadow；仍不清晰时仅增强运行时轮廓或阴影，不改源图"],"next_gate":"PENDING_NATIVE_CAPTURE"},
+    {"asset_id":"A-13","asset_name":"夔","asset_type":"monster","status":"PENDING_CAPTURE","action":"ESCALATE","vision_score":null,"metric_score":100,"final_score":null,"confidence":0.60,"hard_fail":false,"hard_fail_codes":[],"next_gate":"PENDING_NATIVE_CAPTURE"},
+    {"asset_id":"A-14","asset_name":"春季精英","asset_type":"elite","status":"PENDING_CAPTURE","action":"ESCALATE","vision_score":null,"metric_score":100,"final_score":null,"confidence":0.60,"hard_fail":false,"hard_fail_codes":[],"next_gate":"PENDING_NATIVE_CAPTURE"},
+    {"asset_id":"A-15","asset_name":"浊化句芒","asset_type":"boss","status":"PENDING_CAPTURE","action":"ESCALATE","vision_score":null,"metric_score":100,"final_score":null,"confidence":0.60,"hard_fail":false,"hard_fail_codes":[],"next_gate":"PENDING_NATIVE_CAPTURE"}
+  ],
+  "summary": {"total":8,"PENDING_CAPTURE":8,"hard_fail_count":0},
+  "evidence_note": "历史 Maker 截图与 V1.3 低分辨率侧栏截图仅作支持证据；未取得 V1.3 原生 1920x1080 确定性截图前不得 PASS。"
 }

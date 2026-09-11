@@ -1,0 +1,14 @@
+{
+  "qa_stage": "T1",
+  "source": "Maker runtime local ROI",
+  "provisional": true,
+  "note": "指标来自历史 16:9 Maker 截图；待 V1.3 原生比例确定性截图复核。",
+  "results": [
+    {"asset_id":"A-03","mean_luminance_delta":0.0965,"local_contrast":0.2183,"hsv_histogram_overlap":0.2044,"background_separation_risk":false,"roi_scale":1.75,"t1_eligible":true},
+    {"asset_id":"A-11","mean_luminance_delta":0.0920,"local_contrast":0.1575,"hsv_histogram_overlap":0.5638,"background_separation_risk":false,"roi_scale":1.75,"t1_eligible":true},
+    {"asset_id":"A-12","mean_luminance_delta":0.0195,"local_contrast":0.1611,"hsv_histogram_overlap":0.6544,"background_separation_risk":true,"roi_scale":1.75,"t1_eligible":true},
+    {"asset_id":"A-13","mean_luminance_delta":0.0040,"local_contrast":0.1346,"hsv_histogram_overlap":0.5759,"background_separation_risk":false,"roi_scale":1.75,"t1_eligible":true},
+    {"asset_id":"A-14","mean_luminance_delta":0.0472,"local_contrast":0.1548,"hsv_histogram_overlap":0.4365,"background_separation_risk":false,"roi_scale":1.75,"t1_eligible":true},
+    {"asset_id":"A-15","mean_luminance_delta":0.0935,"local_contrast":0.1679,"hsv_histogram_overlap":0.5521,"background_separation_risk":false,"roi_scale":1.75,"t1_eligible":true}
+  ]
+}

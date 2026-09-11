@@ -1,5 +1,13 @@
 # Asset QA T0
 
+## Demo 0.2 V1.3 Gate 状态
+
+- Runtime、六节气组合、确定性 Capture、QA 工具与三档压力测试已完成。
+- A-10～A-15 的 T1 当前为 `PENDING_CAPTURE`，不能以旧截图或低分辨率侧栏截图判定 PASS。
+- 九尾狐旧版运行时 ROI 触发背景分离风险，优先复核 Shadow/轮廓，暂不修改源资产。
+- A-11～A-15 的 10 组全配对机器混淆矩阵已生成，全部保留 `PENDING_VISION_REVIEW`。
+- 结论：`DEMO_0_2_GATE_FAIL_PENDING_EVIDENCE`；不得启动 Demo 0.3。
+
 - Total: 34
 - Hard Fail Count: 0
 
