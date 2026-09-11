@@ -40,6 +40,11 @@ assert(impactStart.duration == 0.18 and not impactStart.complete and impactStart
 local impactEnd = ProjectilePresentation.Impact({ x = 20, y = 30, radius = 12 }, 0.18)
 assert(impactEnd.complete and Near(impactEnd.opacity, 0) and impactEnd.ringScale > impactStart.ringScale)
 
+local eliteImpact = ProjectilePresentation.Impact({ x = 20, y = 30, radius = 12, kind = "elite" }, 0)
+local bossImpact = ProjectilePresentation.Impact({ x = 20, y = 30, radius = 12, kind = "boss" }, 0)
+assert(eliteImpact.ringWidth > impactStart.ringWidth)
+assert(bossImpact.ringWidth > eliteImpact.ringWidth and bossImpact.borderWidth > eliteImpact.borderWidth)
+
 print("ProjectilePresentationTest: head, 3-tail pool, lifecycle and impact passed")
 
 return true

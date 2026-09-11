@@ -882,7 +882,7 @@ function BattleView:UpdatePools()
             end
             widget:SetFlipX(enemy.facing == "left")
             widget:SetStyle({
-                left = enemy.x,
+                left = enemy.x + (hit and hit.offsetX or 0),
                 top = visualY,
                 width = enemy.size,
                 height = enemy.size,
@@ -1016,6 +1016,9 @@ function BattleView:UpdatePools()
                 borderRadius = width * 0.5,
                 opacity = visual.ringOpacity,
                 scale = visual.coreScale,
+                borderWidth = visual.borderWidth,
+                borderColor = visual.borderColor,
+                backgroundColor = visual.backgroundColor,
             })
             widget:SetVisible(true)
         else
@@ -1155,7 +1158,7 @@ function BattleView:UpdatePlayer()
     )
     self.playerWidget:SetFlipX(player.facing == "left")
     self.playerWidget:SetStyle({
-        left = player.x,
+        left = player.x + visual.offsetX,
         top = player.y + visual.offsetY,
         rotate = visual.rotation,
         scale = visual.scale,

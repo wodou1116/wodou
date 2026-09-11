@@ -496,7 +496,9 @@ function BattleManager:UpdateProjectiles(timeStep)
             for enemyIndex = #self.enemies, 1, -1 do
                 local enemy = self.enemies[enemyIndex]
                 if CirclesOverlap(projectile.x, projectile.y, projectile.radius, enemy.x, enemy.y, enemy.radius) then
-                    self:AddImpact(projectile.x, projectile.y, projectile.radius * 1.8, "projectile")
+                    local impactKind = enemy.boss and "boss"
+                        or (enemy.kind == "spring_elite" and "elite" or "projectile")
+                    self:AddImpact(projectile.x, projectile.y, projectile.radius * 1.8, impactKind)
                     enemy.hp = enemy.hp - projectile.damage
                     enemy.hitElapsed = 0
                     enemy.animation:Hit()

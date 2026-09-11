@@ -3,6 +3,27 @@ local ProjectilePresentation = {}
 local DEFAULT_LIFETIME = 1.55
 local IMPACT_DURATION = 0.18
 
+local IMPACT_PROFILES = {
+    projectile = {
+        sizeScale = 1,
+        borderWidth = 5,
+        borderColor = { 246, 239, 211, 255 },
+        backgroundColor = { 246, 239, 211, 42 },
+    },
+    elite = {
+        sizeScale = 1.25,
+        borderWidth = 6,
+        borderColor = { 219, 175, 88, 255 },
+        backgroundColor = { 219, 175, 88, 52 },
+    },
+    boss = {
+        sizeScale = 1.55,
+        borderWidth = 8,
+        borderColor = { 112, 205, 160, 255 },
+        backgroundColor = { 112, 205, 160, 62 },
+    },
+}
+
 local function Clamp(value, minimum, maximum)
     return math.max(minimum, math.min(maximum, value))
 end
@@ -76,6 +97,7 @@ function ProjectilePresentation.Impact(impact, elapsed)
 
     local progress = Clamp((elapsed or 0) / IMPACT_DURATION, 0, 1)
     local radius = impact.radius or 12
+    local profile = IMPACT_PROFILES[impact.kind] or IMPACT_PROFILES.projectile
     local easeOut = 1 - (1 - progress) * (1 - progress)
     return {
         x = impact.x or 0,
@@ -86,9 +108,12 @@ function ProjectilePresentation.Impact(impact, elapsed)
         flashWhite = 1 - progress,
         ringScale = 0.6 + easeOut * 0.9,
         coreScale = 1 + (1 - progress) * 0.25,
-        ringWidth = radius * 4,
-        ringHeight = radius * 4,
+        ringWidth = radius * 4 * profile.sizeScale,
+        ringHeight = radius * 4 * profile.sizeScale,
         ringOpacity = 1 - progress,
+        borderWidth = profile.borderWidth,
+        borderColor = profile.borderColor,
+        backgroundColor = profile.backgroundColor,
         complete = progress >= 1,
     }
 end

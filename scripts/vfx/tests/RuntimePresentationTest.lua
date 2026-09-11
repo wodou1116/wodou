@@ -14,6 +14,7 @@ assert(movingPlayer.state == "move" and math.abs(movingPlayer.offsetY) <= 1.5)
 
 local hitPlayer = Presentation.Player(0, false, "hit", 0.08, 0.16)
 assert(hitPlayer.state == "hit" and near(hitPlayer.flashWhite, 0.5) and hitPlayer.scale > 1)
+assert(math.abs(hitPlayer.offsetX) > 0, "player hit feedback must include visual-only displacement")
 
 local deadPlayer = Presentation.Player(0, false, "death", 0.32, 0.32)
 assert(deadPlayer.state == "death" and deadPlayer.complete and near(deadPlayer.opacity, 0))
@@ -31,6 +32,11 @@ assert(near(shadow.width, 60) and near(shadow.height, 18) and near(shadow.opacit
 
 local birdShadow = Presentation.EnemyShadow("bifang", 100, 0.1, 0.25)
 assert(near(birdShadow.elevation, 0.72) and birdShadow.width < shadow.width)
+
+local foxShadow = Presentation.EnemyShadow("jiuweihu", 100, 0.1, 0.25)
+local kuiShadow = Presentation.EnemyShadow("kui", 100, 0.1, 0.25)
+assert(foxShadow.opacity > shadow.opacity, "fox shadow must reinforce separation from the Spring background")
+assert(kuiShadow.width > foxShadow.width, "Kui must retain the broadest grounded silhouette")
 
 local hit = Presentation.Hit(0.08, 0.16)
 assert(near(hit.flashWhite, 0.5) and hit.scale > 1)

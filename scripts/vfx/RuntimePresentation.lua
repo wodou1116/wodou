@@ -26,6 +26,14 @@ local ENEMY_MOTION = {
     jumang = { bobAmplitude = 4, bobFrequency = 1.5, swayDegrees = 1.5, swayFrequency = 1.2, elevation = 0.16, elevationOffset = -5 },
 }
 
+local ENEMY_SHADOW_PROFILES = {
+    bifang = { widthScale = 0.92, heightScale = 0.92, opacityAdd = -0.03 },
+    jiuweihu = { widthScale = 1.10, heightScale = 1.08, opacityAdd = 0.06 },
+    kui = { widthScale = 1.17, heightScale = 1.12, opacityAdd = 0.07 },
+    spring_elite = { widthScale = 1.14, heightScale = 1.10, opacityAdd = 0.07 },
+    jumang = { widthScale = 1.20, heightScale = 1.14, opacityAdd = 0.08 },
+}
+
 local DEFAULT_ENEMY_MOTION = {
     bobAmplitude = 2,
     bobFrequency = 2,
@@ -49,6 +57,7 @@ function RuntimePresentation.Player(time, isMoving, state, stateElapsed, duratio
     local breath = Pulse(time or 0, moving and 2.6 or 1.7)
     local visual = {
         state = resolvedState,
+        offsetX = 0,
         offsetY = breath * (moving and 1.5 or 2.5),
         rotation = breath * (moving and 2.0 or 1.1),
         scaleX = 1 + breath * 0.008,
@@ -61,6 +70,7 @@ function RuntimePresentation.Player(time, isMoving, state, stateElapsed, duratio
 
     if resolvedState == "hit" then
         local hit = RuntimePresentation.Hit(stateElapsed, duration)
+        visual.offsetX = hit.offsetX
         visual.scale = hit.scale
         visual.flashWhite = hit.flashWhite
     elseif resolvedState == "death" then
@@ -104,6 +114,12 @@ end
 function RuntimePresentation.EnemyShadow(kind, entitySize, time, phase)
     local enemy = RuntimePresentation.Enemy(kind, time, phase)
     local shadow = RuntimePresentation.Shadow(entitySize, enemy.elevation)
+    local profile = ENEMY_SHADOW_PROFILES[kind]
+    if profile then
+        shadow.width = shadow.width * profile.widthScale
+        shadow.height = shadow.height * profile.heightScale
+        shadow.opacity = Clamp(shadow.opacity + profile.opacityAdd, 0, 0.46)
+    end
     shadow.elevation = enemy.elevation
     shadow.offsetY = shadow.offsetY - enemy.elevationOffset
     return shadow
@@ -116,6 +132,7 @@ function RuntimePresentation.Hit(elapsed, duration)
     return {
         flashWhite = flash,
         scale = 1 + math.sin(progress * math.pi) * 0.10,
+        offsetX = math.sin(progress * math.pi * 3) * (1 - progress) * 3,
     }
 end
 
