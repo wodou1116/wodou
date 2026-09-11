@@ -53,18 +53,22 @@ local function RunTier(projectileCount)
         maxProjectiles = maxProjectiles,
         maxImpacts = maxImpacts,
         kills = battle.kills,
+        pool = battle.projectileSystem.pool:GetStats(),
     }
 end
 
 for _, projectileCount in ipairs({ 20, 35, 50 }) do
     local result = RunTier(projectileCount)
+    assert(result.pool.created <= 56, "projectile pool must never allocate beyond capacity")
+    assert(result.pool.inUse == projectileCount, "projectile pool in-use count must match active projectiles")
     print(string.format(
-        "CombatStress180Test tier=%d frames=%d enemies=%d projectiles=%d impacts=%d kills=%d",
+        "CombatStress180Test tier=%d frames=%d enemies=%d projectiles=%d impacts=%d kills=%d poolCreated=%d",
         result.projectileCount,
         result.frames,
         result.maxEnemies,
         result.maxProjectiles,
         result.maxImpacts,
-        result.kills
+        result.kills,
+        result.pool.created
     ))
 end

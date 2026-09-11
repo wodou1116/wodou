@@ -16,9 +16,20 @@ package.preload["data.Skills"] = function()
 end
 
 local BattleManager = require("battle.BattleManager")
+local CombatEvents = require("combat.CombatEvents")
+local EventBus = require("core.EventBus")
 
 math.randomseed(42)
-local battle = BattleManager.New()
+local eventBus = EventBus.New()
+local damageEvents = 0
+local deathEvents = 0
+eventBus:Subscribe(CombatEvents.DAMAGE_RESOLVED, function()
+    damageEvents = damageEvents + 1
+end)
+eventBus:Subscribe(CombatEvents.ENTITY_DIED, function()
+    deathEvents = deathEvents + 1
+end)
+local battle = BattleManager.New(eventBus)
 battle:Prepare({ characterId = "shi_yu_zhe" })
 battle:Start()
 
@@ -99,9 +110,11 @@ battle.projectileSystem:Spawn({
 })
 battle:UpdateProjectiles(0)
 assert(#battle.impacts == 1, "projectile collision must create one impact presentation record")
+assert(damageEvents >= 1 and deathEvents >= 2, "combat damage and death must use the shared EventBus")
 
 battle:Restart()
 battle:DamagePlayer(battle.player.maxHp)
+assert(damageEvents >= 2 and deathEvents >= 3, "player damage and death must emit shared contexts")
 assert(battle.result == nil and battle.finishing, "player death must delay the result overlay")
 battle:Update(0.7, 0, 0)
 assert(battle.result == "defeat" and not battle.finishing, "death presentation must finish before result")
