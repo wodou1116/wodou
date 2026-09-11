@@ -12,31 +12,60 @@ local function NearlyEqual(actual, expected, epsilon)
     return math.abs(actual - expected) <= epsilon
 end
 
+local function AssertIntent(command, message)
+    Assert(type(command.movementIntent) == "table", message .. "：缺少 movementIntent")
+    Assert(type(command.movementIntent.x) == "number" and type(command.movementIntent.y) == "number", message .. "：移动坐标不可消费")
+end
+
 local target = { x = 0, y = 0 }
 
 local fox = EnemyMotion.New("jiuweihu", 0)
-local foxEnemy = { x = 400, y = 0 }
-local foxCommand = EnemyMotion.Step(fox, foxEnemy, target, 1)
-Assert(foxCommand.motionState == "approach_orbit", "九尾狐远距应绕行接近")
-Assert(foxCommand.vy < 0, "九尾狐应产生切线绕行速度")
-Assert(foxCommand.facing == "left", "九尾狐应面向目标方向")
-Assert(foxEnemy.x == 400 and target.x == 0, "运动计算不应改写输入实体")
+local foxEnemy = { x = 420, y = 0 }
+local foxOrbit = EnemyMotion.Step(fox, foxEnemy, target, 0.25)
+local foxDash = EnemyMotion.Step(fox, foxEnemy, target, 0.20)
+local foxRetreat = EnemyMotion.Step(fox, foxEnemy, target, 0.20)
+Assert(foxOrbit.motionState == "approach_orbit" and foxOrbit.keyframe == "orbit", "九尾狐首帧应快速绕行接近")
+Assert(foxOrbit.vy < -90, "九尾狐绕行应产生明显切线速度")
+Assert(foxDash.motionState == "dash" and foxDash.keyframe == "dash", "九尾狐第二关键帧应短突进")
+Assert(math.abs(foxDash.vx) > math.abs(foxOrbit.vx), "九尾狐短突进应快于绕行")
+Assert(foxRetreat.motionState == "retreat" and foxRetreat.keyframe == "retreat", "九尾狐第三关键帧应短撤")
+Assert(foxRetreat.vx > 0, "九尾狐短撤应远离目标")
+AssertIntent(foxOrbit, "九尾狐")
+Assert(foxEnemy.x == 420 and target.x == 0, "运动计算不应改写输入实体")
 
 local bird = EnemyMotion.New("bifang", 0)
-local birdFar = EnemyMotion.Step(bird, { x = 500, y = 0 }, target, 1)
+local birdFar = EnemyMotion.Step(bird, { x = 500, y = 0 }, target, 0.1)
 Assert(birdFar.motionState == "close", "毕方过远应靠近目标")
 Assert(birdFar.vx < 0, "毕方过远时应向目标飞行")
-local birdNear = EnemyMotion.Step(bird, { x = 200, y = 0 }, target, 1)
+Assert(birdFar.elevation > 0.6, "毕方应保持明显飞行悬浮")
+local birdHover = EnemyMotion.Step(bird, { x = 330, y = 0 }, target, 0.1)
+local birdAttack = EnemyMotion.Step(bird, { x = 330, y = 0 }, target, 0.1)
+Assert(birdHover.motionState == "glide" and birdHover.keyframe == "hover", "毕方应在远程带内悬浮")
+Assert(birdAttack.motionState == "ranged_attack" and birdAttack.keyframe == "ranged_attack", "毕方第二关键帧应发起远程攻击")
+Assert(type(birdAttack.attackIntent) == "table" and birdAttack.attackIntent.type == "ranged", "毕方必须产出清晰远程攻击 intent")
+Assert(birdAttack.attackIntent.targetX == target.x and birdAttack.attackIntent.targetY == target.y, "毕方远程攻击 intent 应锁定目标位置")
+AssertIntent(birdAttack, "毕方")
+local birdNear = EnemyMotion.Step(bird, { x = 200, y = 0 }, target, 0.1)
 Assert(birdNear.motionState == "retreat", "毕方过近应拉开距离")
 Assert(birdNear.vx > 0, "毕方过近时应远离目标")
-local birdGlide = EnemyMotion.Step(bird, { x = 300, y = 0 }, target, 1)
-Assert(birdGlide.motionState == "glide", "毕方应在期望距离滑翔")
-Assert(not NearlyEqual(birdGlide.vy, 0, 0.0001), "毕方滑翔应保留可控漂移")
 
 local kui = EnemyMotion.New("kui", 1)
-local kuiCommand = EnemyMotion.Step(kui, { x = 300, y = 0 }, target, 1)
-Assert(kuiCommand.motionState == "press", "夔应持续压迫")
-Assert(NearlyEqual(kuiCommand.vx, -54, 0.0001), "夔应以低速直线推进")
-Assert(NearlyEqual(kuiCommand.vy, 0, 0.0001), "夔不应产生横向漂移")
+local kuiStart = EnemyMotion.Step(kui, { x = 300, y = 0 }, target, 0.1)
+local kuiPress = EnemyMotion.Step(kui, { x = 300, y = 0 }, target, 0.1)
+local kuiStop = EnemyMotion.Step(kui, { x = 32, y = 0 }, target, 0.1)
+Assert(kuiStart.motionState == "press" and kuiStart.keyframe == "press", "夔首帧应开始近战压迫")
+Assert(math.abs(kuiStart.vx) < 54 and math.abs(kuiPress.vx) > math.abs(kuiStart.vx), "夔应有强启动惯性")
+Assert(kuiStop.motionState == "melee_attack" and kuiStop.keyframe == "melee_attack", "夔第三关键帧应进入近战压迫")
+Assert(kuiStop.vx < 0 and math.abs(kuiStop.vx) < math.abs(kuiPress.vx), "夔应有强停止惯性")
+Assert(type(kuiStop.attackIntent) == "table" and kuiStop.attackIntent.type == "melee", "夔近战范围内必须产出攻击 intent")
+AssertIntent(kuiStop, "夔")
 
-print("EnemyMotionTests: 3 archetypes passed")
+local replayA = EnemyMotion.New("jiuweihu", 7)
+local replayB = EnemyMotion.New("jiuweihu", 7)
+for _, dt in ipairs({ 0.25, 0.20, 0.20 }) do
+    local a = EnemyMotion.Step(replayA, foxEnemy, target, dt)
+    local b = EnemyMotion.Step(replayB, foxEnemy, target, dt)
+    Assert(a.motionState == b.motionState and NearlyEqual(a.vx, b.vx, 0.0001) and NearlyEqual(a.vy, b.vy, 0.0001), "固定 seed 的运动结果必须可复现")
+end
+
+print("EnemyMotionTests: Demo 0.3 intent, keyframes and deterministic motion passed")

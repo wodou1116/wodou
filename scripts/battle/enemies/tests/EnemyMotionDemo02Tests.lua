@@ -39,15 +39,16 @@ Assert(birdFar.elevation > 0.6, "毕方应提供明显高于地面的悬浮高�
 Assert(math.abs(birdFar.lean) > 1, "毕方滑行应输出姿态倾斜")
 
 local birdGlide = EnemyMotion.Step(bird, { x = 330, y = 0 }, target, 0.2)
-Assert(birdGlide.motionState == "glide", "毕方应在远距带内滑翔")
+Assert(birdGlide.motionState == "ranged_attack", "毕方应在远距带内产出远程攻击状态")
 Assert(math.abs(birdGlide.vy) > 20, "毕方滑翔应保留横向漂移")
 Assert(birdGlide.step ~= birdFar.step, "毕方悬浮节奏应随时间变化")
 Assert(HasPresentation(birdGlide), "毕方必须提供主线程可消费的表现字段")
+Assert(birdGlide.attackIntent and birdGlide.attackIntent.type == "ranged", "毕方应提供远程攻击 intent")
 
 local kui = EnemyMotion.New("kui", 1)
 local kuiCommand = EnemyMotion.Step(kui, { x = 300, y = 0 }, target, 0.25)
 Assert(kuiCommand.motionState == "press", "夔应持续压迫")
-Assert(NearlyEqual(kuiCommand.vx, -54, 0.0001) and NearlyEqual(kuiCommand.vy, 0, 0.0001), "夔应保持低速、重型的直线推进")
+Assert(kuiCommand.vx < 0 and math.abs(kuiCommand.vx) < 54 and NearlyEqual(kuiCommand.vy, 0, 0.0001), "夔应保持低速、重型的惯性启动")
 Assert(NearlyEqual(kuiCommand.elevation, 0, 0.0001), "夔不应产生悬浮高度")
 Assert(math.abs(kuiCommand.lean) < 1, "夔应保持沉重、低倾斜的推进姿态")
 Assert(HasPresentation(kuiCommand), "夔必须提供主线程可消费的表现字段")
