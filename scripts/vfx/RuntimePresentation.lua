@@ -5,10 +5,16 @@ local ATTACK_PULSE_DURATION = 0.18
 local WHEEL_REFERENCE_DIAMETER = 118
 local WHEEL_ASPECT_RATIO = 724 / 434
 
+RuntimePresentation.PlayerPresentationProfiles = {
+    Current = { scale = 1.00 },
+    ["105%"] = { scale = 1.05 },
+    ["110%"] = { scale = 1.10 },
+}
+
 RuntimePresentation.WheelLayers = {
     { id = "outer", diameterRatio = 1.00, offsetX = 0, offsetY = 2, rotationPerSecond = 3, idleRpm = 0.5, opacity = 0.58 },
     { id = "marks", diameterRatio = 1.00, offsetX = 4, offsetY = 3, rotationPerSecond = -9, idleRpm = -1.5, opacity = 0.72 },
-    { id = "middle", diameterRatio = 0.94, offsetX = 0, offsetY = 19, rotationPerSecond = 14, idleRpm = 14 / 6, opacity = 0.76 },
+    { id = "middle", diameterRatio = 0.94, offsetX = 0, offsetY = 19, rotationPerSecond = -14, idleRpm = -14 / 6, opacity = 0.76 },
     { id = "inner", diameterRatio = 0.92, offsetX = -1, offsetY = 20, rotationPerSecond = -18, idleRpm = -3, opacity = 0.82 },
     { id = "core", diameterRatio = 0.61, offsetX = 4, offsetY = 13, rotationPerSecond = 9, idleRpm = 1.5, opacity = 0.90 },
 }
@@ -51,10 +57,13 @@ local function Clamp(value, minimum, maximum)
     return math.max(minimum, math.min(maximum, value))
 end
 
-function RuntimePresentation.Player(time, isMoving, state, stateElapsed, duration)
+function RuntimePresentation.Player(time, isMoving, state, stateElapsed, duration, presentationProfile)
     local resolvedState = state and string.lower(state) or (isMoving and "move" or "idle")
     local moving = resolvedState == "move"
     local breath = Pulse(time or 0, moving and 2.6 or 1.7)
+    local profileName = presentationProfile or "Current"
+    local profile = RuntimePresentation.PlayerPresentationProfiles[profileName] or RuntimePresentation.PlayerPresentationProfiles.Current
+    local presentationScale = profile.scale
     local visual = {
         state = resolvedState,
         offsetX = 0,
@@ -62,7 +71,9 @@ function RuntimePresentation.Player(time, isMoving, state, stateElapsed, duratio
         rotation = breath * (moving and 2.0 or 1.1),
         scaleX = 1 + breath * 0.008,
         scaleY = 1 - breath * 0.012,
-        scale = 1,
+        scale = presentationScale,
+        presentationProfile = RuntimePresentation.PlayerPresentationProfiles[profileName] and profileName or "Current",
+        presentationScale = presentationScale,
         opacity = 1,
         flashWhite = 0,
         complete = false,
@@ -71,12 +82,12 @@ function RuntimePresentation.Player(time, isMoving, state, stateElapsed, duratio
     if resolvedState == "hit" then
         local hit = RuntimePresentation.Hit(stateElapsed, duration)
         visual.offsetX = hit.offsetX
-        visual.scale = hit.scale
+        visual.scale = hit.scale * presentationScale
         visual.flashWhite = hit.flashWhite
     elseif resolvedState == "death" then
         local death = RuntimePresentation.Death(stateElapsed, duration)
         visual.offsetY = visual.offsetY + death.offsetY
-        visual.scale = death.scale
+        visual.scale = death.scale * presentationScale
         visual.opacity = death.opacity
         visual.complete = death.complete
     end
@@ -151,11 +162,12 @@ function RuntimePresentation.WheelAnchor(playerX, playerY, playerWidth, playerHe
     local width = playerWidth or 138
     local height = playerHeight or 190
     local backward = facing == "left" and 1 or -1
-    local diameter = Clamp(height * 0.62, height * 0.55, height * 0.70)
+    local diameter = Clamp(height * 0.54, height * 0.50, height * 0.58)
     return {
-        centerX = (playerX or 0) + backward * width * 0.18,
-        centerY = (playerY or 0) - height * 0.64,
+        centerX = (playerX or 0) + backward * width * 0.24,
+        centerY = (playerY or 0) - height * 0.70,
         diameter = diameter,
+        behind = true,
     }
 end
 
@@ -169,15 +181,21 @@ function RuntimePresentation.Wheel(time, attackPulse, state, diameter)
     local rebound = resolvedState == "attack" and math.sin(attackProgress * math.pi) * 0.08 or 0
     local chargedStrength = resolvedState == "charged" and 1 or 0
     local layoutScale = (diameter or WHEEL_REFERENCE_DIAMETER) / WHEEL_REFERENCE_DIAMETER
+    local floatOffsetY = Pulse(time or 0, 0.72, 0.15) * 1.7
     for index, layer in ipairs(RuntimePresentation.WheelLayers) do
         local isCore = index == #RuntimePresentation.WheelLayers
+        local isMarks = layer.id == "marks"
         local speedMultiplier = 1 + alignmentBoost * (isCore and 1.35 or 0.72) + chargedStrength * (isCore and 0.42 or 0.18)
         speedMultiplier = speedMultiplier * (1 - lockStrength * 0.86)
         local rotationSpeed = layer.rotationPerSecond * speedMultiplier
         local baseRotation = (time or 0) * rotationSpeed
         local lockedRotation = math.floor((baseRotation + 22.5) / 45) * 45
         local rotation = baseRotation * (1 - lockStrength) + lockedRotation * lockStrength
-        local marksStrength = layer.id == "marks" and chargedStrength * (0.18 + math.abs(Pulse(time or 0, 1.2)) * 0.12) or 0
+        local coreBreath = isCore and (0.028 + Pulse(time or 0, 1.1, 0.2) * 0.018) or 0
+        local ringGlow = attackStrength * (isCore and 0.08 or 0.12 + alignmentBoost * 0.18)
+        local coreGlow = isCore and Clamp(attackStrength + chargedStrength, 0, 1) or 0
+        local chargeGlow = chargedStrength * (isCore and 0.78 or (isMarks and 0.72 + math.abs(Pulse(time or 0, 1.2)) * 0.16 or 0.48))
+        local marksStrength = isMarks and chargeGlow * 0.18 or 0
         local layerStrength = attackStrength + chargedStrength
         result[index] = {
             id = layer.id,
@@ -185,13 +203,17 @@ function RuntimePresentation.Wheel(time, attackPulse, state, diameter)
             width = layer.width * layoutScale,
             height = layer.height * layoutScale,
             offsetX = layer.offsetX * layoutScale,
-            offsetY = layer.offsetY * layoutScale,
-            opacity = Clamp(layer.opacity + attackStrength * (isCore and 0.10 or 0.06) + chargedStrength * (isCore and 0.10 or 0.08) + marksStrength, 0, 1),
-            scale = 1 + rebound + layerStrength * (isCore and 0.16 or 0.05) + chargedStrength * (isCore and 0.05 or 0.03),
+            offsetY = layer.offsetY * layoutScale + floatOffsetY,
+            opacity = Clamp(layer.opacity + ringGlow + coreGlow * 0.16 + chargeGlow * 0.20 + marksStrength, 0, 1),
+            scale = 1 + coreBreath + rebound + layerStrength * (isCore and 0.16 or 0.05) + chargedStrength * (isCore and 0.05 or 0.03),
             rotation = math.fmod(rotation, 360),
             rotationSpeed = rotationSpeed,
             idleRpm = layer.idleRpm,
-            coreGlow = isCore and Clamp(attackStrength + chargedStrength, 0, 1) or 0,
+            coreGlow = coreGlow,
+            ringGlow = ringGlow,
+            chargeGlow = chargeGlow,
+            alignment = alignmentBoost,
+            floatOffsetY = floatOffsetY,
             converge = 1 - attackStrength,
             locked = lockStrength > 0,
             rebound = rebound,

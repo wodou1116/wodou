@@ -9,6 +9,13 @@ end
 local player = Presentation.Player(0, false)
 assert(player.state == "idle" and player.scaleX == 1 and player.scaleY == 1)
 
+local currentPlayer = Presentation.Player(0, false, "idle", 0, 0.16, "Current")
+local player105 = Presentation.Player(0, false, "idle", 0, 0.16, "105%")
+local player110 = Presentation.Player(0, false, "idle", 0, 0.16, "110%")
+assert(currentPlayer.presentationProfile == "Current" and near(currentPlayer.presentationScale, 1))
+assert(player105.presentationProfile == "105%" and near(player105.presentationScale, 1.05))
+assert(player110.presentationProfile == "110%" and near(player110.presentationScale, 1.10))
+
 local movingPlayer = Presentation.Player(0.1, true)
 assert(movingPlayer.state == "move" and math.abs(movingPlayer.offsetY) <= 1.5)
 
@@ -47,22 +54,28 @@ assert(death.complete and near(death.opacity, 0) and near(death.scale, 0.82))
 local rightAnchor = Presentation.WheelAnchor(960, 640, 138, 190, "right")
 local leftAnchor = Presentation.WheelAnchor(960, 640, 138, 190, "left")
 assert(rightAnchor.centerX < 960 and leftAnchor.centerX > 960)
-assert(rightAnchor.centerY < 640 and rightAnchor.diameter >= 190 * 0.55 and rightAnchor.diameter <= 190 * 0.70)
+assert(rightAnchor.centerY < 640 - 190 * 0.60, "wheel must float behind the player's upper silhouette")
+assert(rightAnchor.behind and rightAnchor.diameter >= 190 * 0.50 and rightAnchor.diameter <= 190 * 0.58)
 
 local wheel = Presentation.Wheel(1, 0, "idle", rightAnchor.diameter)
 assert(#wheel == 5 and wheel[1].state == "idle" and wheel[1].rotation == 3)
 assert(near(wheel[1].width, rightAnchor.diameter) and wheel[5].width < wheel[1].width)
 assert(wheel[1].offsetY > 0 and wheel[3].offsetY > wheel[1].offsetY)
 assert(wheel[1].rotationSpeed ~= wheel[2].rotationSpeed)
+assert(wheel[1].rotationSpeed > 0 and wheel[3].rotationSpeed < 0, "idle outer and middle rings must counter-rotate")
+assert(wheel[5].scale > 1 and wheel[5].floatOffsetY ~= 0, "idle core must breathe while the wheel floats")
 
 local attackWheel = Presentation.Wheel(1, 0.18, "attack", rightAnchor.diameter)
 assert(attackWheel[5].locked and attackWheel[5].coreGlow > 0 and attackWheel[5].opacity > wheel[5].opacity)
+assert(attackWheel[5].coreGlow > attackWheel[1].ringGlow, "attack must light the core before the rings")
 
 local attackBoost = Presentation.Wheel(1, 0.09, "attack", rightAnchor.diameter)
 assert(attackBoost[5].rotationSpeed > wheel[5].rotationSpeed and attackBoost[5].rebound > 0)
+assert(attackBoost[1].alignment > 0 and not attackBoost[1].locked, "rings must accelerate into alignment before settling")
 
 local chargedWheel = Presentation.Wheel(1, 0, "charged", rightAnchor.diameter)
 assert(chargedWheel[5].state == "charged" and chargedWheel[5].coreGlow > 0)
 assert(chargedWheel[2].opacity > wheel[2].opacity and chargedWheel[1].scale > wheel[1].scale)
+assert(chargedWheel[2].chargeGlow > 0 and chargedWheel[1].chargeGlow > 0, "charged state must visibly energize marks and rings")
 
 return true

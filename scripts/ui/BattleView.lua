@@ -7,6 +7,8 @@ local SolarTermPresentation = require("vfx.SolarTermPresentation")
 local BattleView = {}
 BattleView.__index = BattleView
 
+local PLAYER_PRESENTATION_PROFILE = "105%"
+
 local COLORS = {
     ink = { 12, 21, 19, 235 },
     surface = { 22, 37, 33, 232 },
@@ -1154,7 +1156,8 @@ function BattleView:UpdatePlayer()
         player.isMoving,
         state,
         player.animation.time,
-        stateDuration
+        stateDuration,
+        PLAYER_PRESENTATION_PROFILE
     )
     self.playerWidget:SetFlipX(player.facing == "left")
     self.playerWidget:SetStyle({
@@ -1166,7 +1169,7 @@ function BattleView:UpdatePlayer()
     })
 
     if visual.flashWhite > 0 then
-        local hitSize = playerWidth * (0.92 + visual.flashWhite * 0.12)
+        local hitSize = playerWidth * visual.presentationScale * (0.92 + visual.flashWhite * 0.12)
         self.playerHitWidget:SetStyle({
             left = player.x - hitSize * 0.5,
             top = player.y - playerHeight * 0.72,
@@ -1180,7 +1183,7 @@ function BattleView:UpdatePlayer()
         self.playerHitWidget:SetVisible(false)
     end
 
-    local shadow = RuntimePresentation.Shadow(playerWidth, 0.06)
+    local shadow = RuntimePresentation.Shadow(playerWidth * visual.presentationScale, 0.06)
     self.playerShadow:SetStyle({
         left = player.x - shadow.width * 0.5,
         top = player.y + shadow.offsetY - shadow.height * 0.5,
@@ -1194,8 +1197,8 @@ function BattleView:UpdatePlayer()
     local wheelAnchor = RuntimePresentation.WheelAnchor(
         player.x,
         player.y,
-        playerWidth,
-        playerHeight,
+        playerWidth * visual.presentationScale,
+        playerHeight * visual.presentationScale,
         player.facing
     )
     local wheelVisuals = RuntimePresentation.Wheel(
