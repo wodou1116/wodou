@@ -665,8 +665,8 @@ function BattleManager:ConfigureDebugScenario(mode, projectileCount)
         self:SpawnEnemy("bifang", 520, 500)
         self:SpawnEnemy("jiuweihu", 650, 760)
         self:SpawnEnemy("kui", 1250, 760)
-        self:SpawnEnemy("spring_elite", 1420, 520)
-        self:SpawnEnemy("jumang", 1060, 430)
+        self:SpawnEnemy("spring_elite", 1510, 650)
+        self:SpawnEnemy("jumang", 1240, 350)
         self.bossSpawned = true
     elseif mode == "combat_stress" then
         self.debugInvulnerable = true
