@@ -83,11 +83,11 @@ assert(battle.debugScenario == "combat_stress_50", "debug scenario must expose i
 
 battle:ConfigureDebugScenario("single")
 local victim = battle.enemies[1]
-battle.projectiles = {{
+battle.projectileSystem:Clear()
+battle.projectileSystem:Spawn({
+    source = battle.player,
     x = victim.x,
     y = victim.y,
-    prevX = victim.x - 12,
-    prevY = victim.y,
     vx = 100,
     vy = 0,
     radius = 12,
@@ -95,7 +95,8 @@ battle.projectiles = {{
     maxLife = 1,
     damage = victim.hp + 1,
     hitsLeft = 1,
-}}
+    hitIds = {},
+})
 battle:UpdateProjectiles(0)
 assert(#battle.impacts == 1, "projectile collision must create one impact presentation record")
 

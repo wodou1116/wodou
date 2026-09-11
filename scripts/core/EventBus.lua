@@ -12,6 +12,8 @@ function EventBus:Init()
 end
 
 function EventBus:Subscribe(eventName, callback)
+    assert(type(eventName) == "string" and eventName ~= "", "event name is required")
+    assert(type(callback) == "function", "event callback must be a function")
     local listeners = self.listeners[eventName]
     if not listeners then
         listeners = {}
@@ -20,6 +22,16 @@ function EventBus:Subscribe(eventName, callback)
 
     table.insert(listeners, callback)
     return callback
+end
+
+function EventBus:Once(eventName, callback)
+    local wrapper
+    wrapper = function(payload)
+        self:Unsubscribe(eventName, wrapper)
+        callback(payload)
+    end
+    self:Subscribe(eventName, wrapper)
+    return wrapper
 end
 
 function EventBus:Unsubscribe(eventName, callback)
@@ -42,13 +54,22 @@ function EventBus:Emit(eventName, payload)
         return
     end
 
+    -- Dispatch a snapshot so listeners can subscribe, unsubscribe or emit again safely.
+    local snapshot = {}
     for index = 1, #listeners do
-        listeners[index](payload)
+        snapshot[index] = listeners[index]
+    end
+    for index = 1, #snapshot do
+        snapshot[index](payload)
     end
 end
 
-function EventBus:Clear()
-    self.listeners = {}
+function EventBus:Clear(eventName)
+    if eventName then
+        self.listeners[eventName] = nil
+    else
+        self.listeners = {}
+    end
 end
 
 return EventBus

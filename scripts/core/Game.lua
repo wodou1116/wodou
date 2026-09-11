@@ -29,7 +29,7 @@ function Game:Init()
     self.selectedCharacterId = Constants.DEFAULT_CHARACTER_ID
     self.eventBus = EventBus.New()
     self.runManager = RunManager.New()
-    self.battleManager = BattleManager.New()
+    self.battleManager = BattleManager.New(self.eventBus)
     self.qaCapture = CaptureMode.New()
 end
 

@@ -1,4 +1,5 @@
 local AssetCatalog = require("core.AssetCatalog")
+local EventBus = require("core.EventBus")
 local Logger = require("core.Logger")
 local Skills = require("data.Skills")
 local AnimationState = require("animation.AnimationState")
@@ -7,6 +8,12 @@ local EnemyMotion = require("battle.enemies.EnemyMotion")
 local PlayerFacing = require("battle.player.PlayerFacing")
 local PlayerMover = require("battle.player.PlayerMover")
 local TargetSelector = require("battle.player.TargetSelector")
+local AttackLogic = require("combat.AttackLogic")
+local CombatEvents = require("combat.CombatEvents")
+local DamageContext = require("combat.DamageContext")
+local DeathContext = require("combat.DeathContext")
+local ProjectileSystem = require("combat.ProjectileSystem")
+local StatSystem = require("combat.StatSystem")
 
 local BattleManager = {}
 BattleManager.__index = BattleManager
@@ -59,13 +66,14 @@ local function CirclesOverlap(ax, ay, ar, bx, by, br)
     return dx * dx + dy * dy <= radius * radius
 end
 
-function BattleManager.New()
+function BattleManager.New(eventBus)
     local self = setmetatable({}, BattleManager)
-    self:Init()
+    self:Init(eventBus)
     return self
 end
 
-function BattleManager:Init()
+function BattleManager:Init(eventBus)
+    self.eventBus = eventBus or EventBus.New()
     self.run = nil
     self.active = false
     self.paused = false
@@ -79,7 +87,8 @@ function BattleManager:Init()
     self.warningTimer = 2.5
     self.warning = nil
     self.enemies = {}
-    self.projectiles = {}
+    self.projectileSystem = ProjectileSystem.New({ capacity = MAX_PROJECTILES })
+    self.projectiles = self.projectileSystem.active
     self.deathEffects = {}
     self.impacts = {}
     self.pendingChoices = {}
@@ -119,7 +128,8 @@ function BattleManager:ResetBattle()
     self.warningTimer = 3.5
     self.warning = nil
     self.enemies = {}
-    self.projectiles = {}
+    self.projectileSystem:Clear()
+    self.projectiles = self.projectileSystem.active
     self.deathEffects = {}
     self.impacts = {}
     self.pendingChoices = {}
@@ -140,11 +150,7 @@ function BattleManager:ResetBattle()
     self.captureMode = nil
 
     local characterId = self.run and self.run.characterId or "shi_yu_zhe"
-    self.player = {
-        x = 960,
-        y = 640,
-        radius = 40,
-        hp = 120,
+    local statSystem = StatSystem.New({
         maxHp = 120,
         moveSpeed = characterId == "si_chen_zhe" and 350 or 330,
         damage = characterId == "shi_yu_zhe" and 52 or 46,
@@ -156,6 +162,15 @@ function BattleManager:ResetBattle()
         projectileCount = 1,
         pierce = 0,
         attackRange = 760,
+    })
+    self.player = {
+        id = "player",
+        team = "player",
+        x = 960,
+        y = 640,
+        radius = 40,
+        hp = 120,
+        statSystem = statSystem,
         level = 1,
         xp = 0,
         xpNeeded = 4,
@@ -168,6 +183,11 @@ function BattleManager:ResetBattle()
         hitElapsed = nil,
         deathElapsed = nil,
     }
+    local stats = statSystem:GetAll()
+    for statName, value in pairs(stats) do
+        self.player[statName] = value
+    end
+    self.attackLogic = AttackLogic.New(self.player.attackInterval, self.attackTimer)
 end
 
 function BattleManager:Start()
@@ -213,12 +233,21 @@ function BattleManager:SpawnEnemy(kind, x, y)
     end
 
     self.spawnSerial = self.spawnSerial + 1
+    local enemyStats = StatSystem.New({
+        maxHp = config.hp,
+        speed = config.speed,
+        damage = config.damage,
+        armor = config.armor or 0,
+        damageTaken = config.damageTaken or 1,
+    })
     local motion = nil
     if kind == "bifang" or kind == "jiuweihu" or kind == "kui" then
         motion = EnemyMotion.New(kind, self.spawnSerial)
     end
 
     table.insert(self.enemies, {
+        id = kind .. "#" .. tostring(self.spawnSerial),
+        team = "enemy",
         kind = kind,
         x = x,
         y = y,
@@ -231,6 +260,9 @@ function BattleManager:SpawnEnemy(kind, x, y)
         xp = config.xp,
         sprite = config.sprite,
         boss = config.boss == true,
+        statSystem = enemyStats,
+        armor = enemyStats:Get("armor"),
+        damageTaken = enemyStats:Get("damageTaken"),
         hitCooldown = 0,
         facing = x < self.player.x and "right" or "left",
         motion = motion,
@@ -242,18 +274,14 @@ function BattleManager:SpawnEnemy(kind, x, y)
 end
 
 function BattleManager:SpawnProjectile(target, angleOffset)
-    if #self.projectiles >= MAX_PROJECTILES then
-        return
-    end
-
     local player = self.player
     local dx, dy = Normalize(target.x - player.x, target.y - player.y)
     local baseAngle = math.atan(dy, dx) + angleOffset
-    table.insert(self.projectiles, {
+    local projectile = self.projectileSystem:Spawn({
+        source = player,
+        team = player.team,
         x = player.x,
         y = player.y,
-        prevX = player.x,
-        prevY = player.y,
         vx = math.cos(baseAngle) * player.projectileSpeed,
         vy = math.sin(baseAngle) * player.projectileSpeed,
         radius = player.projectileRadius,
@@ -261,8 +289,14 @@ function BattleManager:SpawnProjectile(target, angleOffset)
         maxLife = player.projectileLife,
         damage = player.damage,
         hitsLeft = player.pierce + 1,
+        hitIds = {},
     })
+    if not projectile then
+        return nil
+    end
     self.attackPulse = 0.18
+    self.eventBus:Emit(CombatEvents.PROJECTILE_SPAWNED, projectile)
+    return projectile
 end
 
 function BattleManager:FindNearestEnemy()
@@ -277,7 +311,7 @@ end
 function BattleManager:Attack()
     local target = self:FindNearestEnemy()
     if not target then
-        return
+        return false
     end
 
     PlayerFacing.FaceAttack(self.player, target.x - self.player.x, target.y - self.player.y)
@@ -287,6 +321,7 @@ function BattleManager:Attack()
         local offset = (index - (count + 1) / 2) * 0.13
         self:SpawnProjectile(target, offset)
     end
+    return true
 end
 
 function BattleManager:GainXp(amount)
@@ -312,31 +347,48 @@ function BattleManager:ChooseSkill(index)
         return false
     end
 
-    skill.apply(self.player)
+    Skills.Apply(skill, self.player, skill.id .. "#" .. tostring(#self.acquiredSkills + 1))
+    AttackLogic.SetInterval(self.attackLogic, self.player.attackInterval)
     table.insert(self.acquiredSkills, skill)
     self.pendingChoices = {}
     self.choosing = false
     return true
 end
 
-function BattleManager:DamagePlayer(amount)
+function BattleManager:DamagePlayer(amount, source)
     local player = self.player
     if player.hp <= 0 then
-        return
+        return nil
     end
     if self.debugInvulnerable then
         player.hitElapsed = 0
         player.animation:Hit()
-        return
+        return nil
     end
-    player.hp = math.max(0, player.hp - amount * player.damageTaken)
+    local context = DamageContext.New({
+        source = source,
+        target = player,
+        amount = amount,
+        kind = "contact",
+    })
+    local resolved = DamageContext.Resolve(context, player.statSystem)
+    DamageContext.Apply(resolved)
+    self.eventBus:Emit(CombatEvents.DAMAGE_RESOLVED, resolved)
     player.hitElapsed = 0
     player.animation:Hit()
     if player.hp <= 0 then
         player.animation:Die()
         player.deathElapsed = 0
+        self.eventBus:Emit(CombatEvents.ENTITY_DIED, DeathContext.New({
+            victim = player,
+            killer = source,
+            damage = resolved,
+            reason = "damage",
+            position = { x = player.x, y = player.y },
+        }))
         self:BeginFinish("defeat", 0.65)
     end
+    return resolved
 end
 
 function BattleManager:BeginFinish(result, delay)
@@ -360,7 +412,7 @@ function BattleManager:AddImpact(x, y, radius, kind)
     })
 end
 
-function BattleManager:KillEnemy(index)
+function BattleManager:KillEnemy(index, damage)
     local enemy = self.enemies[index]
     enemy.animation:Die()
     table.insert(self.deathEffects, {
@@ -374,6 +426,14 @@ function BattleManager:KillEnemy(index)
         facing = enemy.facing,
     })
     self.kills = self.kills + 1
+    self.eventBus:Emit(CombatEvents.ENTITY_DIED, DeathContext.New({
+        victim = enemy,
+        killer = damage and damage.source or self.player,
+        damage = damage,
+        reason = damage and "damage" or "scripted",
+        rewards = { xp = enemy.xp },
+        position = { x = enemy.x, y = enemy.y },
+    }))
     table.remove(self.enemies, index)
     if enemy.boss then
         self:BeginFinish("victory", 0.62)
@@ -419,7 +479,7 @@ function BattleManager:UpdateWarning(timeStep)
         self.warning.timeLeft = self.warning.timeLeft - timeStep
         if self.warning.timeLeft <= 0 then
             if CirclesOverlap(self.player.x, self.player.y, self.player.radius, self.warning.x, self.warning.y, self.warning.radius * 0.72) then
-                self:DamagePlayer(34)
+                self:DamagePlayer(34, { id = "boss_warning", team = "enemy" })
             end
             self.warning = nil
             self.warningTimer = 3.2
@@ -472,7 +532,7 @@ function BattleManager:UpdateEnemies(timeStep)
         enemy.animation:Update(timeStep, true)
 
         if enemy.hitCooldown <= 0 and CirclesOverlap(player.x, player.y, player.radius, enemy.x, enemy.y, enemy.radius) then
-            self:DamagePlayer(enemy.damage)
+            self:DamagePlayer(enemy.damage, enemy)
             enemy.hitCooldown = 0.75
             if not self.active then
                 return
@@ -482,42 +542,49 @@ function BattleManager:UpdateEnemies(timeStep)
 end
 
 function BattleManager:UpdateProjectiles(timeStep)
-    for projectileIndex = #self.projectiles, 1, -1 do
-        local projectile = self.projectiles[projectileIndex]
-        projectile.prevX = projectile.x
-        projectile.prevY = projectile.y
-        projectile.x = projectile.x + projectile.vx * timeStep
-        projectile.y = projectile.y + projectile.vy * timeStep
-        projectile.life = projectile.life - timeStep
-
-        local removeProjectile = projectile.life <= 0
-            or BattleBounds.ShouldRecycleProjectile(ARENA, projectile.x, projectile.y, projectile.radius, 180)
-        if not removeProjectile then
+    self.projectileSystem:Update(timeStep, {
+        isOutOfBounds = function(projectile)
+            return BattleBounds.ShouldRecycleProjectile(ARENA, projectile.x, projectile.y, projectile.radius, 180)
+        end,
+        queryHit = function(projectile)
             for enemyIndex = #self.enemies, 1, -1 do
                 local enemy = self.enemies[enemyIndex]
-                if CirclesOverlap(projectile.x, projectile.y, projectile.radius, enemy.x, enemy.y, enemy.radius) then
-                    local impactKind = enemy.boss and "boss"
-                        or (enemy.kind == "spring_elite" and "elite" or "projectile")
-                    self:AddImpact(projectile.x, projectile.y, projectile.radius * 1.8, impactKind)
-                    enemy.hp = enemy.hp - projectile.damage
-                    enemy.hitElapsed = 0
-                    enemy.animation:Hit()
-                    projectile.hitsLeft = projectile.hitsLeft - 1
-                    if enemy.hp <= 0 then
-                        self:KillEnemy(enemyIndex)
-                    end
-                    if projectile.hitsLeft <= 0 then
-                        removeProjectile = true
-                        break
-                    end
+                local alreadyHit = projectile.hitIds and projectile.hitIds[enemy.id]
+                if not alreadyHit and CirclesOverlap(
+                    projectile.x, projectile.y, projectile.radius,
+                    enemy.x, enemy.y, enemy.radius
+                ) then
+                    return enemy, enemyIndex
                 end
             end
-        end
-
-        if removeProjectile then
-            table.remove(self.projectiles, projectileIndex)
-        end
-    end
+            return nil
+        end,
+        onHit = function(projectile, enemy, enemyIndex)
+            local impactKind = enemy.boss and "boss"
+                or (enemy.kind == "spring_elite" and "elite" or "projectile")
+            self:AddImpact(projectile.x, projectile.y, projectile.radius * 1.8, impactKind)
+            local context = DamageContext.New({
+                source = projectile.source or self.player,
+                target = enemy,
+                amount = projectile.damage,
+                kind = "projectile",
+                tags = { "basic_attack" },
+                metadata = { projectile = projectile },
+            })
+            local resolved = DamageContext.Resolve(context, enemy.statSystem or enemy)
+            DamageContext.Apply(resolved)
+            self.eventBus:Emit(CombatEvents.DAMAGE_RESOLVED, resolved)
+            enemy.hitElapsed = 0
+            enemy.animation:Hit()
+            projectile.hitIds = projectile.hitIds or {}
+            projectile.hitIds[enemy.id] = true
+            projectile.hitsLeft = projectile.hitsLeft - 1
+            if enemy.hp <= 0 then
+                self:KillEnemy(enemyIndex, resolved)
+            end
+            return projectile.hitsLeft > 0
+        end,
+    })
 end
 
 function BattleManager:MaintainDebugStress()
@@ -534,7 +601,7 @@ function BattleManager:MaintainDebugStress()
 
     local target = self.enemies[(self.spawnSerial % #self.enemies) + 1]
     while #self.projectiles > self.debugProjectileTarget do
-        table.remove(self.projectiles)
+        self.projectileSystem:ReleaseAt(#self.projectiles)
     end
     while #self.projectiles < self.debugProjectileTarget do
         local index = #self.projectiles + 1
@@ -602,11 +669,11 @@ function BattleManager:Update(timeStep, moveX, moveY)
     self.attackPulse = math.max(0, self.attackPulse - timeStep)
     self:UpdateDeathEffects(timeStep)
     self:UpdateImpacts(timeStep)
-    self.attackTimer = self.attackTimer - timeStep
-    if self.attackTimer <= 0 then
-        self:Attack()
-        self.attackTimer = player.attackInterval
-    end
+    AttackLogic.SetInterval(self.attackLogic, player.attackInterval)
+    AttackLogic.Step(self.attackLogic, timeStep, true, function()
+        return self:Attack()
+    end)
+    self.attackTimer = self.attackLogic.cooldown
 
     self:UpdateSpawning(timeStep)
     self:UpdateWarning(timeStep)
@@ -638,7 +705,8 @@ function BattleManager:ConfigureDebugScenario(mode, projectileCount, captureMode
     self.finishing = false
     self.pendingResult = nil
     self.enemies = {}
-    self.projectiles = {}
+    self.projectileSystem:Clear()
+    self.projectiles = self.projectileSystem.active
     self.deathEffects = {}
     self.impacts = {}
     self.captureMode = captureMode
@@ -649,7 +717,8 @@ function BattleManager:ConfigureDebugScenario(mode, projectileCount, captureMode
     self.debugEnemyTarget = nil
     self.debugInvulnerable = false
     self.elapsed = 0
-    self.attackTimer = 0.2
+    self.attackTimer = 999999
+    self.attackLogic = AttackLogic.New(self.player.attackInterval, self.attackTimer)
     self.attackPulse = 0
     self.eliteSpawned = false
     self.bossSpawned = false
@@ -664,11 +733,9 @@ function BattleManager:ConfigureDebugScenario(mode, projectileCount, captureMode
 
     if mode == "single" then
         self.debugInvulnerable = true
-        self.attackTimer = 999999
         self:SpawnEnemy("jiuweihu", 1180, 620)
     elseif mode == "peer_comparison" then
         self.debugInvulnerable = true
-        self.attackTimer = 999999
         local kinds = { "bifang", "jiuweihu", "kui" }
         for group = 1, 3 do
             for index = 1, 4 do
@@ -681,7 +748,6 @@ function BattleManager:ConfigureDebugScenario(mode, projectileCount, captureMode
         self.eliteSpawned = true
     elseif mode == "boss" then
         self.debugInvulnerable = true
-        self.attackTimer = 999999
         self:SpawnEnemy("bifang", 520, 500)
         self:SpawnEnemy("jiuweihu", 650, 760)
         self:SpawnEnemy("kui", 1250, 760)
@@ -690,13 +756,11 @@ function BattleManager:ConfigureDebugScenario(mode, projectileCount, captureMode
         self.bossSpawned = true
     elseif mode == "motion" then
         self.debugInvulnerable = true
-        self.attackTimer = 999999
         self:SpawnEnemy("jiuweihu", 1270, 460)
         self:SpawnEnemy("bifang", 1090, 780)
         self:SpawnEnemy("kui", 650, 710)
     elseif mode == "combat_stress" then
         self.debugInvulnerable = true
-        self.attackTimer = 999999
         local kinds = { "bifang", "jiuweihu", "kui" }
         for index = 1, #DEBUG_RING_POSITIONS do
             local position = DEBUG_RING_POSITIONS[index]

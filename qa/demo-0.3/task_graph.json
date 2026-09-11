@@ -1,0 +1,87 @@
+{
+  "version": "demo-0.3-round-1",
+  "baseline": {
+    "tag": "demo-0.2",
+    "status": "PASS_WITH_WARNINGS",
+    "screenshot": "qa/baselines/demo-0.2/baseline-16x9.png"
+  },
+  "nodes": [
+    {
+      "id": "CF-01",
+      "name": "Combat Foundation interfaces and runtime bridge",
+      "dependsOn": [],
+      "owner": "main",
+      "status": "implemented_pending_review"
+    },
+    {
+      "id": "AI-01",
+      "name": "Enemy AI V1",
+      "dependsOn": ["CF-01"],
+      "owner": "enemy_ai_worker",
+      "status": "ready"
+    },
+    {
+      "id": "VFX-01",
+      "name": "Demo 0.2.1 FourSeasonWheel hotfix",
+      "dependsOn": ["CF-01"],
+      "owner": "wheel_worker",
+      "status": "ready"
+    },
+    {
+      "id": "QA-01",
+      "name": "Asset QA T2 deterministic capture preparation",
+      "dependsOn": ["CF-01"],
+      "owner": "asset_qa_worker",
+      "status": "ready"
+    },
+    {
+      "id": "VIS-01",
+      "name": "Six Spring solar-term visual state V0.1 validation",
+      "dependsOn": ["CF-01"],
+      "owner": "visual_state_worker",
+      "status": "ready"
+    },
+    {
+      "id": "REV-01",
+      "name": "Demo 0.3 round-one architecture review",
+      "dependsOn": ["AI-01", "VFX-01", "QA-01", "VIS-01"],
+      "owner": "sol_high",
+      "status": "blocked"
+    }
+  ],
+  "writeScopes": {
+    "main": [
+      "scripts/combat/**",
+      "scripts/core/EventBus.lua",
+      "scripts/core/Game.lua",
+      "scripts/data/Skills.lua",
+      "scripts/battle/BattleManager.lua"
+    ],
+    "enemy_ai_worker": [
+      "scripts/battle/enemies/**",
+      "scripts/data/Enemies.lua"
+    ],
+    "wheel_worker": [
+      "scripts/vfx/RuntimePresentation.lua",
+      "scripts/vfx/tests/RuntimePresentationTest.lua",
+      "scripts/ui/BattleView.lua"
+    ],
+    "asset_qa_worker": [
+      "scripts/qa/**",
+      "qa/cases/T2/**",
+      "qa/reports/latest/t2_preparation.json"
+    ],
+    "visual_state_worker": [
+      "scripts/data/SolarTerms.lua",
+      "scripts/vfx/SolarTermPresentation.lua",
+      "scripts/vfx/tests/SolarTermPresentationTests.lua"
+    ],
+    "sol_high": []
+  },
+  "rules": [
+    "Workers must not edit files outside their write scope.",
+    "No summer, autumn, winter, ads, final UI or full skill framework work.",
+    "T2 remains PENDING_CAPTURE until real Maker Motion evidence exists.",
+    "Runtime fixes precede asset edits and regeneration."
+  ]
+}
