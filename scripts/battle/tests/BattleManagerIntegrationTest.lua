@@ -51,6 +51,11 @@ for index = 1, 3 do
     before[index] = { x = battle.enemies[index].x, y = battle.enemies[index].y }
 end
 battle:UpdateEnemies(0.1)
+assert(#battle.projectiles == 0, "bifang initial ranged cooldown must be readable")
+battle:UpdateEnemies(0.1)
+local hostileProjectile = battle.projectiles[1]
+assert(hostileProjectile and hostileProjectile.team == "enemy" and hostileProjectile.source.kind == "bifang",
+    "bifang ranged intent must enter the shared ProjectileSystem")
 assert(battle.enemies[1].motionState:find("orbit"), "fox must use orbit movement")
 assert(battle.enemies[2].motionState ~= "press", "bifang must use glide/range movement")
 assert(battle.enemies[3].motionState == "press", "kui must use heavy press movement")
@@ -111,6 +116,24 @@ battle.projectileSystem:Spawn({
 battle:UpdateProjectiles(0)
 assert(#battle.impacts == 1, "projectile collision must create one impact presentation record")
 assert(damageEvents >= 1 and deathEvents >= 2, "combat damage and death must use the shared EventBus")
+
+battle.projectileSystem:Clear()
+battle.debugInvulnerable = false
+local hpBeforeHostile = battle.player.hp
+battle.projectileSystem:Spawn({
+    source = { id = "bifang-test", kind = "bifang", team = "enemy" },
+    team = "enemy",
+    x = battle.player.x,
+    y = battle.player.y,
+    vx = 0,
+    vy = 0,
+    radius = 10,
+    life = 1,
+    damage = 7,
+    hitsLeft = 1,
+})
+battle:UpdateProjectiles(0)
+assert(battle.player.hp < hpBeforeHostile, "hostile projectile must resolve damage against the player")
 
 battle:Restart()
 battle:DamagePlayer(battle.player.maxHp)

@@ -949,6 +949,7 @@ function BattleView:UpdatePools()
             local presentation = ProjectilePresentation.Compute(projectile, projectile.maxLife)
             local head = presentation.head
             widget:SetStyle({
+                backgroundImage = presentation.hostile and AssetCatalog.warnings.point or AssetCatalog.wheel.core,
                 left = head.left,
                 top = head.top,
                 width = head.width,
@@ -961,6 +962,7 @@ function BattleView:UpdatePools()
             for segment = 1, TRAIL_SEGMENT_COUNT do
                 local trail = presentation.tail[segment]
                 trails[segment]:SetStyle({
+                    backgroundImage = presentation.hostile and AssetCatalog.warnings.point or AssetCatalog.wheel.core,
                     left = trail.left,
                     top = trail.top,
                     width = trail.width,

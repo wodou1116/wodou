@@ -10,6 +10,12 @@ local IMPACT_PROFILES = {
         borderColor = { 246, 239, 211, 255 },
         backgroundColor = { 246, 239, 211, 42 },
     },
+    enemy = {
+        sizeScale = 1.1,
+        borderWidth = 6,
+        borderColor = { 224, 92, 68, 255 },
+        backgroundColor = { 224, 92, 68, 56 },
+    },
     elite = {
         sizeScale = 1.25,
         borderWidth = 6,
@@ -51,7 +57,10 @@ function ProjectilePresentation.Compute(projectile, totalLifetime)
     local fade = Clamp(lifeProgress / 0.2, 0, 1)
     local rotation = speed > 0 and math.deg(math.atan(vy, vx)) or 0
     local headScale = 1 + Clamp(speed / 1200, 0, 0.12)
+    local hostile = projectile.team == "enemy"
     local result = {
+        hostile = hostile,
+        assetRole = hostile and "enemy_warning" or "wheel_core",
         lifeProgress = lifeProgress,
         ageProgress = 1 - lifeProgress,
         head = {

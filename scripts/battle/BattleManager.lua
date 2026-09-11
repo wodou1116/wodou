@@ -299,6 +299,29 @@ function BattleManager:SpawnProjectile(target, angleOffset)
     return projectile
 end
 
+function BattleManager:SpawnEnemyProjectile(enemy, intent)
+    local dx, dy = Normalize((intent.targetX or self.player.x) - enemy.x, (intent.targetY or self.player.y) - enemy.y)
+    local speed = intent.projectileSpeed or 260
+    local projectile = self.projectileSystem:Spawn({
+        source = enemy,
+        team = "enemy",
+        kind = "enemy",
+        x = enemy.x,
+        y = enemy.y,
+        vx = dx * speed,
+        vy = dy * speed,
+        radius = 10,
+        life = 3,
+        maxLife = 3,
+        damage = enemy.damage,
+        hitsLeft = 1,
+    })
+    if projectile then
+        self.eventBus:Emit(CombatEvents.PROJECTILE_SPAWNED, projectile)
+    end
+    return projectile
+end
+
 function BattleManager:FindNearestEnemy()
     return TargetSelector.FindNearest(self.player, self.enemies, {
         maxRange = self.player.attackRange,
@@ -519,9 +542,22 @@ function BattleManager:UpdateEnemies(timeStep)
             enemy.facing = command.facing
             enemy.facingX = command.facingX
             enemy.motionState = command.motionState
+            enemy.motionKeyframe = command.keyframe
+            enemy.movementIntent = command.movementIntent
+            enemy.attackIntent = command.attackIntent
             enemy.elevation = command.elevation
             enemy.step = command.step
             enemy.lean = command.lean
+            if command.attackIntent then
+                if command.attackIntent.type == "ranged" then
+                    self:SpawnEnemyProjectile(enemy, command.attackIntent)
+                elseif command.attackIntent.type == "melee" then
+                    self:DamagePlayer(enemy.damage, enemy)
+                    if not self.active then
+                        return
+                    end
+                end
+            end
         else
             local dx, dy = Normalize(player.x - enemy.x, player.y - enemy.y)
             enemy.x = enemy.x + dx * enemy.speed * timeStep
@@ -531,7 +567,9 @@ function BattleManager:UpdateEnemies(timeStep)
         end
         enemy.animation:Update(timeStep, true)
 
-        if enemy.hitCooldown <= 0 and CirclesOverlap(player.x, player.y, player.radius, enemy.x, enemy.y, enemy.radius) then
+        local usesIntentAttack = enemy.kind == "bifang" or enemy.kind == "kui"
+        if not usesIntentAttack and enemy.hitCooldown <= 0
+            and CirclesOverlap(player.x, player.y, player.radius, enemy.x, enemy.y, enemy.radius) then
             self:DamagePlayer(enemy.damage, enemy)
             enemy.hitCooldown = 0.75
             if not self.active then
@@ -547,6 +585,15 @@ function BattleManager:UpdateProjectiles(timeStep)
             return BattleBounds.ShouldRecycleProjectile(ARENA, projectile.x, projectile.y, projectile.radius, 180)
         end,
         queryHit = function(projectile)
+            if projectile.team == "enemy" then
+                if self.player.hp > 0 and CirclesOverlap(
+                    projectile.x, projectile.y, projectile.radius,
+                    self.player.x, self.player.y, self.player.radius
+                ) then
+                    return self.player
+                end
+                return nil
+            end
             for enemyIndex = #self.enemies, 1, -1 do
                 local enemy = self.enemies[enemyIndex]
                 local alreadyHit = projectile.hitIds and projectile.hitIds[enemy.id]
@@ -560,6 +607,12 @@ function BattleManager:UpdateProjectiles(timeStep)
             return nil
         end,
         onHit = function(projectile, enemy, enemyIndex)
+            if projectile.team == "enemy" then
+                self:AddImpact(projectile.x, projectile.y, projectile.radius * 2.1, "enemy")
+                self:DamagePlayer(projectile.damage, projectile.source)
+                projectile.hitsLeft = projectile.hitsLeft - 1
+                return projectile.hitsLeft > 0
+            end
             local impactKind = enemy.boss and "boss"
                 or (enemy.kind == "spring_elite" and "elite" or "projectile")
             self:AddImpact(projectile.x, projectile.y, projectile.radius * 1.8, impactKind)

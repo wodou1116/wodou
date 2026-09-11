@@ -34,6 +34,9 @@ assert(expiring.head.opacity < visual.head.opacity)
 local stationary = ProjectilePresentation.Compute({ x = 0, y = 0, vx = 0, vy = 0, radius = 8, life = 1 }, 1)
 assert(stationary.head.rotation == 0 and stationary.tail[1].x < stationary.head.x)
 
+local hostile = ProjectilePresentation.Compute({ team = "enemy", x = 0, y = 0, vx = 1, vy = 0, life = 1 }, 1)
+assert(hostile.hostile and hostile.assetRole == "enemy_warning", "enemy projectiles need a distinct visual role")
+
 local impactStart = ProjectilePresentation.Impact({ x = 20, y = 30, radius = 12 }, 0)
 assert(impactStart.duration == 0.18 and not impactStart.complete and impactStart.ringOpacity == 1)
 
@@ -42,8 +45,10 @@ assert(impactEnd.complete and Near(impactEnd.opacity, 0) and impactEnd.ringScale
 
 local eliteImpact = ProjectilePresentation.Impact({ x = 20, y = 30, radius = 12, kind = "elite" }, 0)
 local bossImpact = ProjectilePresentation.Impact({ x = 20, y = 30, radius = 12, kind = "boss" }, 0)
+local enemyImpact = ProjectilePresentation.Impact({ x = 20, y = 30, radius = 12, kind = "enemy" }, 0)
 assert(eliteImpact.ringWidth > impactStart.ringWidth)
 assert(bossImpact.ringWidth > eliteImpact.ringWidth and bossImpact.borderWidth > eliteImpact.borderWidth)
+assert(enemyImpact.borderColor[1] > enemyImpact.borderColor[2], "enemy impacts must read as hostile")
 
 print("ProjectilePresentationTest: head, 3-tail pool, lifecycle and impact passed")
 
