@@ -1,0 +1,26 @@
+{
+  "version": "demo-0.2",
+  "status": "PASS_WITH_WARNINGS",
+  "capturedAt": "2026-09-11",
+  "viewport": {
+    "width": 2747,
+    "height": 1539,
+    "aspect": "16:9"
+  },
+  "file": "baseline-16x9.png",
+  "sha256": "849dbf21038fdb2c1ce96a8dbf659d85722ad674888890640eb941304d78ba23",
+  "hotfix": {
+    "version": "demo-0.2.1",
+    "p0": [
+      "four_season_wheel_presence",
+      "player_visual_priority",
+      "spring_background_separation",
+      "asset_qa_t1_fixed_cases"
+    ],
+    "p1": [
+      "enemy_motion_strength",
+      "shadow_hit_death_feedback",
+      "six_solar_term_visual_state_v0_1"
+    ]
+  }
+}
