@@ -5,6 +5,7 @@ local AttackLogic = require("combat.AttackLogic")
 local DamageContext = require("combat.DamageContext")
 local DangerEvaluator = require("combat.DangerEvaluator")
 local DeathContext = require("combat.DeathContext")
+local MovementAI = require("combat.MovementAI")
 local ObjectPool = require("combat.ObjectPool")
 local ProjectileSystem = require("combat.ProjectileSystem")
 local StatSystem = require("combat.StatSystem")
@@ -102,4 +103,16 @@ local safest = DangerEvaluator.FindSafest({
 }, hazards)
 assert(safest.x == 50 and safest.y == 50)
 
-print("CombatFoundationTest: stats, contexts, pool, projectile, area, targeting, attack and danger passed")
+local movementEntity = { x = 0, y = 0 }
+local moving = true
+local movement = MovementAI.New(function()
+    return moving and { directionX = 1, directionY = 0, speed = 100, state = "advance" }
+        or { directionX = 0, directionY = 0, speed = 100, state = "brake" }
+end, { acceleration = 50, deceleration = 25 })
+local moveCommand = MovementAI.Step(movement, movementEntity, {}, 1)
+assert(moveCommand.vx == 50 and movementEntity.x == 50 and moveCommand.state == "advance")
+moving = false
+moveCommand = MovementAI.Step(movement, movementEntity, {}, 1)
+assert(moveCommand.vx == 25 and movementEntity.x == 75 and moveCommand.state == "brake")
+
+print("CombatFoundationTest: stats, contexts, pool, projectile, area, targeting, attack, danger and movement passed")
