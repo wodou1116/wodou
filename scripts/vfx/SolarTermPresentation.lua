@@ -49,12 +49,72 @@ local function RequireTerm(termId)
     return term
 end
 
+local function BuildVisualContract(state)
+    state.visual = {
+        overlay = {
+            tint = state.overlay.tint,
+        },
+        weather = {
+            rain = state.rain,
+            fog = state.fog,
+            lightning = state.lightning,
+        },
+        foregroundDressing = {
+            windLeaves = state.windLeaves,
+            flowerLeaves = state.flowerLeaves,
+            pollen = state.pollen,
+        },
+        colorGrade = state.overlay.grade,
+        corruptionAmount = state.corruption,
+    }
+    return state
+end
+
+local function NumericDelta(from, to)
+    if type(from) == "number" and type(to) == "number" then
+        return math.abs(to - from)
+    end
+    if type(from) ~= "table" or type(to) ~= "table" then
+        return 0
+    end
+
+    local total = 0
+    for key, value in pairs(from) do
+        total = total + NumericDelta(value, to[key])
+    end
+    for key, value in pairs(to) do
+        if from[key] == nil then
+            total = total + NumericDelta(nil, value)
+        end
+    end
+    return total
+end
+
+local function VisualDelta(from, to)
+    local fromVisual = from.visual
+    local toVisual = to.visual
+    local overlay = NumericDelta(fromVisual.overlay, toVisual.overlay)
+    local weather = NumericDelta(fromVisual.weather, toVisual.weather)
+    local foregroundDressing = NumericDelta(fromVisual.foregroundDressing, toVisual.foregroundDressing)
+    local colorGrade = NumericDelta(fromVisual.colorGrade, toVisual.colorGrade)
+    local corruptionAmount = math.abs(toVisual.corruptionAmount - fromVisual.corruptionAmount)
+
+    return {
+        overlay = overlay,
+        weather = weather,
+        foregroundDressing = foregroundDressing,
+        colorGrade = colorGrade,
+        corruptionAmount = corruptionAmount,
+        total = overlay + weather + foregroundDressing + colorGrade + corruptionAmount,
+    }
+end
+
 function SolarTermPresentation.Get(termId)
-    return RequireTerm(termId)
+    return BuildVisualContract(RequireTerm(termId))
 end
 
 function SolarTermPresentation.Step(termId, time)
-    local state = RequireTerm(termId)
+    local state = SolarTermPresentation.Get(termId)
     local currentTime = time or 0
     local lightning = state.lightning
     local cycle = Loop(currentTime, 1 / lightning.cadence)
@@ -94,7 +154,69 @@ function SolarTermPresentation.Transition(fromId, toId, progress)
         easing = "smoothstep",
         weight = weight,
     }
-    return state
+    return BuildVisualContract(state)
+end
+
+function SolarTermPresentation.DiagnoseRun(duration)
+    assert(type(duration) == "number" and duration > 0, "duration must be a positive number")
+
+    local sequence = SolarTerms.GetSpringSequence()
+    local termDuration = SolarTerms.GetSpringTermDuration()
+    local cycleDuration = #sequence * termDuration
+    local rotation = {}
+    local uniqueTerms = {}
+    local repeatedAdjacentPairs = 0
+    local transitionDeltas = {}
+    local lowContrastTransitions = {}
+    local previous = nil
+
+    for startTime = 0, duration - 0.0001, termDuration do
+        local sequenceIndex = math.floor(startTime / termDuration) % #sequence + 1
+        local termId = sequence[sequenceIndex]
+        local state = SolarTermPresentation.Step(termId, startTime)
+        local entry = {
+            termId = termId,
+            startTime = startTime,
+            endTime = math.min(startTime + termDuration, duration),
+            visual = Copy(state.visual),
+        }
+
+        rotation[#rotation + 1] = entry
+        uniqueTerms[termId] = true
+        if previous then
+            local delta = VisualDelta(previous, state)
+            local label = previous.id .. "->" .. termId
+            delta.fromId = previous.id
+            delta.toId = termId
+            transitionDeltas[#transitionDeltas + 1] = delta
+            if previous.id == termId then
+                repeatedAdjacentPairs = repeatedAdjacentPairs + 1
+            end
+            if delta.total < 1 then
+                lowContrastTransitions[#lowContrastTransitions + 1] = label
+            end
+        end
+        previous = state
+    end
+
+    local uniqueTermCount = 0
+    for _ in pairs(uniqueTerms) do
+        uniqueTermCount = uniqueTermCount + 1
+    end
+
+    return {
+        duration = duration,
+        termDuration = termDuration,
+        cycleDuration = cycleDuration,
+        completedCycles = math.floor(duration / cycleDuration),
+        rotation = rotation,
+        visualFatigue = {
+            uniqueTerms = uniqueTermCount,
+            repeatedAdjacentPairs = repeatedAdjacentPairs,
+            transitionDeltas = transitionDeltas,
+            lowContrastTransitions = lowContrastTransitions,
+        },
+    }
 end
 
 return SolarTermPresentation

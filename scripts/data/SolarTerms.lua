@@ -15,6 +15,9 @@ local SPRING_BASE = {
     transition = { duration = 0.7, easing = "smoothstep" },
 }
 
+local SPRING_SEQUENCE = { "lichun", "yushui", "jingzhe", "chunfen", "qingming", "guyu" }
+local SPRING_TERM_DURATION = 70
+
 local terms = {
     lichun = {
         id = "lichun",
@@ -148,6 +151,14 @@ end
 
 function SolarTerms.GetSpringBase()
     return Copy(SPRING_BASE)
+end
+
+function SolarTerms.GetSpringSequence()
+    return Copy(SPRING_SEQUENCE)
+end
+
+function SolarTerms.GetSpringTermDuration()
+    return SPRING_TERM_DURATION
 end
 
 return SolarTerms
