@@ -5,7 +5,7 @@ description: 对游戏图片资产执行只读、分阶段、确定性的 T0-T4 
 
 # Asset QA
 
-版本：`1.0`
+版本：`1.3`
 
 本 Skill 定义 Demo 0.2 起可持续使用的最小 Asset QA 流程。审核器对 `assets/image/**` 只读，结果写入 `qa/reports/**`，不得修改原图、运行时代码或评分规则。
 
@@ -117,3 +117,44 @@ T0/T1 结果的最小固定字段：
 ```
 
 T1 的 `status` 在没有真实截图时固定为 `PENDING_CAPTURE`，不得根据 T0 指标冒充 T1 通过。
+
+## V1.3 QA tooling contract
+
+V1.3 只扩展证据采集与确定性工具链，不改变现有 rubric、Hard Fail 语义、分数权重或门槛。
+
+### 截图预算
+
+截图预算是上限/范围约束，不是 PASS 条件；预算外的截图不得被当作额外视觉证据累计：
+
+| Stage | 截图预算 |
+|---|---|
+| T0 | `0`；只做确定性源图检查，使用 `SKIP_CAPTURE` |
+| T1 | 每资产 `1–2` 张；优先覆盖实体局部 ROI、实机尺寸和层级关系 |
+| T2 | 每个 Motion 最多 `3` 张；使用确定性的 Keyframe Sampling |
+| T3 | 每场景 `4–6` 张；覆盖压力状态、Projectile/VFX/Telegraph 共存 |
+| T4 | 关键状态 × 比例抽样；不要求每个时间点和每个比例全量录制 |
+
+### Deterministic Case
+
+每个 capture 或确定性检查必须有可复现的 Case 描述，至少包含 `case_id`、`stage`、`mode`、`ratio`、`state`、资产引用和场景配置引用。Case 字段必须使用稳定顺序序列化；相同输入必须得到相同 `qa_case_hash`。不得把截图文件名或运行时间作为 Case 输入。
+
+工具链统一保留以下 provenance 字段：
+
+- `asset_hash`：源资产文件内容的 SHA-256；不使用文件名或 mtime 代替。
+- `scene_config_hash`：场景 JSON/配置的规范化内容哈希；非 JSON 配置使用原始字节哈希。
+- `qa_case_hash`：规范化 Case JSON 的 SHA-256。
+
+`qa_tooling.py` 提供上述哈希、缓存、ROI、Contact Sheet 和 Keyframe Sampling；Hash Cache 只能缓存确定性结果，命中条件必须包含文件大小与 `mtime_ns`，失效后重新计算。
+
+### ROI、Contact Sheet 与 Keyframe Sampling
+
+- T1+ 的背景分离 ROI 必须来自 Maker 运行时实体所在的局部背景，ROI 的宽高应为主体边界的 `1.5–2.0x`，并记录 `roi_scale`、`roi` 和 `t1_eligible=true`。整图比较只能标记为参考，不能用于 T1 判定。
+- Contact Sheet 只用于批量核对捕获覆盖、Case 和文件命名；它不是视觉评分，也不能替代原始截图。
+- Keyframe Sampling 必须按固定、均匀的索引选择帧；T2 每个 Motion 不得超过 3 张。采样索引和 `qa_case_hash` 必须写入证据元数据。
+
+### Skip 状态
+
+- `SKIP_CAPTURE`：该 Case 根据截图预算明确不采集，例如 T0；它不是 PASS，也不能清除 T1-T4 的必需证据。
+- `SKIP_VISION_REVIEW`：该 Case 仅有确定性检查且策略明确不需要视觉复核；它不是视觉通过，不得用于绕过 T1-T4 必需的 Sol Review。
+
+planner 应显式输出 `skip_status`、预算、ROI 政策和 Case 描述；哈希由 Python 工具根据实际输入计算。缺少上述 provenance 时，结果应保持 `PENDING_CAPTURE` 或 `PENDING_VISION_REVIEW`，不得猜分。

@@ -17,6 +17,13 @@ local MAX_PROJECTILES = 56
 local MAX_IMPACTS = 24
 local DEBUG_RING_POSITIONS
 
+local CAPTURE_ANIMATION_STATES = {
+    idle = AnimationState.States.Idle,
+    move = AnimationState.States.Move,
+    hit = AnimationState.States.Hit,
+    death = AnimationState.States.Death,
+}
+
 local ENEMY_TYPES = {
     bifang = { hp = 54, speed = 92, damage = 7, radius = 38, size = 105, xp = 1, sprite = AssetCatalog.enemies.bifang },
     jiuweihu = { hp = 82, speed = 72, damage = 10, radius = 45, size = 118, xp = 1, sprite = AssetCatalog.enemies.jiuweihu },
@@ -80,6 +87,7 @@ function BattleManager:Init()
     self.kills = 0
     self.spawnSerial = 0
     self.attackPulse = 0
+    self.wheelState = nil
     self.player = nil
     self.finishing = false
     self.pendingResult = nil
@@ -90,6 +98,7 @@ function BattleManager:Init()
     self.debugProjectileTarget = nil
     self.debugEnemyTarget = nil
     self.debugInvulnerable = false
+    self.captureMode = nil
 end
 
 function BattleManager:Prepare(runSnapshot)
@@ -118,6 +127,7 @@ function BattleManager:ResetBattle()
     self.kills = 0
     self.spawnSerial = 0
     self.attackPulse = 0
+    self.wheelState = nil
     self.finishing = false
     self.pendingResult = nil
     self.resultDelay = 0
@@ -127,6 +137,7 @@ function BattleManager:ResetBattle()
     self.debugProjectileTarget = nil
     self.debugEnemyTarget = nil
     self.debugInvulnerable = false
+    self.captureMode = nil
 
     local characterId = self.run and self.run.characterId or "shi_yu_zhe"
     self.player = {
@@ -550,6 +561,10 @@ function BattleManager:UpdateDeathEffects(timeStep)
 end
 
 function BattleManager:Update(timeStep, moveX, moveY)
+    if self.captureMode and self.captureMode:IsFrozen() then
+        self:ApplyCapturePose()
+        return
+    end
     if self.finishing then
         self.resultDelay = math.max(0, self.resultDelay - timeStep)
         self.attackPulse = math.max(0, self.attackPulse - timeStep)
@@ -611,8 +626,9 @@ DEBUG_RING_POSITIONS = {
     { 1120, 450 }, { 1320, 500 }, { 1300, 690 }, { 1050, 720 }, { 760, 700 },
 }
 
-function BattleManager:ConfigureDebugScenario(mode, projectileCount)
+function BattleManager:ConfigureDebugScenario(mode, projectileCount, captureMode)
     assert(self.player, "debug scenario requires a prepared battle")
+    local scenarioName = mode
     self.active = true
     self.paused = false
     self.choosing = false
@@ -623,8 +639,10 @@ function BattleManager:ConfigureDebugScenario(mode, projectileCount)
     self.projectiles = {}
     self.deathEffects = {}
     self.impacts = {}
+    self.captureMode = captureMode
     self.debugFreezeSpawning = true
-    self.debugFreezeEnemyPositions = mode ~= "combat_stress"
+    self.debugFreezeEnemyPositions = (captureMode and captureMode:IsFrozen())
+        or (mode ~= "combat_stress" and mode ~= "motion")
     self.debugProjectileTarget = nil
     self.debugEnemyTarget = nil
     self.debugInvulnerable = false
@@ -668,6 +686,12 @@ function BattleManager:ConfigureDebugScenario(mode, projectileCount)
         self:SpawnEnemy("spring_elite", 1510, 650)
         self:SpawnEnemy("jumang", 1240, 350)
         self.bossSpawned = true
+    elseif mode == "motion" then
+        self.debugInvulnerable = true
+        self.attackTimer = 999999
+        self:SpawnEnemy("jiuweihu", 1270, 460)
+        self:SpawnEnemy("bifang", 1090, 780)
+        self:SpawnEnemy("kui", 650, 710)
     elseif mode == "combat_stress" then
         self.debugInvulnerable = true
         self.attackTimer = 999999
@@ -683,15 +707,94 @@ function BattleManager:ConfigureDebugScenario(mode, projectileCount)
         for index = 1, count do
             self:SpawnProjectile(target, (index - (count + 1) * 0.5) * 0.035)
         end
-        self.debugScenario = "combat_stress_" .. tostring(count)
+        scenarioName = "combat_stress_" .. tostring(count)
         self:MaintainDebugStress()
-        return self.debugScenario
     else
         error("unknown debug scenario: " .. tostring(mode))
     end
 
-    self.debugScenario = mode
+    self.debugScenario = scenarioName
+    if self.captureMode then
+        self:ApplyCapturePose()
+        self:UpdateCaptureMetadata()
+    end
     return self.debugScenario
+end
+
+function BattleManager:ConfigureCapture(captureMode)
+    assert(captureMode and captureMode:IsEnabled(), "configured QA capture mode is required")
+    return self:ConfigureDebugScenario(captureMode:GetMode(), captureMode:GetProjectileCount(), captureMode)
+end
+
+function BattleManager:ApplyCapturePose()
+    if not self.captureMode then
+        return
+    end
+
+    self.elapsed = self.captureMode:GetPresentationTime()
+    local state = self.captureMode:GetStateMetadata() or {}
+    self.wheelState = state.wheelState
+
+    local function ApplyFacing(entity, facing)
+        if entity and (facing == "left" or facing == "right") then
+            entity.facing = facing
+            entity.facingX = facing == "left" and -1 or 1
+        end
+    end
+
+    local function ApplyAnimationState(entity, requestedState)
+        if not entity or not requestedState then
+            return
+        end
+        local normalized = string.lower(tostring(requestedState))
+        local animationState = CAPTURE_ANIMATION_STATES[normalized]
+        assert(animationState, "unknown QA animation state: " .. tostring(requestedState))
+        entity.animation:Set(animationState)
+        entity.isMoving = animationState == AnimationState.States.Move
+        entity.hitElapsed = animationState == AnimationState.States.Hit and 0 or nil
+        entity.deathElapsed = animationState == AnimationState.States.Death and 0 or nil
+    end
+
+    ApplyFacing(self.player, state.playerFacing)
+    ApplyAnimationState(self.player, state.playerAnimationState or state.animationState)
+    for index = 1, #self.enemies do
+        ApplyFacing(self.enemies[index], state.enemyFacing)
+        ApplyAnimationState(self.enemies[index], state.enemyAnimationState)
+    end
+
+    local phase = self.captureMode:GetAnimationPhase()
+    if phase == nil then
+        self:UpdateCaptureMetadata()
+        return
+    end
+
+    local function ApplyAnimationPose(animation)
+        if animation then
+            local duration = animation:Get() == AnimationState.States.Death and 0.65 or animation.hitDuration
+            animation.time = duration * phase
+        end
+    end
+
+    if self.player then
+        ApplyAnimationPose(self.player.animation)
+    end
+    for index = 1, #self.enemies do
+        ApplyAnimationPose(self.enemies[index].animation)
+    end
+    self:UpdateCaptureMetadata()
+end
+
+function BattleManager:UpdateCaptureMetadata()
+    if not self.captureMode then
+        return
+    end
+    self.captureMode:SetStateMetadata({
+        scenario = self.debugScenario,
+        elapsed = self.elapsed,
+        enemyCount = #self.enemies,
+        projectileCount = #self.projectiles,
+        player = self.player and { x = self.player.x, y = self.player.y, hp = self.player.hp } or nil,
+    })
 end
 
 function BattleManager:GetBoss()

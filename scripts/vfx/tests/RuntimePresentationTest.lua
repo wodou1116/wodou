@@ -38,14 +38,25 @@ assert(near(hit.flashWhite, 0.5) and hit.scale > 1)
 local death = Presentation.Death(0.32, 0.32)
 assert(death.complete and near(death.opacity, 0) and near(death.scale, 0.82))
 
-local wheel = Presentation.Wheel(1, 0)
-assert(#wheel == 5 and wheel[1].rotation == 3 and wheel[2].rotation == -9)
-assert(wheel[1].width <= 138 * 0.75 and wheel[5].width < wheel[1].width)
-assert(wheel[1].offsetY == 2 and wheel[3].offsetY == 19 and wheel[4].offsetY == 20 and wheel[5].offsetY == 13)
+local rightAnchor = Presentation.WheelAnchor(960, 640, 138, 190, "right")
+local leftAnchor = Presentation.WheelAnchor(960, 640, 138, 190, "left")
+assert(rightAnchor.centerX < 960 and leftAnchor.centerX > 960)
+assert(rightAnchor.centerY < 640 and rightAnchor.diameter >= 190 * 0.55 and rightAnchor.diameter <= 190 * 0.70)
+
+local wheel = Presentation.Wheel(1, 0, "idle", rightAnchor.diameter)
+assert(#wheel == 5 and wheel[1].state == "idle" and wheel[1].rotation == 3)
+assert(near(wheel[1].width, rightAnchor.diameter) and wheel[5].width < wheel[1].width)
+assert(wheel[1].offsetY > 0 and wheel[3].offsetY > wheel[1].offsetY)
 assert(wheel[1].rotationSpeed ~= wheel[2].rotationSpeed)
 
-local attackWheel = Presentation.Wheel(1, 0.18)
-assert(attackWheel[5].scale > wheel[5].scale and attackWheel[5].opacity >= wheel[5].opacity)
-assert(attackWheel[5].coreGlow > 0 and attackWheel[5].rotationSpeed > wheel[5].rotationSpeed)
+local attackWheel = Presentation.Wheel(1, 0.18, "attack", rightAnchor.diameter)
+assert(attackWheel[5].locked and attackWheel[5].coreGlow > 0 and attackWheel[5].opacity > wheel[5].opacity)
+
+local attackBoost = Presentation.Wheel(1, 0.09, "attack", rightAnchor.diameter)
+assert(attackBoost[5].rotationSpeed > wheel[5].rotationSpeed and attackBoost[5].rebound > 0)
+
+local chargedWheel = Presentation.Wheel(1, 0, "charged", rightAnchor.diameter)
+assert(chargedWheel[5].state == "charged" and chargedWheel[5].coreGlow > 0)
+assert(chargedWheel[2].opacity > wheel[2].opacity and chargedWheel[1].scale > wheel[1].scale)
 
 return true

@@ -5,6 +5,7 @@ local Characters = require("data.Characters")
 local Seasons = require("data.Seasons")
 local RunManager = require("run.RunManager")
 local BattleManager = require("battle.BattleManager")
+local CaptureMode = require("qa.CaptureMode")
 
 local Game = {}
 Game.__index = Game
@@ -29,6 +30,7 @@ function Game:Init()
     self.eventBus = EventBus.New()
     self.runManager = RunManager.New()
     self.battleManager = BattleManager.New()
+    self.qaCapture = CaptureMode.New()
 end
 
 function Game:Start()
@@ -38,6 +40,7 @@ end
 
 function Game:Stop()
     self.battleManager:Stop()
+    self.qaCapture:Clear()
     self.eventBus:Clear()
 end
 
@@ -98,12 +101,17 @@ function Game:RestartRun()
     self.runManager:Begin(self.selectedCharacterId, Constants.DEFAULT_SEASON_ID)
     self.battleManager:Prepare(self.runManager:GetSnapshot())
     self.battleManager:Start()
+    if self.qaCapture:IsEnabled() then
+        self.qaCapture:ApplySeed()
+        self.battleManager:ConfigureCapture(self.qaCapture)
+    end
     self.state = Game.State.BATTLE
     return true
 end
 
 function Game:ReturnToMenu()
     self.battleManager:Stop()
+    self.qaCapture:Clear()
     self.runManager:Finish()
     self.state = Game.State.MENU
 end
@@ -128,6 +136,22 @@ function Game:ConfigureDebugScenario(mode, projectileCount)
     end
     self.battleManager:ConfigureDebugScenario(mode, projectileCount)
     return true
+end
+
+function Game:StartQaCapture(options)
+    local metadata = self.qaCapture:Configure(options)
+    self.qaCapture:ApplySeed()
+    local started = self:StartRun((options and options.seasonId) or Constants.DEFAULT_SEASON_ID)
+    if not started then
+        self.qaCapture:Clear()
+        return nil
+    end
+    self.battleManager:ConfigureCapture(self.qaCapture)
+    return metadata
+end
+
+function Game:GetQaCaptureMetadata()
+    return self.qaCapture:GetMetadata()
 end
 
 return Game

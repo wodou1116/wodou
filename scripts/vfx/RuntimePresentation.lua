@@ -2,14 +2,21 @@ local RuntimePresentation = {}
 
 local TWO_PI = math.pi * 2
 local ATTACK_PULSE_DURATION = 0.18
+local WHEEL_REFERENCE_DIAMETER = 118
+local WHEEL_ASPECT_RATIO = 724 / 434
 
 RuntimePresentation.WheelLayers = {
-    { id = "outer", width = 103, height = 172, offsetX = 0, offsetY = 2, rotationPerSecond = 3, idleRpm = 0.5, opacity = 0.58 },
-    { id = "marks", width = 103, height = 172, offsetX = 4, offsetY = 3, rotationPerSecond = -9, idleRpm = -1.5, opacity = 0.72 },
-    { id = "middle", width = 97, height = 162, offsetX = 0, offsetY = 19, rotationPerSecond = 14, idleRpm = 14 / 6, opacity = 0.76 },
-    { id = "inner", width = 95, height = 158, offsetX = -1, offsetY = 20, rotationPerSecond = -18, idleRpm = -3, opacity = 0.82 },
-    { id = "core", width = 63, height = 105, offsetX = 4, offsetY = 13, rotationPerSecond = 9, idleRpm = 1.5, opacity = 0.90 },
+    { id = "outer", diameterRatio = 1.00, offsetX = 0, offsetY = 2, rotationPerSecond = 3, idleRpm = 0.5, opacity = 0.58 },
+    { id = "marks", diameterRatio = 1.00, offsetX = 4, offsetY = 3, rotationPerSecond = -9, idleRpm = -1.5, opacity = 0.72 },
+    { id = "middle", diameterRatio = 0.94, offsetX = 0, offsetY = 19, rotationPerSecond = 14, idleRpm = 14 / 6, opacity = 0.76 },
+    { id = "inner", diameterRatio = 0.92, offsetX = -1, offsetY = 20, rotationPerSecond = -18, idleRpm = -3, opacity = 0.82 },
+    { id = "core", diameterRatio = 0.61, offsetX = 4, offsetY = 13, rotationPerSecond = 9, idleRpm = 1.5, opacity = 0.90 },
 }
+
+for _, layer in ipairs(RuntimePresentation.WheelLayers) do
+    layer.width = WHEEL_REFERENCE_DIAMETER * layer.diameterRatio
+    layer.height = layer.width * WHEEL_ASPECT_RATIO
+end
 
 local ENEMY_MOTION = {
     bifang = { bobAmplitude = 4, bobFrequency = 3.5, swayDegrees = 4.0, swayFrequency = 3.0, elevation = 0.72, elevationOffset = -18 },
@@ -123,26 +130,54 @@ function RuntimePresentation.Death(elapsed, duration)
     }
 end
 
-function RuntimePresentation.Wheel(time, attackPulse)
+function RuntimePresentation.WheelAnchor(playerX, playerY, playerWidth, playerHeight, facing)
+    local width = playerWidth or 138
+    local height = playerHeight or 190
+    local backward = facing == "left" and 1 or -1
+    local diameter = Clamp(height * 0.62, height * 0.55, height * 0.70)
+    return {
+        centerX = (playerX or 0) + backward * width * 0.18,
+        centerY = (playerY or 0) - height * 0.64,
+        diameter = diameter,
+    }
+end
+
+function RuntimePresentation.Wheel(time, attackPulse, state, diameter)
     local result = {}
-    local attackStrength = Clamp((attackPulse or 0) / ATTACK_PULSE_DURATION, 0, 1)
+    local resolvedState = state and string.lower(state) or ((attackPulse or 0) > 0 and "attack" or "idle")
+    local attackStrength = resolvedState == "attack" and Clamp((attackPulse or 0) / ATTACK_PULSE_DURATION, 0, 1) or 0
+    local attackProgress = 1 - attackStrength
+    local lockStrength = resolvedState == "attack" and Clamp(1 - attackProgress / 0.22, 0, 1) or 0
+    local alignmentBoost = resolvedState == "attack" and math.sin(attackProgress * math.pi) or 0
+    local rebound = resolvedState == "attack" and math.sin(attackProgress * math.pi) * 0.08 or 0
+    local chargedStrength = resolvedState == "charged" and 1 or 0
+    local layoutScale = (diameter or WHEEL_REFERENCE_DIAMETER) / WHEEL_REFERENCE_DIAMETER
     for index, layer in ipairs(RuntimePresentation.WheelLayers) do
         local isCore = index == #RuntimePresentation.WheelLayers
-        local speedMultiplier = 1 + attackStrength * (isCore and 1.4 or 0.65)
+        local speedMultiplier = 1 + alignmentBoost * (isCore and 1.35 or 0.72) + chargedStrength * (isCore and 0.42 or 0.18)
+        speedMultiplier = speedMultiplier * (1 - lockStrength * 0.86)
         local rotationSpeed = layer.rotationPerSecond * speedMultiplier
+        local baseRotation = (time or 0) * rotationSpeed
+        local lockedRotation = math.floor((baseRotation + 22.5) / 45) * 45
+        local rotation = baseRotation * (1 - lockStrength) + lockedRotation * lockStrength
+        local marksStrength = layer.id == "marks" and chargedStrength * (0.18 + math.abs(Pulse(time or 0, 1.2)) * 0.12) or 0
+        local layerStrength = attackStrength + chargedStrength
         result[index] = {
             id = layer.id,
-            width = layer.width,
-            height = layer.height,
-            offsetX = layer.offsetX,
-            offsetY = layer.offsetY,
-            opacity = Clamp(layer.opacity + attackStrength * (isCore and 0.10 or 0.08), 0, 1),
-            scale = 1 + attackStrength * (isCore and 0.16 or 0.05),
-            rotation = math.fmod((time or 0) * rotationSpeed, 360),
+            state = resolvedState,
+            width = layer.width * layoutScale,
+            height = layer.height * layoutScale,
+            offsetX = layer.offsetX * layoutScale,
+            offsetY = layer.offsetY * layoutScale,
+            opacity = Clamp(layer.opacity + attackStrength * (isCore and 0.10 or 0.06) + chargedStrength * (isCore and 0.10 or 0.08) + marksStrength, 0, 1),
+            scale = 1 + rebound + layerStrength * (isCore and 0.16 or 0.05) + chargedStrength * (isCore and 0.05 or 0.03),
+            rotation = math.fmod(rotation, 360),
             rotationSpeed = rotationSpeed,
             idleRpm = layer.idleRpm,
-            coreGlow = isCore and attackStrength or 0,
+            coreGlow = isCore and Clamp(attackStrength + chargedStrength, 0, 1) or 0,
             converge = 1 - attackStrength,
+            locked = lockStrength > 0,
+            rebound = rebound,
         }
     end
     return result

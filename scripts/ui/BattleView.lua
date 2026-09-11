@@ -2,6 +2,7 @@ local UI = require("urhox-libs/UI")
 local AssetCatalog = require("core.AssetCatalog")
 local ProjectilePresentation = require("vfx.ProjectilePresentation")
 local RuntimePresentation = require("vfx.RuntimePresentation")
+local SolarTermPresentation = require("vfx.SolarTermPresentation")
 
 local BattleView = {}
 BattleView.__index = BattleView
@@ -22,6 +23,11 @@ local PROJECTILE_WIDGET_COUNT = 56
 local DEATH_WIDGET_COUNT = 12
 local IMPACT_WIDGET_COUNT = 24
 local TRAIL_SEGMENT_COUNT = 3
+local SOLAR_TERM_DURATION = 70
+local SOLAR_TERM_SEQUENCE = { "lichun", "yushui", "jingzhe", "chunfen", "qingming", "guyu" }
+local RAIN_WIDGET_COUNT = 12
+local LEAF_WIDGET_COUNT = 8
+local POLLEN_WIDGET_COUNT = 8
 
 local ENEMY_SPRITES = {
     bifang = AssetCatalog.enemySprites.bifang,
@@ -95,6 +101,15 @@ function BattleView.New(game, onReturnToMenu)
     self.timerLabel = nil
     self.levelLabel = nil
     self.warningWidget = nil
+    self.solarTermTint = nil
+    self.solarTermFog = nil
+    self.solarTermLightning = nil
+    self.solarTermCorruption = nil
+    self.rainWidgets = {}
+    self.leafWidgets = {}
+    self.pollenWidgets = {}
+    self.solarTermOverride = nil
+    self.currentSolarTermName = "立春"
     self.choiceWasVisible = false
     self.visible = false
     return self
@@ -121,6 +136,136 @@ function BattleView:BuildArena()
         backgroundColor = { 8, 18, 14, 52 },
         pointerEvents = "none",
     })
+
+    self.solarTermTint = UI.Panel {
+        position = "absolute",
+        left = 0,
+        top = 0,
+        width = 1920,
+        height = 1080,
+        backgroundColor = { 145, 190, 130, 20 },
+        pointerEvents = "none",
+    }
+    self.arena:AddChild(self.solarTermTint)
+
+    self.solarTermFog = UI.Panel {
+        position = "absolute",
+        left = 0,
+        top = 180,
+        width = 1920,
+        height = 720,
+        backgroundColor = { 205, 218, 208, 0 },
+        pointerEvents = "none",
+    }
+    self.arena:AddChild(self.solarTermFog)
+
+    self.solarTermCorruption = UI.Panel {
+        position = "absolute",
+        left = 0,
+        top = 0,
+        width = 1920,
+        height = 1080,
+        borderColor = { 52, 70, 48, 0 },
+        borderWidth = 48,
+        backgroundColor = { 18, 30, 22, 0 },
+        pointerEvents = "none",
+    }
+    self.arena:AddChild(self.solarTermCorruption)
+
+    for index = 1, RAIN_WIDGET_COUNT do
+        local rain = UI.Panel {
+            visible = false,
+            position = "absolute",
+            width = 3,
+            height = 28,
+            borderRadius = 2,
+            backgroundColor = { 194, 218, 228, 86 },
+            pointerEvents = "none",
+        }
+        self.rainWidgets[index] = rain
+        self.arena:AddChild(rain)
+    end
+
+    for index = 1, LEAF_WIDGET_COUNT do
+        local leaf = UI.Panel {
+            visible = false,
+            position = "absolute",
+            width = 13,
+            height = 5,
+            borderRadius = 3,
+            backgroundColor = { 207, 220, 168, 104 },
+            pointerEvents = "none",
+        }
+        self.leafWidgets[index] = leaf
+        self.arena:AddChild(leaf)
+    end
+
+    for index = 1, POLLEN_WIDGET_COUNT do
+        local pollen = UI.Panel {
+            visible = false,
+            position = "absolute",
+            width = 5,
+            height = 5,
+            borderRadius = 3,
+            backgroundColor = { 239, 226, 166, 92 },
+            pointerEvents = "none",
+        }
+        self.pollenWidgets[index] = pollen
+        self.arena:AddChild(pollen)
+    end
+
+    self.solarTermLightning = UI.Panel {
+        position = "absolute",
+        left = 0,
+        top = 0,
+        width = 1920,
+        height = 1080,
+        backgroundColor = { 218, 230, 255, 0 },
+        pointerEvents = "none",
+    }
+    self.arena:AddChild(self.solarTermLightning)
+
+    for index = 1, RAIN_WIDGET_COUNT do
+        local widget = UI.Panel {
+            visible = false,
+            position = "absolute",
+            width = 3,
+            height = 28,
+            borderRadius = 2,
+            backgroundColor = { 200, 222, 226, 150 },
+            pointerEvents = "none",
+        }
+        self.rainWidgets[index] = widget
+        self.arena:AddChild(widget)
+    end
+
+    for index = 1, LEAF_WIDGET_COUNT do
+        local widget = UI.Panel {
+            visible = false,
+            position = "absolute",
+            width = 13,
+            height = 5,
+            borderRadius = 3,
+            backgroundColor = { 180, 205, 138, 104 },
+            pointerEvents = "none",
+        }
+        self.leafWidgets[index] = widget
+        self.arena:AddChild(widget)
+    end
+
+    for index = 1, POLLEN_WIDGET_COUNT do
+        local widget = UI.Panel {
+            visible = false,
+            position = "absolute",
+            width = 5,
+            height = 5,
+            borderRadius = 3,
+            backgroundColor = { 231, 214, 137, 180 },
+            pointerEvents = "none",
+        }
+        self.pollenWidgets[index] = widget
+        self.arena:AddChild(widget)
+    end
 
     self.warningWidget = UI.Panel {
         visible = false,
@@ -694,7 +839,7 @@ function BattleView:UpdateDebugControls()
     if enabled then
         local battle = self.game.battleManager
         self.debugLabel:SetText(string.format(
-            "DEBUG｜%s｜怪 %d｜弹 %d｜Impact %d｜F4 阴影 F5 单体 F6 对比 F7/F8/F9 压力 F10 Boss",
+            "DEBUG｜%s｜怪 %d｜弹 %d｜Impact %d｜1-6 节气 C 蓄力｜F4 阴影 F5 单体 F6 对比 F7/F8/F9 压力 F10 Boss",
             battle.debugScenario or "normal",
             #battle.enemies,
             #battle.projectiles,
@@ -879,6 +1024,113 @@ function BattleView:UpdatePools()
     end
 end
 
+local function ColorByte(value)
+    return math.floor(math.max(0, math.min(1, value or 0)) * 255 + 0.5)
+end
+
+local function Wrap(value, modulus)
+    return value - math.floor(value / modulus) * modulus
+end
+
+function BattleView:SetSolarTermOverride(termId)
+    if termId == nil then
+        self.solarTermOverride = nil
+        return true
+    end
+    local ok = pcall(SolarTermPresentation.Get, termId)
+    if not ok then
+        return false
+    end
+    self.solarTermOverride = termId
+    return true
+end
+
+function BattleView:ToggleWheelCharged()
+    local battle = self.game.battleManager
+    battle.wheelState = battle.wheelState == "charged" and nil or "charged"
+    return battle.wheelState
+end
+
+function BattleView:UpdateSolarTerm()
+    local battle = self.game.battleManager
+    local elapsed = battle.elapsed or 0
+    local captureMetadata = battle.captureMode and battle.captureMode:GetStateMetadata() or nil
+    local captureTerm = captureMetadata and captureMetadata.solarTermId or nil
+    local sequenceIndex = math.floor(elapsed / SOLAR_TERM_DURATION) % #SOLAR_TERM_SEQUENCE + 1
+    local termId = self.solarTermOverride or captureTerm or SOLAR_TERM_SEQUENCE[sequenceIndex]
+    local state = SolarTermPresentation.Step(termId, elapsed)
+    self.currentSolarTermName = state.name
+
+    local tint = state.overlay.tint
+    self.solarTermTint:SetStyle({
+        backgroundColor = { ColorByte(tint.r), ColorByte(tint.g), ColorByte(tint.b), ColorByte(tint.a) },
+    })
+    self.solarTermFog:SetStyle({
+        left = -120 + state.fog.offset * 120,
+        backgroundColor = { 205, 218, 208, math.floor(state.fog.opacity * 96) },
+    })
+    self.solarTermCorruption:SetStyle({
+        borderColor = { 54, 69, 48, math.floor(state.corruption * 126) },
+        backgroundColor = { 20, 29, 23, math.floor(state.corruption * 36) },
+    })
+    self.solarTermLightning:SetStyle({
+        backgroundColor = { 218, 230, 255, math.floor(state.lightning.flash * 112) },
+    })
+
+    local rainCount = math.floor(state.rain.density * RAIN_WIDGET_COUNT + 0.5)
+    for index = 1, RAIN_WIDGET_COUNT do
+        local widget = self.rainWidgets[index]
+        if index <= rainCount then
+            widget:SetStyle({
+                left = Wrap(index * 157 + elapsed * state.rain.speed * 520, 1980) - 30,
+                top = Wrap(index * 89 + elapsed * state.rain.speed * 740, 1120) - 30,
+                rotate = 12 + state.rain.angle * 35,
+                opacity = 0.48 + (index % 3) * 0.12,
+            })
+            widget:SetVisible(true)
+        else
+            widget:SetVisible(false)
+        end
+    end
+
+    local leafDensity = math.max(state.windLeaves.density, state.flowerLeaves.density)
+    local leafCount = math.floor(leafDensity * LEAF_WIDGET_COUNT + 0.5)
+    local leafSpeed = math.max(state.windLeaves.speed, state.flowerLeaves.speed)
+    local leafDirection = state.flowerLeaves.density > state.windLeaves.density
+        and state.flowerLeaves.direction or state.windLeaves.direction
+    for index = 1, LEAF_WIDGET_COUNT do
+        local widget = self.leafWidgets[index]
+        if index <= leafCount then
+            local travel = elapsed * leafSpeed * 380 * leafDirection
+            widget:SetStyle({
+                left = Wrap(index * 233 + travel, 1980) - 30,
+                top = 180 + Wrap(index * 137 + elapsed * leafSpeed * 90, 720),
+                rotate = Wrap(index * 37 + elapsed * 55, 360),
+                backgroundColor = state.flowerLeaves.density > 0.4
+                    and { 230, 229, 211, 112 } or { 180, 205, 138, 104 },
+            })
+            widget:SetVisible(true)
+        else
+            widget:SetVisible(false)
+        end
+    end
+
+    local pollenCount = math.floor(state.pollen.density * POLLEN_WIDGET_COUNT + 0.5)
+    for index = 1, POLLEN_WIDGET_COUNT do
+        local widget = self.pollenWidgets[index]
+        if index <= pollenCount then
+            widget:SetStyle({
+                left = Wrap(index * 271 + elapsed * state.pollen.speed * 210, 1940) - 10,
+                top = 250 + Wrap(index * 101 - elapsed * state.pollen.speed * 120, 620),
+                opacity = 0.52 + (index % 2) * 0.20,
+            })
+            widget:SetVisible(true)
+        else
+            widget:SetVisible(false)
+        end
+    end
+end
+
 function BattleView:UpdatePlayer()
     local battle = self.game.battleManager
     local player = battle.player
@@ -932,14 +1184,27 @@ function BattleView:UpdatePlayer()
     })
     self.playerShadow:SetVisible(self.shadowsEnabled and visual.opacity > 0.05)
 
-    local wheelVisuals = RuntimePresentation.Wheel(battle.elapsed, battle.attackPulse)
+    local wheelAnchor = RuntimePresentation.WheelAnchor(
+        player.x,
+        player.y,
+        playerWidth,
+        playerHeight,
+        player.facing
+    )
+    local wheelVisuals = RuntimePresentation.Wheel(
+        battle.elapsed,
+        battle.attackPulse,
+        battle.wheelState,
+        wheelAnchor.diameter
+    )
     for index = 1, #self.wheelWidgets do
         local widget = self.wheelWidgets[index]
-        local definition = widget.wheelDefinition
         local visual = wheelVisuals[index]
         widget:SetStyle({
-            left = player.x - definition.width * 0.5 + visual.offsetX,
-            top = player.y - definition.height * 0.5 + visual.offsetY,
+            left = wheelAnchor.centerX - visual.width * 0.5 + visual.offsetX,
+            top = wheelAnchor.centerY - visual.height * 0.5 + visual.offsetY,
+            width = visual.width,
+            height = visual.height,
             rotate = visual.rotation,
             opacity = visual.opacity * (0.45 + 0.55 * visual.opacity),
             scale = visual.scale,
@@ -954,7 +1219,7 @@ function BattleView:UpdatePlayer()
 
     local minutes = math.floor(battle.elapsed / 60)
     local seconds = math.floor(battle.elapsed % 60)
-    local phase = battle.bossSpawned and "春神现世" or (battle.eliteSpawned and "惊蛰" or "立春")
+    local phase = battle.bossSpawned and ("春神现世 · " .. self.currentSolarTermName) or self.currentSolarTermName
     self.timerLabel:SetText(string.format("%s %02d:%02d", phase, minutes, seconds))
 end
 
@@ -1027,6 +1292,7 @@ function BattleView:Update(timeStep)
     self:UpdateDebugControls()
     local moveX, moveY = self:GetMovement()
     self.game:Update(timeStep, moveX, moveY)
+    self:UpdateSolarTerm()
     self:UpdatePools()
     self:UpdatePlayer()
     self:UpdateBossAndWarning()

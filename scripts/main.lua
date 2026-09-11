@@ -40,14 +40,11 @@ function Start()
     }
     UI.SetRoot(uiRoot_)
 
-    if Constants.QA_AUTORUN_MODE then
-        game_:StartRun(Constants.DEFAULT_SEASON_ID)
+    if Constants.QA_AUTORUN then
+        local metadata = game_:StartQaCapture(Constants.QA_AUTORUN)
         menuWidget_:SetVisible(false)
         battleView_:Show()
-        game_.battleManager:ConfigureDebugScenario(
-            Constants.QA_AUTORUN_MODE,
-            Constants.QA_AUTORUN_PROJECTILES
-        )
+        print("QA Capture: " .. metadata.mode .. " seed=" .. tostring(metadata.seed))
     end
 
     SubscribeToEvent("Update", "HandleUpdate")
@@ -82,7 +79,21 @@ function HandleKeyDown(eventType, eventData)
     elseif key == KEY_Z then
         game_:ToggleDebug()
     elseif game_:GetDebugEnabled() and battleView_ then
-        if key == KEY_F4 then
+        if key == KEY_1 then
+            battleView_:SetSolarTermOverride("lichun")
+        elseif key == KEY_2 then
+            battleView_:SetSolarTermOverride("yushui")
+        elseif key == KEY_3 then
+            battleView_:SetSolarTermOverride("jingzhe")
+        elseif key == KEY_4 then
+            battleView_:SetSolarTermOverride("chunfen")
+        elseif key == KEY_5 then
+            battleView_:SetSolarTermOverride("qingming")
+        elseif key == KEY_6 then
+            battleView_:SetSolarTermOverride("guyu")
+        elseif key == KEY_C then
+            battleView_:ToggleWheelCharged()
+        elseif key == KEY_F4 then
             battleView_:ToggleShadows()
         elseif key == KEY_F5 then
             game_:ConfigureDebugScenario("single")
