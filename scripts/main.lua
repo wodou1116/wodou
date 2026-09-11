@@ -93,6 +93,25 @@ function HandleKeyDown(eventType, eventData)
             battleView_:SetSolarTermOverride("guyu")
         elseif key == KEY_C then
             battleView_:ToggleWheelCharged()
+        elseif key == KEY_Q then
+            local battle = game_.battleManager
+            local scenario = battle.debugScenario or "peer_comparison"
+            local mode = scenario:match("^combat_stress") and "combat_stress" or scenario
+            game_:StartQaCapture({
+                mode = mode,
+                projectileCount = battle.debugProjectileTarget,
+                freeze = true,
+                seed = 20260911,
+                presentationTime = 0.5,
+                animationPhase = 0.5,
+                state = {
+                    solarTermId = battleView_:GetSolarTermId() or "lichun",
+                    playerAnimationState = "idle",
+                    enemyAnimationState = "move",
+                    wheelState = battle.wheelState,
+                },
+            })
+            battleView_:Show()
         elseif key == KEY_F4 then
             battleView_:ToggleShadows()
         elseif key == KEY_F5 then

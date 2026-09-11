@@ -839,7 +839,7 @@ function BattleView:UpdateDebugControls()
     if enabled then
         local battle = self.game.battleManager
         self.debugLabel:SetText(string.format(
-            "DEBUG｜%s｜怪 %d｜弹 %d｜Impact %d｜1-6 节气 C 蓄力｜F4 阴影 F5 单体 F6 对比 F7/F8/F9 压力 F10 Boss",
+            "DEBUG｜%s｜怪 %d｜弹 %d｜Impact %d｜1-6 节气 C 蓄力 Q 固定截图｜F4 阴影 F5 单体 F6 对比 F7/F8/F9 压力 F10 Boss",
             battle.debugScenario or "normal",
             #battle.enemies,
             #battle.projectiles,
@@ -1043,6 +1043,10 @@ function BattleView:SetSolarTermOverride(termId)
     end
     self.solarTermOverride = termId
     return true
+end
+
+function BattleView:GetSolarTermId()
+    return self.solarTermOverride
 end
 
 function BattleView:ToggleWheelCharged()
