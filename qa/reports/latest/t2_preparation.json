@@ -1,0 +1,3520 @@
+{
+  "schema_version": "1.0",
+  "demo": "0.3",
+  "qa_stage": "T2",
+  "asset_qa_skill_version": "1.3",
+  "planner_version": "1.0",
+  "deterministic": true,
+  "status": "PENDING_CAPTURE",
+  "evidence": {
+    "real_maker_motion_screenshots_available": false,
+    "scores_allowed": false,
+    "pass_allowed": false,
+    "missing_capture_status": "PENDING_CAPTURE"
+  },
+  "capture_contract": {
+    "mode": "motion",
+    "seed": 20260911,
+    "freeze": true,
+    "camera": {
+      "space": "design_1920x1080",
+      "x": 960,
+      "y": 540,
+      "zoom": 1.0
+    },
+    "entity_positions": {
+      "player": {
+        "x": 960,
+        "y": 640
+      },
+      "jiuweihu": {
+        "x": 1270,
+        "y": 460
+      },
+      "bifang": {
+        "x": 1090,
+        "y": 780
+      },
+      "kui": {
+        "x": 650,
+        "y": 710
+      }
+    },
+    "animation_states": {
+      "idle": {
+        "player_animation_state": "idle",
+        "enemy_animation_state": "idle",
+        "wheel_state": "idle",
+        "attack_state": "idle",
+        "animation_phase": 0.0
+      },
+      "move": {
+        "player_animation_state": "move",
+        "enemy_animation_state": "move",
+        "wheel_state": "idle",
+        "attack_state": "none",
+        "animation_phase": 0.5
+      },
+      "attack": {
+        "player_animation_state": "idle",
+        "enemy_animation_state": "hit",
+        "wheel_state": "attack",
+        "attack_state": "attack",
+        "animation_phase": 0.5
+      }
+    }
+  },
+  "screenshot_budget": {
+    "per_motion_min": 0,
+    "per_motion_max": 3,
+    "out_of_budget_evidence_allowed": false
+  },
+  "roi_policy": {
+    "requested_scale": 1.75,
+    "min_scale": 1.5,
+    "max_scale": 2.0,
+    "basis": "subject_bbox",
+    "source": "maker_runtime_entity_local_roi",
+    "t1_eligible_only_with_capture": true
+  },
+  "contact_sheet": {
+    "tool": "qa_tooling.py",
+    "purpose": "coverage_only",
+    "source_count": 0,
+    "source_frames": [],
+    "output": null,
+    "status": "PENDING_CAPTURE"
+  },
+  "keyframe_sampling": {
+    "tool": "qa_tooling.py",
+    "strategy": "evenly_spaced",
+    "planned_frame_count": 3,
+    "max_per_motion": 3,
+    "indices": [
+      0,
+      1,
+      2
+    ],
+    "status_without_capture": "PENDING_CAPTURE"
+  },
+  "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+  "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
+  "hash_cache": {
+    "tool": "qa_tooling.HashCache",
+    "path": "qa/reports/latest/hash_cache.json",
+    "version": 1,
+    "read_only": true,
+    "invalidation_fields": [
+      "size",
+      "mtime_ns"
+    ],
+    "persist_planned_hashes": false,
+    "entries": [
+      {
+        "path": "assets/image/characters/shi_yu_zhe.png",
+        "cache_key": "assets/image/characters/shi_yu_zhe.png",
+        "size": 418594,
+        "mtime_ns": 1789009837548300700,
+        "sha256": "5b63afd1743474c57fd4f13690775e3c212ffd7eb12b848e57bde37bda0a2e31",
+        "cache_hit": true,
+        "hash_source": "existing_cache"
+      },
+      {
+        "path": "assets/image/enemies/bifang.png",
+        "cache_key": "assets/image/enemies/bifang.png",
+        "size": 171256,
+        "mtime_ns": 1789009837654812800,
+        "sha256": "0651e5989c4b0ad83cb2d8a1fa1f926c3fe7c3619fda8a3d10b3a50c634bb6d1",
+        "cache_hit": true,
+        "hash_source": "existing_cache"
+      },
+      {
+        "path": "assets/image/enemies/jiuweihu.png",
+        "cache_key": "assets/image/enemies/jiuweihu.png",
+        "size": 209181,
+        "mtime_ns": 1789009837702814900,
+        "sha256": "9b5b30af1731b0123c948ce2111a5c7531021a0452640476ce3a63dc5b77049c",
+        "cache_hit": true,
+        "hash_source": "existing_cache"
+      },
+      {
+        "path": "assets/image/enemies/kui.png",
+        "cache_key": "assets/image/enemies/kui.png",
+        "size": 169969,
+        "mtime_ns": 1789009837745331600,
+        "sha256": "4f0fa4a68bc2c5d15c15065fee1ed110c2743dc0d8747cc1468c798c67e71f8c",
+        "cache_hit": true,
+        "hash_source": "existing_cache"
+      },
+      {
+        "path": "assets/image/environments/spring_arena.png",
+        "cache_key": "assets/image/environments/spring_arena.png",
+        "size": 3155165,
+        "mtime_ns": 1788962337414960100,
+        "sha256": "425152b94da4a7375d8ecedfd8ca981e5957bc6cc093019a0ba86afa096969f9",
+        "cache_hit": true,
+        "hash_source": "existing_cache"
+      },
+      {
+        "path": "assets/image/vfx/warnings/circle.png",
+        "cache_key": "assets/image/vfx/warnings/circle.png",
+        "size": 634696,
+        "mtime_ns": 1789009838160440600,
+        "sha256": "dc654b0fa3ef24ebc2193027c987dbcd97477041ce0d66abea84cddf9186b864",
+        "cache_hit": false,
+        "hash_source": "computed_in_memory"
+      },
+      {
+        "path": "assets/image/vfx/warnings/root_line.png",
+        "cache_key": "assets/image/vfx/warnings/root_line.png",
+        "size": 378403,
+        "mtime_ns": 1789009838627197200,
+        "sha256": "c18022b41c1378749bffd979c42d91aa8b4b7f18e9f9ed510a119abbb3692d6b",
+        "cache_hit": false,
+        "hash_source": "computed_in_memory"
+      },
+      {
+        "path": "assets/image/wheel/core.png",
+        "cache_key": "assets/image/wheel/core.png",
+        "size": 127753,
+        "mtime_ns": 1789009838023404800,
+        "sha256": "c8b9af5419a6e076bfa0b5fb8d59a160e40c1d8c8219268129b243292ed97cd6",
+        "cache_hit": false,
+        "hash_source": "computed_in_memory"
+      },
+      {
+        "path": "assets/image/wheel/inner.png",
+        "cache_key": "assets/image/wheel/inner.png",
+        "size": 207408,
+        "mtime_ns": 1789009837998401800,
+        "sha256": "eb7052aefcf32d65182d0a0ecc6fc58d8a7ec4cf44e5337ac58fac882f3b2c1c",
+        "cache_hit": false,
+        "hash_source": "computed_in_memory"
+      },
+      {
+        "path": "assets/image/wheel/marks.png",
+        "cache_key": "assets/image/wheel/marks.png",
+        "size": 83378,
+        "mtime_ns": 1789009838047916100,
+        "sha256": "9d6712deff61ad219ec10a9d66b5d4abafb353cbf5d51b82ba7861518c449f67",
+        "cache_hit": false,
+        "hash_source": "computed_in_memory"
+      },
+      {
+        "path": "assets/image/wheel/middle.png",
+        "cache_key": "assets/image/wheel/middle.png",
+        "size": 265233,
+        "mtime_ns": 1789009837971398100,
+        "sha256": "5710ddfa43072b1bae8b9d4743f7473cb44d76bec6d9129376f3ee6928cf236c",
+        "cache_hit": false,
+        "hash_source": "computed_in_memory"
+      },
+      {
+        "path": "assets/image/wheel/outer.png",
+        "cache_key": "assets/image/wheel/outer.png",
+        "size": 379612,
+        "mtime_ns": 1789009837942887300,
+        "sha256": "cbd6dc5b87fe82b3d47aea19e01c531690a517f904c69e6a7c46bf735c66c14f",
+        "cache_hit": false,
+        "hash_source": "computed_in_memory"
+      }
+    ]
+  },
+  "asset_hash": {
+    "assets/image/characters/shi_yu_zhe.png": "5b63afd1743474c57fd4f13690775e3c212ffd7eb12b848e57bde37bda0a2e31",
+    "assets/image/enemies/bifang.png": "0651e5989c4b0ad83cb2d8a1fa1f926c3fe7c3619fda8a3d10b3a50c634bb6d1",
+    "assets/image/enemies/jiuweihu.png": "9b5b30af1731b0123c948ce2111a5c7531021a0452640476ce3a63dc5b77049c",
+    "assets/image/enemies/kui.png": "4f0fa4a68bc2c5d15c15065fee1ed110c2743dc0d8747cc1468c798c67e71f8c",
+    "assets/image/environments/spring_arena.png": "425152b94da4a7375d8ecedfd8ca981e5957bc6cc093019a0ba86afa096969f9",
+    "assets/image/vfx/warnings/circle.png": "dc654b0fa3ef24ebc2193027c987dbcd97477041ce0d66abea84cddf9186b864",
+    "assets/image/vfx/warnings/root_line.png": "c18022b41c1378749bffd979c42d91aa8b4b7f18e9f9ed510a119abbb3692d6b",
+    "assets/image/wheel/core.png": "c8b9af5419a6e076bfa0b5fb8d59a160e40c1d8c8219268129b243292ed97cd6",
+    "assets/image/wheel/inner.png": "eb7052aefcf32d65182d0a0ecc6fc58d8a7ec4cf44e5337ac58fac882f3b2c1c",
+    "assets/image/wheel/marks.png": "9d6712deff61ad219ec10a9d66b5d4abafb353cbf5d51b82ba7861518c449f67",
+    "assets/image/wheel/middle.png": "5710ddfa43072b1bae8b9d4743f7473cb44d76bec6d9129376f3ee6928cf236c",
+    "assets/image/wheel/outer.png": "cbd6dc5b87fe82b3d47aea19e01c531690a517f904c69e6a7c46bf735c66c14f"
+  },
+  "qa_case_hashes": {
+    "demo03.t2.wheel_separation.jiuweihu": "8c2d4e84ef14e210873db201c6580953eb258ec05411b0d06ca6eee277d10b03",
+    "demo03.t2.wheel_separation.bifang": "3ffd3935b48a6f299e6967ec4865889d56bf22038df3be524c75a1c290d85a99",
+    "demo03.t2.wheel_separation.kui": "14b3509594be9292e45e920ca59260d4cf0fe717ae1bebd8392e3f6261e20be3",
+    "demo03.t2.player_readability.jiuweihu": "baa5bf91d6408f39119f1e2163280354bcc26fae0a80b80b4aab05a8adb200cc",
+    "demo03.t2.player_readability.bifang": "26f90117e05d639e452d8a93411b059183e961e75ee64fcd5a10c0053762abe8",
+    "demo03.t2.player_readability.kui": "d7d1d02e1f3b281b2d8a6c26dc203f8432b75fa80d0a8a0e238fc70746992a6a",
+    "demo03.t2.combat_presence.jiuweihu": "d0372c336903a95d8fca1e73fcb5ab4c0048b527a16f59fb5502d341f9b42cdb",
+    "demo03.t2.combat_presence.bifang": "5115bff967b4429e8ecd35551b6d4cefcaeabd85982a4d345e8d7b81d9c28d59",
+    "demo03.t2.combat_presence.kui": "2ee864c2743e895fca6d1799557466dbd33a3ea01bf65386adf3040213c06c1a",
+    "demo03.t2.ground_vfx_conflict.jiuweihu": "37cb991fea78ab3ec5653849f242ded6c90ff0f6588725c7b97423e4543e49a6",
+    "demo03.t2.ground_vfx_conflict.bifang": "bf62d87e592246d5cf0a1ac17a23d9b1552cc8710d4c10be6c17cf6c1c3ef1ac",
+    "demo03.t2.ground_vfx_conflict.kui": "a0d0fa0831417ef2675d557057e1b327102777fb0cb8a717e381bf6d04123dbb",
+    "demo03.t2.attack_state_recognition.jiuweihu": "f25e5181a5a77609080649e42801b0704eabf23e30e1dc109168035e95b69950",
+    "demo03.t2.attack_state_recognition.bifang": "a6d897b7cb322c33ac2671ce0afed0307a4a70d3f1aaef277d782a26f013f80a",
+    "demo03.t2.attack_state_recognition.kui": "19be06487410370b73d4d247e148c3e877962ba8ec1afc26389edb02642c703a"
+  },
+  "coverage": {
+    "target_asset_ids": [
+      "A-11",
+      "A-12",
+      "A-13"
+    ],
+    "dimensions": [
+      "attack_state_recognition",
+      "combat_presence",
+      "ground_vfx_conflict",
+      "player_readability",
+      "wheel_separation"
+    ],
+    "case_count": 15
+  },
+  "cases": [
+    {
+      "case_id": "demo03.t2.wheel_separation.jiuweihu",
+      "stage": "T2",
+      "status": "PENDING_CAPTURE",
+      "mode": "motion",
+      "ratio": "16:9",
+      "dimension_key": "wheel_separation",
+      "dimension": "Wheel Separation",
+      "asset_id": "A-12",
+      "enemy_id": "jiuweihu",
+      "target_name": "九尾狐",
+      "motion": "idle",
+      "seed": 20260911,
+      "freeze": true,
+      "camera": {
+        "space": "design_1920x1080",
+        "x": 960,
+        "y": 540,
+        "zoom": 1.0
+      },
+      "entity_positions": {
+        "player": {
+          "x": 960,
+          "y": 640
+        },
+        "enemy": {
+          "id": "jiuweihu",
+          "x": 1270,
+          "y": 460
+        }
+      },
+      "animation_state": {
+        "player_animation_state": "idle",
+        "enemy_animation_state": "idle",
+        "wheel_state": "idle",
+        "attack_state": "idle",
+        "animation_phase": 0.0
+      },
+      "state": {
+        "playerAnimationState": "idle",
+        "enemyAnimationState": "idle",
+        "wheelState": "idle",
+        "attackState": "idle",
+        "playerFacing": "right",
+        "enemyFacing": "left"
+      },
+      "asset_refs": [
+        "A-03",
+        "A-07-03",
+        "A-07-05",
+        "A-08-01",
+        "A-08-02",
+        "A-08-04",
+        "A-10",
+        "A-12"
+      ],
+      "asset_paths": [
+        "assets/image/characters/shi_yu_zhe.png",
+        "assets/image/wheel/marks.png",
+        "assets/image/wheel/outer.png",
+        "assets/image/wheel/core.png",
+        "assets/image/wheel/inner.png",
+        "assets/image/wheel/middle.png",
+        "assets/image/environments/spring_arena.png",
+        "assets/image/enemies/jiuweihu.png"
+      ],
+      "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+      "screenshot_budget": {
+        "min_per_motion": 0,
+        "max_per_motion": 3
+      },
+      "roi": {
+        "roi": null,
+        "roi_scale": 1.75,
+        "roi_scale_min": 1.5,
+        "roi_scale_max": 2.0,
+        "roi_source": "maker_runtime_entity_local_roi",
+        "t1_eligible": false,
+        "status": "PENDING_CAPTURE"
+      },
+      "keyframe_sampling": {
+        "tool": "qa_tooling.py",
+        "strategy": "evenly_spaced",
+        "planned_frame_count": 3,
+        "max_per_motion": 3,
+        "indices": [
+          0,
+          1,
+          2
+        ],
+        "captured_frames": [],
+        "status": "PENDING_CAPTURE"
+      },
+      "contact_sheet": {
+        "tool": "qa_tooling.py",
+        "purpose": "coverage_only",
+        "source_frames": [],
+        "output": null,
+        "status": "PENDING_CAPTURE"
+      },
+      "captured_frames": [],
+      "qa_case": {
+        "case_id": "demo03.t2.wheel_separation.jiuweihu",
+        "stage": "T2",
+        "status": "PENDING_CAPTURE",
+        "mode": "motion",
+        "ratio": "16:9",
+        "dimension_key": "wheel_separation",
+        "dimension": "Wheel Separation",
+        "asset_id": "A-12",
+        "enemy_id": "jiuweihu",
+        "target_name": "九尾狐",
+        "motion": "idle",
+        "seed": 20260911,
+        "freeze": true,
+        "camera": {
+          "space": "design_1920x1080",
+          "x": 960,
+          "y": 540,
+          "zoom": 1.0
+        },
+        "entity_positions": {
+          "player": {
+            "x": 960,
+            "y": 640
+          },
+          "enemy": {
+            "id": "jiuweihu",
+            "x": 1270,
+            "y": 460
+          }
+        },
+        "animation_state": {
+          "player_animation_state": "idle",
+          "enemy_animation_state": "idle",
+          "wheel_state": "idle",
+          "attack_state": "idle",
+          "animation_phase": 0.0
+        },
+        "state": {
+          "playerAnimationState": "idle",
+          "enemyAnimationState": "idle",
+          "wheelState": "idle",
+          "attackState": "idle",
+          "playerFacing": "right",
+          "enemyFacing": "left"
+        },
+        "asset_refs": [
+          "A-03",
+          "A-07-03",
+          "A-07-05",
+          "A-08-01",
+          "A-08-02",
+          "A-08-04",
+          "A-10",
+          "A-12"
+        ],
+        "asset_paths": [
+          "assets/image/characters/shi_yu_zhe.png",
+          "assets/image/wheel/marks.png",
+          "assets/image/wheel/outer.png",
+          "assets/image/wheel/core.png",
+          "assets/image/wheel/inner.png",
+          "assets/image/wheel/middle.png",
+          "assets/image/environments/spring_arena.png",
+          "assets/image/enemies/jiuweihu.png"
+        ],
+        "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+        "screenshot_budget": {
+          "min_per_motion": 0,
+          "max_per_motion": 3
+        },
+        "roi": {
+          "roi": null,
+          "roi_scale": 1.75,
+          "roi_scale_min": 1.5,
+          "roi_scale_max": 2.0,
+          "roi_source": "maker_runtime_entity_local_roi",
+          "t1_eligible": false,
+          "status": "PENDING_CAPTURE"
+        },
+        "keyframe_sampling": {
+          "tool": "qa_tooling.py",
+          "strategy": "evenly_spaced",
+          "planned_frame_count": 3,
+          "max_per_motion": 3,
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "captured_frames": [],
+          "status": "PENDING_CAPTURE"
+        },
+        "contact_sheet": {
+          "tool": "qa_tooling.py",
+          "purpose": "coverage_only",
+          "source_frames": [],
+          "output": null,
+          "status": "PENDING_CAPTURE"
+        },
+        "captured_frames": []
+      },
+      "asset_hash": {
+        "assets/image/characters/shi_yu_zhe.png": "5b63afd1743474c57fd4f13690775e3c212ffd7eb12b848e57bde37bda0a2e31",
+        "assets/image/enemies/jiuweihu.png": "9b5b30af1731b0123c948ce2111a5c7531021a0452640476ce3a63dc5b77049c",
+        "assets/image/environments/spring_arena.png": "425152b94da4a7375d8ecedfd8ca981e5957bc6cc093019a0ba86afa096969f9",
+        "assets/image/wheel/core.png": "c8b9af5419a6e076bfa0b5fb8d59a160e40c1d8c8219268129b243292ed97cd6",
+        "assets/image/wheel/inner.png": "eb7052aefcf32d65182d0a0ecc6fc58d8a7ec4cf44e5337ac58fac882f3b2c1c",
+        "assets/image/wheel/marks.png": "9d6712deff61ad219ec10a9d66b5d4abafb353cbf5d51b82ba7861518c449f67",
+        "assets/image/wheel/middle.png": "5710ddfa43072b1bae8b9d4743f7473cb44d76bec6d9129376f3ee6928cf236c",
+        "assets/image/wheel/outer.png": "cbd6dc5b87fe82b3d47aea19e01c531690a517f904c69e6a7c46bf735c66c14f"
+      },
+      "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
+      "qa_case_hash": "8c2d4e84ef14e210873db201c6580953eb258ec05411b0d06ca6eee277d10b03",
+      "vision_score": null,
+      "metric_score": null,
+      "final_score": null,
+      "grade": null,
+      "confidence": null,
+      "hard_fail": null,
+      "hard_fail_codes": [],
+      "action": "ESCALATE",
+      "next_gate": "PENDING_CAPTURE",
+      "visual_review_status": "PENDING_CAPTURE"
+    },
+    {
+      "case_id": "demo03.t2.wheel_separation.bifang",
+      "stage": "T2",
+      "status": "PENDING_CAPTURE",
+      "mode": "motion",
+      "ratio": "16:9",
+      "dimension_key": "wheel_separation",
+      "dimension": "Wheel Separation",
+      "asset_id": "A-11",
+      "enemy_id": "bifang",
+      "target_name": "毕方",
+      "motion": "idle",
+      "seed": 20260911,
+      "freeze": true,
+      "camera": {
+        "space": "design_1920x1080",
+        "x": 960,
+        "y": 540,
+        "zoom": 1.0
+      },
+      "entity_positions": {
+        "player": {
+          "x": 960,
+          "y": 640
+        },
+        "enemy": {
+          "id": "bifang",
+          "x": 1090,
+          "y": 780
+        }
+      },
+      "animation_state": {
+        "player_animation_state": "idle",
+        "enemy_animation_state": "idle",
+        "wheel_state": "idle",
+        "attack_state": "idle",
+        "animation_phase": 0.0
+      },
+      "state": {
+        "playerAnimationState": "idle",
+        "enemyAnimationState": "idle",
+        "wheelState": "idle",
+        "attackState": "idle",
+        "playerFacing": "right",
+        "enemyFacing": "left"
+      },
+      "asset_refs": [
+        "A-03",
+        "A-07-03",
+        "A-07-05",
+        "A-08-01",
+        "A-08-02",
+        "A-08-04",
+        "A-10",
+        "A-11"
+      ],
+      "asset_paths": [
+        "assets/image/characters/shi_yu_zhe.png",
+        "assets/image/wheel/marks.png",
+        "assets/image/wheel/outer.png",
+        "assets/image/wheel/core.png",
+        "assets/image/wheel/inner.png",
+        "assets/image/wheel/middle.png",
+        "assets/image/environments/spring_arena.png",
+        "assets/image/enemies/bifang.png"
+      ],
+      "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+      "screenshot_budget": {
+        "min_per_motion": 0,
+        "max_per_motion": 3
+      },
+      "roi": {
+        "roi": null,
+        "roi_scale": 1.75,
+        "roi_scale_min": 1.5,
+        "roi_scale_max": 2.0,
+        "roi_source": "maker_runtime_entity_local_roi",
+        "t1_eligible": false,
+        "status": "PENDING_CAPTURE"
+      },
+      "keyframe_sampling": {
+        "tool": "qa_tooling.py",
+        "strategy": "evenly_spaced",
+        "planned_frame_count": 3,
+        "max_per_motion": 3,
+        "indices": [
+          0,
+          1,
+          2
+        ],
+        "captured_frames": [],
+        "status": "PENDING_CAPTURE"
+      },
+      "contact_sheet": {
+        "tool": "qa_tooling.py",
+        "purpose": "coverage_only",
+        "source_frames": [],
+        "output": null,
+        "status": "PENDING_CAPTURE"
+      },
+      "captured_frames": [],
+      "qa_case": {
+        "case_id": "demo03.t2.wheel_separation.bifang",
+        "stage": "T2",
+        "status": "PENDING_CAPTURE",
+        "mode": "motion",
+        "ratio": "16:9",
+        "dimension_key": "wheel_separation",
+        "dimension": "Wheel Separation",
+        "asset_id": "A-11",
+        "enemy_id": "bifang",
+        "target_name": "毕方",
+        "motion": "idle",
+        "seed": 20260911,
+        "freeze": true,
+        "camera": {
+          "space": "design_1920x1080",
+          "x": 960,
+          "y": 540,
+          "zoom": 1.0
+        },
+        "entity_positions": {
+          "player": {
+            "x": 960,
+            "y": 640
+          },
+          "enemy": {
+            "id": "bifang",
+            "x": 1090,
+            "y": 780
+          }
+        },
+        "animation_state": {
+          "player_animation_state": "idle",
+          "enemy_animation_state": "idle",
+          "wheel_state": "idle",
+          "attack_state": "idle",
+          "animation_phase": 0.0
+        },
+        "state": {
+          "playerAnimationState": "idle",
+          "enemyAnimationState": "idle",
+          "wheelState": "idle",
+          "attackState": "idle",
+          "playerFacing": "right",
+          "enemyFacing": "left"
+        },
+        "asset_refs": [
+          "A-03",
+          "A-07-03",
+          "A-07-05",
+          "A-08-01",
+          "A-08-02",
+          "A-08-04",
+          "A-10",
+          "A-11"
+        ],
+        "asset_paths": [
+          "assets/image/characters/shi_yu_zhe.png",
+          "assets/image/wheel/marks.png",
+          "assets/image/wheel/outer.png",
+          "assets/image/wheel/core.png",
+          "assets/image/wheel/inner.png",
+          "assets/image/wheel/middle.png",
+          "assets/image/environments/spring_arena.png",
+          "assets/image/enemies/bifang.png"
+        ],
+        "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+        "screenshot_budget": {
+          "min_per_motion": 0,
+          "max_per_motion": 3
+        },
+        "roi": {
+          "roi": null,
+          "roi_scale": 1.75,
+          "roi_scale_min": 1.5,
+          "roi_scale_max": 2.0,
+          "roi_source": "maker_runtime_entity_local_roi",
+          "t1_eligible": false,
+          "status": "PENDING_CAPTURE"
+        },
+        "keyframe_sampling": {
+          "tool": "qa_tooling.py",
+          "strategy": "evenly_spaced",
+          "planned_frame_count": 3,
+          "max_per_motion": 3,
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "captured_frames": [],
+          "status": "PENDING_CAPTURE"
+        },
+        "contact_sheet": {
+          "tool": "qa_tooling.py",
+          "purpose": "coverage_only",
+          "source_frames": [],
+          "output": null,
+          "status": "PENDING_CAPTURE"
+        },
+        "captured_frames": []
+      },
+      "asset_hash": {
+        "assets/image/characters/shi_yu_zhe.png": "5b63afd1743474c57fd4f13690775e3c212ffd7eb12b848e57bde37bda0a2e31",
+        "assets/image/enemies/bifang.png": "0651e5989c4b0ad83cb2d8a1fa1f926c3fe7c3619fda8a3d10b3a50c634bb6d1",
+        "assets/image/environments/spring_arena.png": "425152b94da4a7375d8ecedfd8ca981e5957bc6cc093019a0ba86afa096969f9",
+        "assets/image/wheel/core.png": "c8b9af5419a6e076bfa0b5fb8d59a160e40c1d8c8219268129b243292ed97cd6",
+        "assets/image/wheel/inner.png": "eb7052aefcf32d65182d0a0ecc6fc58d8a7ec4cf44e5337ac58fac882f3b2c1c",
+        "assets/image/wheel/marks.png": "9d6712deff61ad219ec10a9d66b5d4abafb353cbf5d51b82ba7861518c449f67",
+        "assets/image/wheel/middle.png": "5710ddfa43072b1bae8b9d4743f7473cb44d76bec6d9129376f3ee6928cf236c",
+        "assets/image/wheel/outer.png": "cbd6dc5b87fe82b3d47aea19e01c531690a517f904c69e6a7c46bf735c66c14f"
+      },
+      "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
+      "qa_case_hash": "3ffd3935b48a6f299e6967ec4865889d56bf22038df3be524c75a1c290d85a99",
+      "vision_score": null,
+      "metric_score": null,
+      "final_score": null,
+      "grade": null,
+      "confidence": null,
+      "hard_fail": null,
+      "hard_fail_codes": [],
+      "action": "ESCALATE",
+      "next_gate": "PENDING_CAPTURE",
+      "visual_review_status": "PENDING_CAPTURE"
+    },
+    {
+      "case_id": "demo03.t2.wheel_separation.kui",
+      "stage": "T2",
+      "status": "PENDING_CAPTURE",
+      "mode": "motion",
+      "ratio": "16:9",
+      "dimension_key": "wheel_separation",
+      "dimension": "Wheel Separation",
+      "asset_id": "A-13",
+      "enemy_id": "kui",
+      "target_name": "夔",
+      "motion": "idle",
+      "seed": 20260911,
+      "freeze": true,
+      "camera": {
+        "space": "design_1920x1080",
+        "x": 960,
+        "y": 540,
+        "zoom": 1.0
+      },
+      "entity_positions": {
+        "player": {
+          "x": 960,
+          "y": 640
+        },
+        "enemy": {
+          "id": "kui",
+          "x": 650,
+          "y": 710
+        }
+      },
+      "animation_state": {
+        "player_animation_state": "idle",
+        "enemy_animation_state": "idle",
+        "wheel_state": "idle",
+        "attack_state": "idle",
+        "animation_phase": 0.0
+      },
+      "state": {
+        "playerAnimationState": "idle",
+        "enemyAnimationState": "idle",
+        "wheelState": "idle",
+        "attackState": "idle",
+        "playerFacing": "right",
+        "enemyFacing": "left"
+      },
+      "asset_refs": [
+        "A-03",
+        "A-07-03",
+        "A-07-05",
+        "A-08-01",
+        "A-08-02",
+        "A-08-04",
+        "A-10",
+        "A-13"
+      ],
+      "asset_paths": [
+        "assets/image/characters/shi_yu_zhe.png",
+        "assets/image/wheel/marks.png",
+        "assets/image/wheel/outer.png",
+        "assets/image/wheel/core.png",
+        "assets/image/wheel/inner.png",
+        "assets/image/wheel/middle.png",
+        "assets/image/environments/spring_arena.png",
+        "assets/image/enemies/kui.png"
+      ],
+      "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+      "screenshot_budget": {
+        "min_per_motion": 0,
+        "max_per_motion": 3
+      },
+      "roi": {
+        "roi": null,
+        "roi_scale": 1.75,
+        "roi_scale_min": 1.5,
+        "roi_scale_max": 2.0,
+        "roi_source": "maker_runtime_entity_local_roi",
+        "t1_eligible": false,
+        "status": "PENDING_CAPTURE"
+      },
+      "keyframe_sampling": {
+        "tool": "qa_tooling.py",
+        "strategy": "evenly_spaced",
+        "planned_frame_count": 3,
+        "max_per_motion": 3,
+        "indices": [
+          0,
+          1,
+          2
+        ],
+        "captured_frames": [],
+        "status": "PENDING_CAPTURE"
+      },
+      "contact_sheet": {
+        "tool": "qa_tooling.py",
+        "purpose": "coverage_only",
+        "source_frames": [],
+        "output": null,
+        "status": "PENDING_CAPTURE"
+      },
+      "captured_frames": [],
+      "qa_case": {
+        "case_id": "demo03.t2.wheel_separation.kui",
+        "stage": "T2",
+        "status": "PENDING_CAPTURE",
+        "mode": "motion",
+        "ratio": "16:9",
+        "dimension_key": "wheel_separation",
+        "dimension": "Wheel Separation",
+        "asset_id": "A-13",
+        "enemy_id": "kui",
+        "target_name": "夔",
+        "motion": "idle",
+        "seed": 20260911,
+        "freeze": true,
+        "camera": {
+          "space": "design_1920x1080",
+          "x": 960,
+          "y": 540,
+          "zoom": 1.0
+        },
+        "entity_positions": {
+          "player": {
+            "x": 960,
+            "y": 640
+          },
+          "enemy": {
+            "id": "kui",
+            "x": 650,
+            "y": 710
+          }
+        },
+        "animation_state": {
+          "player_animation_state": "idle",
+          "enemy_animation_state": "idle",
+          "wheel_state": "idle",
+          "attack_state": "idle",
+          "animation_phase": 0.0
+        },
+        "state": {
+          "playerAnimationState": "idle",
+          "enemyAnimationState": "idle",
+          "wheelState": "idle",
+          "attackState": "idle",
+          "playerFacing": "right",
+          "enemyFacing": "left"
+        },
+        "asset_refs": [
+          "A-03",
+          "A-07-03",
+          "A-07-05",
+          "A-08-01",
+          "A-08-02",
+          "A-08-04",
+          "A-10",
+          "A-13"
+        ],
+        "asset_paths": [
+          "assets/image/characters/shi_yu_zhe.png",
+          "assets/image/wheel/marks.png",
+          "assets/image/wheel/outer.png",
+          "assets/image/wheel/core.png",
+          "assets/image/wheel/inner.png",
+          "assets/image/wheel/middle.png",
+          "assets/image/environments/spring_arena.png",
+          "assets/image/enemies/kui.png"
+        ],
+        "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+        "screenshot_budget": {
+          "min_per_motion": 0,
+          "max_per_motion": 3
+        },
+        "roi": {
+          "roi": null,
+          "roi_scale": 1.75,
+          "roi_scale_min": 1.5,
+          "roi_scale_max": 2.0,
+          "roi_source": "maker_runtime_entity_local_roi",
+          "t1_eligible": false,
+          "status": "PENDING_CAPTURE"
+        },
+        "keyframe_sampling": {
+          "tool": "qa_tooling.py",
+          "strategy": "evenly_spaced",
+          "planned_frame_count": 3,
+          "max_per_motion": 3,
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "captured_frames": [],
+          "status": "PENDING_CAPTURE"
+        },
+        "contact_sheet": {
+          "tool": "qa_tooling.py",
+          "purpose": "coverage_only",
+          "source_frames": [],
+          "output": null,
+          "status": "PENDING_CAPTURE"
+        },
+        "captured_frames": []
+      },
+      "asset_hash": {
+        "assets/image/characters/shi_yu_zhe.png": "5b63afd1743474c57fd4f13690775e3c212ffd7eb12b848e57bde37bda0a2e31",
+        "assets/image/enemies/kui.png": "4f0fa4a68bc2c5d15c15065fee1ed110c2743dc0d8747cc1468c798c67e71f8c",
+        "assets/image/environments/spring_arena.png": "425152b94da4a7375d8ecedfd8ca981e5957bc6cc093019a0ba86afa096969f9",
+        "assets/image/wheel/core.png": "c8b9af5419a6e076bfa0b5fb8d59a160e40c1d8c8219268129b243292ed97cd6",
+        "assets/image/wheel/inner.png": "eb7052aefcf32d65182d0a0ecc6fc58d8a7ec4cf44e5337ac58fac882f3b2c1c",
+        "assets/image/wheel/marks.png": "9d6712deff61ad219ec10a9d66b5d4abafb353cbf5d51b82ba7861518c449f67",
+        "assets/image/wheel/middle.png": "5710ddfa43072b1bae8b9d4743f7473cb44d76bec6d9129376f3ee6928cf236c",
+        "assets/image/wheel/outer.png": "cbd6dc5b87fe82b3d47aea19e01c531690a517f904c69e6a7c46bf735c66c14f"
+      },
+      "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
+      "qa_case_hash": "14b3509594be9292e45e920ca59260d4cf0fe717ae1bebd8392e3f6261e20be3",
+      "vision_score": null,
+      "metric_score": null,
+      "final_score": null,
+      "grade": null,
+      "confidence": null,
+      "hard_fail": null,
+      "hard_fail_codes": [],
+      "action": "ESCALATE",
+      "next_gate": "PENDING_CAPTURE",
+      "visual_review_status": "PENDING_CAPTURE"
+    },
+    {
+      "case_id": "demo03.t2.player_readability.jiuweihu",
+      "stage": "T2",
+      "status": "PENDING_CAPTURE",
+      "mode": "motion",
+      "ratio": "16:9",
+      "dimension_key": "player_readability",
+      "dimension": "Player Readability",
+      "asset_id": "A-12",
+      "enemy_id": "jiuweihu",
+      "target_name": "九尾狐",
+      "motion": "move",
+      "seed": 20260911,
+      "freeze": true,
+      "camera": {
+        "space": "design_1920x1080",
+        "x": 960,
+        "y": 540,
+        "zoom": 1.0
+      },
+      "entity_positions": {
+        "player": {
+          "x": 960,
+          "y": 640
+        },
+        "enemy": {
+          "id": "jiuweihu",
+          "x": 1270,
+          "y": 460
+        }
+      },
+      "animation_state": {
+        "player_animation_state": "move",
+        "enemy_animation_state": "move",
+        "wheel_state": "idle",
+        "attack_state": "none",
+        "animation_phase": 0.5
+      },
+      "state": {
+        "playerAnimationState": "move",
+        "enemyAnimationState": "move",
+        "wheelState": "idle",
+        "attackState": "none",
+        "playerFacing": "right",
+        "enemyFacing": "left"
+      },
+      "asset_refs": [
+        "A-03",
+        "A-10",
+        "A-12"
+      ],
+      "asset_paths": [
+        "assets/image/characters/shi_yu_zhe.png",
+        "assets/image/environments/spring_arena.png",
+        "assets/image/enemies/jiuweihu.png"
+      ],
+      "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+      "screenshot_budget": {
+        "min_per_motion": 0,
+        "max_per_motion": 3
+      },
+      "roi": {
+        "roi": null,
+        "roi_scale": 1.75,
+        "roi_scale_min": 1.5,
+        "roi_scale_max": 2.0,
+        "roi_source": "maker_runtime_entity_local_roi",
+        "t1_eligible": false,
+        "status": "PENDING_CAPTURE"
+      },
+      "keyframe_sampling": {
+        "tool": "qa_tooling.py",
+        "strategy": "evenly_spaced",
+        "planned_frame_count": 3,
+        "max_per_motion": 3,
+        "indices": [
+          0,
+          1,
+          2
+        ],
+        "captured_frames": [],
+        "status": "PENDING_CAPTURE"
+      },
+      "contact_sheet": {
+        "tool": "qa_tooling.py",
+        "purpose": "coverage_only",
+        "source_frames": [],
+        "output": null,
+        "status": "PENDING_CAPTURE"
+      },
+      "captured_frames": [],
+      "qa_case": {
+        "case_id": "demo03.t2.player_readability.jiuweihu",
+        "stage": "T2",
+        "status": "PENDING_CAPTURE",
+        "mode": "motion",
+        "ratio": "16:9",
+        "dimension_key": "player_readability",
+        "dimension": "Player Readability",
+        "asset_id": "A-12",
+        "enemy_id": "jiuweihu",
+        "target_name": "九尾狐",
+        "motion": "move",
+        "seed": 20260911,
+        "freeze": true,
+        "camera": {
+          "space": "design_1920x1080",
+          "x": 960,
+          "y": 540,
+          "zoom": 1.0
+        },
+        "entity_positions": {
+          "player": {
+            "x": 960,
+            "y": 640
+          },
+          "enemy": {
+            "id": "jiuweihu",
+            "x": 1270,
+            "y": 460
+          }
+        },
+        "animation_state": {
+          "player_animation_state": "move",
+          "enemy_animation_state": "move",
+          "wheel_state": "idle",
+          "attack_state": "none",
+          "animation_phase": 0.5
+        },
+        "state": {
+          "playerAnimationState": "move",
+          "enemyAnimationState": "move",
+          "wheelState": "idle",
+          "attackState": "none",
+          "playerFacing": "right",
+          "enemyFacing": "left"
+        },
+        "asset_refs": [
+          "A-03",
+          "A-10",
+          "A-12"
+        ],
+        "asset_paths": [
+          "assets/image/characters/shi_yu_zhe.png",
+          "assets/image/environments/spring_arena.png",
+          "assets/image/enemies/jiuweihu.png"
+        ],
+        "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+        "screenshot_budget": {
+          "min_per_motion": 0,
+          "max_per_motion": 3
+        },
+        "roi": {
+          "roi": null,
+          "roi_scale": 1.75,
+          "roi_scale_min": 1.5,
+          "roi_scale_max": 2.0,
+          "roi_source": "maker_runtime_entity_local_roi",
+          "t1_eligible": false,
+          "status": "PENDING_CAPTURE"
+        },
+        "keyframe_sampling": {
+          "tool": "qa_tooling.py",
+          "strategy": "evenly_spaced",
+          "planned_frame_count": 3,
+          "max_per_motion": 3,
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "captured_frames": [],
+          "status": "PENDING_CAPTURE"
+        },
+        "contact_sheet": {
+          "tool": "qa_tooling.py",
+          "purpose": "coverage_only",
+          "source_frames": [],
+          "output": null,
+          "status": "PENDING_CAPTURE"
+        },
+        "captured_frames": []
+      },
+      "asset_hash": {
+        "assets/image/characters/shi_yu_zhe.png": "5b63afd1743474c57fd4f13690775e3c212ffd7eb12b848e57bde37bda0a2e31",
+        "assets/image/enemies/jiuweihu.png": "9b5b30af1731b0123c948ce2111a5c7531021a0452640476ce3a63dc5b77049c",
+        "assets/image/environments/spring_arena.png": "425152b94da4a7375d8ecedfd8ca981e5957bc6cc093019a0ba86afa096969f9"
+      },
+      "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
+      "qa_case_hash": "baa5bf91d6408f39119f1e2163280354bcc26fae0a80b80b4aab05a8adb200cc",
+      "vision_score": null,
+      "metric_score": null,
+      "final_score": null,
+      "grade": null,
+      "confidence": null,
+      "hard_fail": null,
+      "hard_fail_codes": [],
+      "action": "ESCALATE",
+      "next_gate": "PENDING_CAPTURE",
+      "visual_review_status": "PENDING_CAPTURE"
+    },
+    {
+      "case_id": "demo03.t2.player_readability.bifang",
+      "stage": "T2",
+      "status": "PENDING_CAPTURE",
+      "mode": "motion",
+      "ratio": "16:9",
+      "dimension_key": "player_readability",
+      "dimension": "Player Readability",
+      "asset_id": "A-11",
+      "enemy_id": "bifang",
+      "target_name": "毕方",
+      "motion": "move",
+      "seed": 20260911,
+      "freeze": true,
+      "camera": {
+        "space": "design_1920x1080",
+        "x": 960,
+        "y": 540,
+        "zoom": 1.0
+      },
+      "entity_positions": {
+        "player": {
+          "x": 960,
+          "y": 640
+        },
+        "enemy": {
+          "id": "bifang",
+          "x": 1090,
+          "y": 780
+        }
+      },
+      "animation_state": {
+        "player_animation_state": "move",
+        "enemy_animation_state": "move",
+        "wheel_state": "idle",
+        "attack_state": "none",
+        "animation_phase": 0.5
+      },
+      "state": {
+        "playerAnimationState": "move",
+        "enemyAnimationState": "move",
+        "wheelState": "idle",
+        "attackState": "none",
+        "playerFacing": "right",
+        "enemyFacing": "left"
+      },
+      "asset_refs": [
+        "A-03",
+        "A-10",
+        "A-11"
+      ],
+      "asset_paths": [
+        "assets/image/characters/shi_yu_zhe.png",
+        "assets/image/environments/spring_arena.png",
+        "assets/image/enemies/bifang.png"
+      ],
+      "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+      "screenshot_budget": {
+        "min_per_motion": 0,
+        "max_per_motion": 3
+      },
+      "roi": {
+        "roi": null,
+        "roi_scale": 1.75,
+        "roi_scale_min": 1.5,
+        "roi_scale_max": 2.0,
+        "roi_source": "maker_runtime_entity_local_roi",
+        "t1_eligible": false,
+        "status": "PENDING_CAPTURE"
+      },
+      "keyframe_sampling": {
+        "tool": "qa_tooling.py",
+        "strategy": "evenly_spaced",
+        "planned_frame_count": 3,
+        "max_per_motion": 3,
+        "indices": [
+          0,
+          1,
+          2
+        ],
+        "captured_frames": [],
+        "status": "PENDING_CAPTURE"
+      },
+      "contact_sheet": {
+        "tool": "qa_tooling.py",
+        "purpose": "coverage_only",
+        "source_frames": [],
+        "output": null,
+        "status": "PENDING_CAPTURE"
+      },
+      "captured_frames": [],
+      "qa_case": {
+        "case_id": "demo03.t2.player_readability.bifang",
+        "stage": "T2",
+        "status": "PENDING_CAPTURE",
+        "mode": "motion",
+        "ratio": "16:9",
+        "dimension_key": "player_readability",
+        "dimension": "Player Readability",
+        "asset_id": "A-11",
+        "enemy_id": "bifang",
+        "target_name": "毕方",
+        "motion": "move",
+        "seed": 20260911,
+        "freeze": true,
+        "camera": {
+          "space": "design_1920x1080",
+          "x": 960,
+          "y": 540,
+          "zoom": 1.0
+        },
+        "entity_positions": {
+          "player": {
+            "x": 960,
+            "y": 640
+          },
+          "enemy": {
+            "id": "bifang",
+            "x": 1090,
+            "y": 780
+          }
+        },
+        "animation_state": {
+          "player_animation_state": "move",
+          "enemy_animation_state": "move",
+          "wheel_state": "idle",
+          "attack_state": "none",
+          "animation_phase": 0.5
+        },
+        "state": {
+          "playerAnimationState": "move",
+          "enemyAnimationState": "move",
+          "wheelState": "idle",
+          "attackState": "none",
+          "playerFacing": "right",
+          "enemyFacing": "left"
+        },
+        "asset_refs": [
+          "A-03",
+          "A-10",
+          "A-11"
+        ],
+        "asset_paths": [
+          "assets/image/characters/shi_yu_zhe.png",
+          "assets/image/environments/spring_arena.png",
+          "assets/image/enemies/bifang.png"
+        ],
+        "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+        "screenshot_budget": {
+          "min_per_motion": 0,
+          "max_per_motion": 3
+        },
+        "roi": {
+          "roi": null,
+          "roi_scale": 1.75,
+          "roi_scale_min": 1.5,
+          "roi_scale_max": 2.0,
+          "roi_source": "maker_runtime_entity_local_roi",
+          "t1_eligible": false,
+          "status": "PENDING_CAPTURE"
+        },
+        "keyframe_sampling": {
+          "tool": "qa_tooling.py",
+          "strategy": "evenly_spaced",
+          "planned_frame_count": 3,
+          "max_per_motion": 3,
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "captured_frames": [],
+          "status": "PENDING_CAPTURE"
+        },
+        "contact_sheet": {
+          "tool": "qa_tooling.py",
+          "purpose": "coverage_only",
+          "source_frames": [],
+          "output": null,
+          "status": "PENDING_CAPTURE"
+        },
+        "captured_frames": []
+      },
+      "asset_hash": {
+        "assets/image/characters/shi_yu_zhe.png": "5b63afd1743474c57fd4f13690775e3c212ffd7eb12b848e57bde37bda0a2e31",
+        "assets/image/enemies/bifang.png": "0651e5989c4b0ad83cb2d8a1fa1f926c3fe7c3619fda8a3d10b3a50c634bb6d1",
+        "assets/image/environments/spring_arena.png": "425152b94da4a7375d8ecedfd8ca981e5957bc6cc093019a0ba86afa096969f9"
+      },
+      "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
+      "qa_case_hash": "26f90117e05d639e452d8a93411b059183e961e75ee64fcd5a10c0053762abe8",
+      "vision_score": null,
+      "metric_score": null,
+      "final_score": null,
+      "grade": null,
+      "confidence": null,
+      "hard_fail": null,
+      "hard_fail_codes": [],
+      "action": "ESCALATE",
+      "next_gate": "PENDING_CAPTURE",
+      "visual_review_status": "PENDING_CAPTURE"
+    },
+    {
+      "case_id": "demo03.t2.player_readability.kui",
+      "stage": "T2",
+      "status": "PENDING_CAPTURE",
+      "mode": "motion",
+      "ratio": "16:9",
+      "dimension_key": "player_readability",
+      "dimension": "Player Readability",
+      "asset_id": "A-13",
+      "enemy_id": "kui",
+      "target_name": "夔",
+      "motion": "move",
+      "seed": 20260911,
+      "freeze": true,
+      "camera": {
+        "space": "design_1920x1080",
+        "x": 960,
+        "y": 540,
+        "zoom": 1.0
+      },
+      "entity_positions": {
+        "player": {
+          "x": 960,
+          "y": 640
+        },
+        "enemy": {
+          "id": "kui",
+          "x": 650,
+          "y": 710
+        }
+      },
+      "animation_state": {
+        "player_animation_state": "move",
+        "enemy_animation_state": "move",
+        "wheel_state": "idle",
+        "attack_state": "none",
+        "animation_phase": 0.5
+      },
+      "state": {
+        "playerAnimationState": "move",
+        "enemyAnimationState": "move",
+        "wheelState": "idle",
+        "attackState": "none",
+        "playerFacing": "right",
+        "enemyFacing": "left"
+      },
+      "asset_refs": [
+        "A-03",
+        "A-10",
+        "A-13"
+      ],
+      "asset_paths": [
+        "assets/image/characters/shi_yu_zhe.png",
+        "assets/image/environments/spring_arena.png",
+        "assets/image/enemies/kui.png"
+      ],
+      "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+      "screenshot_budget": {
+        "min_per_motion": 0,
+        "max_per_motion": 3
+      },
+      "roi": {
+        "roi": null,
+        "roi_scale": 1.75,
+        "roi_scale_min": 1.5,
+        "roi_scale_max": 2.0,
+        "roi_source": "maker_runtime_entity_local_roi",
+        "t1_eligible": false,
+        "status": "PENDING_CAPTURE"
+      },
+      "keyframe_sampling": {
+        "tool": "qa_tooling.py",
+        "strategy": "evenly_spaced",
+        "planned_frame_count": 3,
+        "max_per_motion": 3,
+        "indices": [
+          0,
+          1,
+          2
+        ],
+        "captured_frames": [],
+        "status": "PENDING_CAPTURE"
+      },
+      "contact_sheet": {
+        "tool": "qa_tooling.py",
+        "purpose": "coverage_only",
+        "source_frames": [],
+        "output": null,
+        "status": "PENDING_CAPTURE"
+      },
+      "captured_frames": [],
+      "qa_case": {
+        "case_id": "demo03.t2.player_readability.kui",
+        "stage": "T2",
+        "status": "PENDING_CAPTURE",
+        "mode": "motion",
+        "ratio": "16:9",
+        "dimension_key": "player_readability",
+        "dimension": "Player Readability",
+        "asset_id": "A-13",
+        "enemy_id": "kui",
+        "target_name": "夔",
+        "motion": "move",
+        "seed": 20260911,
+        "freeze": true,
+        "camera": {
+          "space": "design_1920x1080",
+          "x": 960,
+          "y": 540,
+          "zoom": 1.0
+        },
+        "entity_positions": {
+          "player": {
+            "x": 960,
+            "y": 640
+          },
+          "enemy": {
+            "id": "kui",
+            "x": 650,
+            "y": 710
+          }
+        },
+        "animation_state": {
+          "player_animation_state": "move",
+          "enemy_animation_state": "move",
+          "wheel_state": "idle",
+          "attack_state": "none",
+          "animation_phase": 0.5
+        },
+        "state": {
+          "playerAnimationState": "move",
+          "enemyAnimationState": "move",
+          "wheelState": "idle",
+          "attackState": "none",
+          "playerFacing": "right",
+          "enemyFacing": "left"
+        },
+        "asset_refs": [
+          "A-03",
+          "A-10",
+          "A-13"
+        ],
+        "asset_paths": [
+          "assets/image/characters/shi_yu_zhe.png",
+          "assets/image/environments/spring_arena.png",
+          "assets/image/enemies/kui.png"
+        ],
+        "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+        "screenshot_budget": {
+          "min_per_motion": 0,
+          "max_per_motion": 3
+        },
+        "roi": {
+          "roi": null,
+          "roi_scale": 1.75,
+          "roi_scale_min": 1.5,
+          "roi_scale_max": 2.0,
+          "roi_source": "maker_runtime_entity_local_roi",
+          "t1_eligible": false,
+          "status": "PENDING_CAPTURE"
+        },
+        "keyframe_sampling": {
+          "tool": "qa_tooling.py",
+          "strategy": "evenly_spaced",
+          "planned_frame_count": 3,
+          "max_per_motion": 3,
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "captured_frames": [],
+          "status": "PENDING_CAPTURE"
+        },
+        "contact_sheet": {
+          "tool": "qa_tooling.py",
+          "purpose": "coverage_only",
+          "source_frames": [],
+          "output": null,
+          "status": "PENDING_CAPTURE"
+        },
+        "captured_frames": []
+      },
+      "asset_hash": {
+        "assets/image/characters/shi_yu_zhe.png": "5b63afd1743474c57fd4f13690775e3c212ffd7eb12b848e57bde37bda0a2e31",
+        "assets/image/enemies/kui.png": "4f0fa4a68bc2c5d15c15065fee1ed110c2743dc0d8747cc1468c798c67e71f8c",
+        "assets/image/environments/spring_arena.png": "425152b94da4a7375d8ecedfd8ca981e5957bc6cc093019a0ba86afa096969f9"
+      },
+      "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
+      "qa_case_hash": "d7d1d02e1f3b281b2d8a6c26dc203f8432b75fa80d0a8a0e238fc70746992a6a",
+      "vision_score": null,
+      "metric_score": null,
+      "final_score": null,
+      "grade": null,
+      "confidence": null,
+      "hard_fail": null,
+      "hard_fail_codes": [],
+      "action": "ESCALATE",
+      "next_gate": "PENDING_CAPTURE",
+      "visual_review_status": "PENDING_CAPTURE"
+    },
+    {
+      "case_id": "demo03.t2.combat_presence.jiuweihu",
+      "stage": "T2",
+      "status": "PENDING_CAPTURE",
+      "mode": "motion",
+      "ratio": "16:9",
+      "dimension_key": "combat_presence",
+      "dimension": "Combat Presence",
+      "asset_id": "A-12",
+      "enemy_id": "jiuweihu",
+      "target_name": "九尾狐",
+      "motion": "attack",
+      "seed": 20260911,
+      "freeze": true,
+      "camera": {
+        "space": "design_1920x1080",
+        "x": 960,
+        "y": 540,
+        "zoom": 1.0
+      },
+      "entity_positions": {
+        "player": {
+          "x": 960,
+          "y": 640
+        },
+        "enemy": {
+          "id": "jiuweihu",
+          "x": 1270,
+          "y": 460
+        }
+      },
+      "animation_state": {
+        "player_animation_state": "idle",
+        "enemy_animation_state": "hit",
+        "wheel_state": "attack",
+        "attack_state": "attack",
+        "animation_phase": 0.5
+      },
+      "state": {
+        "playerAnimationState": "idle",
+        "enemyAnimationState": "hit",
+        "wheelState": "attack",
+        "attackState": "attack",
+        "playerFacing": "right",
+        "enemyFacing": "left"
+      },
+      "asset_refs": [
+        "A-03",
+        "A-08-01",
+        "A-10",
+        "A-12",
+        "A-17-01"
+      ],
+      "asset_paths": [
+        "assets/image/characters/shi_yu_zhe.png",
+        "assets/image/wheel/core.png",
+        "assets/image/environments/spring_arena.png",
+        "assets/image/enemies/jiuweihu.png",
+        "assets/image/vfx/warnings/circle.png"
+      ],
+      "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+      "screenshot_budget": {
+        "min_per_motion": 0,
+        "max_per_motion": 3
+      },
+      "roi": {
+        "roi": null,
+        "roi_scale": 1.75,
+        "roi_scale_min": 1.5,
+        "roi_scale_max": 2.0,
+        "roi_source": "maker_runtime_entity_local_roi",
+        "t1_eligible": false,
+        "status": "PENDING_CAPTURE"
+      },
+      "keyframe_sampling": {
+        "tool": "qa_tooling.py",
+        "strategy": "evenly_spaced",
+        "planned_frame_count": 3,
+        "max_per_motion": 3,
+        "indices": [
+          0,
+          1,
+          2
+        ],
+        "captured_frames": [],
+        "status": "PENDING_CAPTURE"
+      },
+      "contact_sheet": {
+        "tool": "qa_tooling.py",
+        "purpose": "coverage_only",
+        "source_frames": [],
+        "output": null,
+        "status": "PENDING_CAPTURE"
+      },
+      "captured_frames": [],
+      "qa_case": {
+        "case_id": "demo03.t2.combat_presence.jiuweihu",
+        "stage": "T2",
+        "status": "PENDING_CAPTURE",
+        "mode": "motion",
+        "ratio": "16:9",
+        "dimension_key": "combat_presence",
+        "dimension": "Combat Presence",
+        "asset_id": "A-12",
+        "enemy_id": "jiuweihu",
+        "target_name": "九尾狐",
+        "motion": "attack",
+        "seed": 20260911,
+        "freeze": true,
+        "camera": {
+          "space": "design_1920x1080",
+          "x": 960,
+          "y": 540,
+          "zoom": 1.0
+        },
+        "entity_positions": {
+          "player": {
+            "x": 960,
+            "y": 640
+          },
+          "enemy": {
+            "id": "jiuweihu",
+            "x": 1270,
+            "y": 460
+          }
+        },
+        "animation_state": {
+          "player_animation_state": "idle",
+          "enemy_animation_state": "hit",
+          "wheel_state": "attack",
+          "attack_state": "attack",
+          "animation_phase": 0.5
+        },
+        "state": {
+          "playerAnimationState": "idle",
+          "enemyAnimationState": "hit",
+          "wheelState": "attack",
+          "attackState": "attack",
+          "playerFacing": "right",
+          "enemyFacing": "left"
+        },
+        "asset_refs": [
+          "A-03",
+          "A-08-01",
+          "A-10",
+          "A-12",
+          "A-17-01"
+        ],
+        "asset_paths": [
+          "assets/image/characters/shi_yu_zhe.png",
+          "assets/image/wheel/core.png",
+          "assets/image/environments/spring_arena.png",
+          "assets/image/enemies/jiuweihu.png",
+          "assets/image/vfx/warnings/circle.png"
+        ],
+        "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+        "screenshot_budget": {
+          "min_per_motion": 0,
+          "max_per_motion": 3
+        },
+        "roi": {
+          "roi": null,
+          "roi_scale": 1.75,
+          "roi_scale_min": 1.5,
+          "roi_scale_max": 2.0,
+          "roi_source": "maker_runtime_entity_local_roi",
+          "t1_eligible": false,
+          "status": "PENDING_CAPTURE"
+        },
+        "keyframe_sampling": {
+          "tool": "qa_tooling.py",
+          "strategy": "evenly_spaced",
+          "planned_frame_count": 3,
+          "max_per_motion": 3,
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "captured_frames": [],
+          "status": "PENDING_CAPTURE"
+        },
+        "contact_sheet": {
+          "tool": "qa_tooling.py",
+          "purpose": "coverage_only",
+          "source_frames": [],
+          "output": null,
+          "status": "PENDING_CAPTURE"
+        },
+        "captured_frames": []
+      },
+      "asset_hash": {
+        "assets/image/characters/shi_yu_zhe.png": "5b63afd1743474c57fd4f13690775e3c212ffd7eb12b848e57bde37bda0a2e31",
+        "assets/image/enemies/jiuweihu.png": "9b5b30af1731b0123c948ce2111a5c7531021a0452640476ce3a63dc5b77049c",
+        "assets/image/environments/spring_arena.png": "425152b94da4a7375d8ecedfd8ca981e5957bc6cc093019a0ba86afa096969f9",
+        "assets/image/vfx/warnings/circle.png": "dc654b0fa3ef24ebc2193027c987dbcd97477041ce0d66abea84cddf9186b864",
+        "assets/image/wheel/core.png": "c8b9af5419a6e076bfa0b5fb8d59a160e40c1d8c8219268129b243292ed97cd6"
+      },
+      "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
+      "qa_case_hash": "d0372c336903a95d8fca1e73fcb5ab4c0048b527a16f59fb5502d341f9b42cdb",
+      "vision_score": null,
+      "metric_score": null,
+      "final_score": null,
+      "grade": null,
+      "confidence": null,
+      "hard_fail": null,
+      "hard_fail_codes": [],
+      "action": "ESCALATE",
+      "next_gate": "PENDING_CAPTURE",
+      "visual_review_status": "PENDING_CAPTURE"
+    },
+    {
+      "case_id": "demo03.t2.combat_presence.bifang",
+      "stage": "T2",
+      "status": "PENDING_CAPTURE",
+      "mode": "motion",
+      "ratio": "16:9",
+      "dimension_key": "combat_presence",
+      "dimension": "Combat Presence",
+      "asset_id": "A-11",
+      "enemy_id": "bifang",
+      "target_name": "毕方",
+      "motion": "attack",
+      "seed": 20260911,
+      "freeze": true,
+      "camera": {
+        "space": "design_1920x1080",
+        "x": 960,
+        "y": 540,
+        "zoom": 1.0
+      },
+      "entity_positions": {
+        "player": {
+          "x": 960,
+          "y": 640
+        },
+        "enemy": {
+          "id": "bifang",
+          "x": 1090,
+          "y": 780
+        }
+      },
+      "animation_state": {
+        "player_animation_state": "idle",
+        "enemy_animation_state": "hit",
+        "wheel_state": "attack",
+        "attack_state": "attack",
+        "animation_phase": 0.5
+      },
+      "state": {
+        "playerAnimationState": "idle",
+        "enemyAnimationState": "hit",
+        "wheelState": "attack",
+        "attackState": "attack",
+        "playerFacing": "right",
+        "enemyFacing": "left"
+      },
+      "asset_refs": [
+        "A-03",
+        "A-08-01",
+        "A-10",
+        "A-11",
+        "A-17-01"
+      ],
+      "asset_paths": [
+        "assets/image/characters/shi_yu_zhe.png",
+        "assets/image/wheel/core.png",
+        "assets/image/environments/spring_arena.png",
+        "assets/image/enemies/bifang.png",
+        "assets/image/vfx/warnings/circle.png"
+      ],
+      "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+      "screenshot_budget": {
+        "min_per_motion": 0,
+        "max_per_motion": 3
+      },
+      "roi": {
+        "roi": null,
+        "roi_scale": 1.75,
+        "roi_scale_min": 1.5,
+        "roi_scale_max": 2.0,
+        "roi_source": "maker_runtime_entity_local_roi",
+        "t1_eligible": false,
+        "status": "PENDING_CAPTURE"
+      },
+      "keyframe_sampling": {
+        "tool": "qa_tooling.py",
+        "strategy": "evenly_spaced",
+        "planned_frame_count": 3,
+        "max_per_motion": 3,
+        "indices": [
+          0,
+          1,
+          2
+        ],
+        "captured_frames": [],
+        "status": "PENDING_CAPTURE"
+      },
+      "contact_sheet": {
+        "tool": "qa_tooling.py",
+        "purpose": "coverage_only",
+        "source_frames": [],
+        "output": null,
+        "status": "PENDING_CAPTURE"
+      },
+      "captured_frames": [],
+      "qa_case": {
+        "case_id": "demo03.t2.combat_presence.bifang",
+        "stage": "T2",
+        "status": "PENDING_CAPTURE",
+        "mode": "motion",
+        "ratio": "16:9",
+        "dimension_key": "combat_presence",
+        "dimension": "Combat Presence",
+        "asset_id": "A-11",
+        "enemy_id": "bifang",
+        "target_name": "毕方",
+        "motion": "attack",
+        "seed": 20260911,
+        "freeze": true,
+        "camera": {
+          "space": "design_1920x1080",
+          "x": 960,
+          "y": 540,
+          "zoom": 1.0
+        },
+        "entity_positions": {
+          "player": {
+            "x": 960,
+            "y": 640
+          },
+          "enemy": {
+            "id": "bifang",
+            "x": 1090,
+            "y": 780
+          }
+        },
+        "animation_state": {
+          "player_animation_state": "idle",
+          "enemy_animation_state": "hit",
+          "wheel_state": "attack",
+          "attack_state": "attack",
+          "animation_phase": 0.5
+        },
+        "state": {
+          "playerAnimationState": "idle",
+          "enemyAnimationState": "hit",
+          "wheelState": "attack",
+          "attackState": "attack",
+          "playerFacing": "right",
+          "enemyFacing": "left"
+        },
+        "asset_refs": [
+          "A-03",
+          "A-08-01",
+          "A-10",
+          "A-11",
+          "A-17-01"
+        ],
+        "asset_paths": [
+          "assets/image/characters/shi_yu_zhe.png",
+          "assets/image/wheel/core.png",
+          "assets/image/environments/spring_arena.png",
+          "assets/image/enemies/bifang.png",
+          "assets/image/vfx/warnings/circle.png"
+        ],
+        "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+        "screenshot_budget": {
+          "min_per_motion": 0,
+          "max_per_motion": 3
+        },
+        "roi": {
+          "roi": null,
+          "roi_scale": 1.75,
+          "roi_scale_min": 1.5,
+          "roi_scale_max": 2.0,
+          "roi_source": "maker_runtime_entity_local_roi",
+          "t1_eligible": false,
+          "status": "PENDING_CAPTURE"
+        },
+        "keyframe_sampling": {
+          "tool": "qa_tooling.py",
+          "strategy": "evenly_spaced",
+          "planned_frame_count": 3,
+          "max_per_motion": 3,
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "captured_frames": [],
+          "status": "PENDING_CAPTURE"
+        },
+        "contact_sheet": {
+          "tool": "qa_tooling.py",
+          "purpose": "coverage_only",
+          "source_frames": [],
+          "output": null,
+          "status": "PENDING_CAPTURE"
+        },
+        "captured_frames": []
+      },
+      "asset_hash": {
+        "assets/image/characters/shi_yu_zhe.png": "5b63afd1743474c57fd4f13690775e3c212ffd7eb12b848e57bde37bda0a2e31",
+        "assets/image/enemies/bifang.png": "0651e5989c4b0ad83cb2d8a1fa1f926c3fe7c3619fda8a3d10b3a50c634bb6d1",
+        "assets/image/environments/spring_arena.png": "425152b94da4a7375d8ecedfd8ca981e5957bc6cc093019a0ba86afa096969f9",
+        "assets/image/vfx/warnings/circle.png": "dc654b0fa3ef24ebc2193027c987dbcd97477041ce0d66abea84cddf9186b864",
+        "assets/image/wheel/core.png": "c8b9af5419a6e076bfa0b5fb8d59a160e40c1d8c8219268129b243292ed97cd6"
+      },
+      "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
+      "qa_case_hash": "5115bff967b4429e8ecd35551b6d4cefcaeabd85982a4d345e8d7b81d9c28d59",
+      "vision_score": null,
+      "metric_score": null,
+      "final_score": null,
+      "grade": null,
+      "confidence": null,
+      "hard_fail": null,
+      "hard_fail_codes": [],
+      "action": "ESCALATE",
+      "next_gate": "PENDING_CAPTURE",
+      "visual_review_status": "PENDING_CAPTURE"
+    },
+    {
+      "case_id": "demo03.t2.combat_presence.kui",
+      "stage": "T2",
+      "status": "PENDING_CAPTURE",
+      "mode": "motion",
+      "ratio": "16:9",
+      "dimension_key": "combat_presence",
+      "dimension": "Combat Presence",
+      "asset_id": "A-13",
+      "enemy_id": "kui",
+      "target_name": "夔",
+      "motion": "attack",
+      "seed": 20260911,
+      "freeze": true,
+      "camera": {
+        "space": "design_1920x1080",
+        "x": 960,
+        "y": 540,
+        "zoom": 1.0
+      },
+      "entity_positions": {
+        "player": {
+          "x": 960,
+          "y": 640
+        },
+        "enemy": {
+          "id": "kui",
+          "x": 650,
+          "y": 710
+        }
+      },
+      "animation_state": {
+        "player_animation_state": "idle",
+        "enemy_animation_state": "hit",
+        "wheel_state": "attack",
+        "attack_state": "attack",
+        "animation_phase": 0.5
+      },
+      "state": {
+        "playerAnimationState": "idle",
+        "enemyAnimationState": "hit",
+        "wheelState": "attack",
+        "attackState": "attack",
+        "playerFacing": "right",
+        "enemyFacing": "left"
+      },
+      "asset_refs": [
+        "A-03",
+        "A-08-01",
+        "A-10",
+        "A-13",
+        "A-17-01"
+      ],
+      "asset_paths": [
+        "assets/image/characters/shi_yu_zhe.png",
+        "assets/image/wheel/core.png",
+        "assets/image/environments/spring_arena.png",
+        "assets/image/enemies/kui.png",
+        "assets/image/vfx/warnings/circle.png"
+      ],
+      "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+      "screenshot_budget": {
+        "min_per_motion": 0,
+        "max_per_motion": 3
+      },
+      "roi": {
+        "roi": null,
+        "roi_scale": 1.75,
+        "roi_scale_min": 1.5,
+        "roi_scale_max": 2.0,
+        "roi_source": "maker_runtime_entity_local_roi",
+        "t1_eligible": false,
+        "status": "PENDING_CAPTURE"
+      },
+      "keyframe_sampling": {
+        "tool": "qa_tooling.py",
+        "strategy": "evenly_spaced",
+        "planned_frame_count": 3,
+        "max_per_motion": 3,
+        "indices": [
+          0,
+          1,
+          2
+        ],
+        "captured_frames": [],
+        "status": "PENDING_CAPTURE"
+      },
+      "contact_sheet": {
+        "tool": "qa_tooling.py",
+        "purpose": "coverage_only",
+        "source_frames": [],
+        "output": null,
+        "status": "PENDING_CAPTURE"
+      },
+      "captured_frames": [],
+      "qa_case": {
+        "case_id": "demo03.t2.combat_presence.kui",
+        "stage": "T2",
+        "status": "PENDING_CAPTURE",
+        "mode": "motion",
+        "ratio": "16:9",
+        "dimension_key": "combat_presence",
+        "dimension": "Combat Presence",
+        "asset_id": "A-13",
+        "enemy_id": "kui",
+        "target_name": "夔",
+        "motion": "attack",
+        "seed": 20260911,
+        "freeze": true,
+        "camera": {
+          "space": "design_1920x1080",
+          "x": 960,
+          "y": 540,
+          "zoom": 1.0
+        },
+        "entity_positions": {
+          "player": {
+            "x": 960,
+            "y": 640
+          },
+          "enemy": {
+            "id": "kui",
+            "x": 650,
+            "y": 710
+          }
+        },
+        "animation_state": {
+          "player_animation_state": "idle",
+          "enemy_animation_state": "hit",
+          "wheel_state": "attack",
+          "attack_state": "attack",
+          "animation_phase": 0.5
+        },
+        "state": {
+          "playerAnimationState": "idle",
+          "enemyAnimationState": "hit",
+          "wheelState": "attack",
+          "attackState": "attack",
+          "playerFacing": "right",
+          "enemyFacing": "left"
+        },
+        "asset_refs": [
+          "A-03",
+          "A-08-01",
+          "A-10",
+          "A-13",
+          "A-17-01"
+        ],
+        "asset_paths": [
+          "assets/image/characters/shi_yu_zhe.png",
+          "assets/image/wheel/core.png",
+          "assets/image/environments/spring_arena.png",
+          "assets/image/enemies/kui.png",
+          "assets/image/vfx/warnings/circle.png"
+        ],
+        "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+        "screenshot_budget": {
+          "min_per_motion": 0,
+          "max_per_motion": 3
+        },
+        "roi": {
+          "roi": null,
+          "roi_scale": 1.75,
+          "roi_scale_min": 1.5,
+          "roi_scale_max": 2.0,
+          "roi_source": "maker_runtime_entity_local_roi",
+          "t1_eligible": false,
+          "status": "PENDING_CAPTURE"
+        },
+        "keyframe_sampling": {
+          "tool": "qa_tooling.py",
+          "strategy": "evenly_spaced",
+          "planned_frame_count": 3,
+          "max_per_motion": 3,
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "captured_frames": [],
+          "status": "PENDING_CAPTURE"
+        },
+        "contact_sheet": {
+          "tool": "qa_tooling.py",
+          "purpose": "coverage_only",
+          "source_frames": [],
+          "output": null,
+          "status": "PENDING_CAPTURE"
+        },
+        "captured_frames": []
+      },
+      "asset_hash": {
+        "assets/image/characters/shi_yu_zhe.png": "5b63afd1743474c57fd4f13690775e3c212ffd7eb12b848e57bde37bda0a2e31",
+        "assets/image/enemies/kui.png": "4f0fa4a68bc2c5d15c15065fee1ed110c2743dc0d8747cc1468c798c67e71f8c",
+        "assets/image/environments/spring_arena.png": "425152b94da4a7375d8ecedfd8ca981e5957bc6cc093019a0ba86afa096969f9",
+        "assets/image/vfx/warnings/circle.png": "dc654b0fa3ef24ebc2193027c987dbcd97477041ce0d66abea84cddf9186b864",
+        "assets/image/wheel/core.png": "c8b9af5419a6e076bfa0b5fb8d59a160e40c1d8c8219268129b243292ed97cd6"
+      },
+      "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
+      "qa_case_hash": "2ee864c2743e895fca6d1799557466dbd33a3ea01bf65386adf3040213c06c1a",
+      "vision_score": null,
+      "metric_score": null,
+      "final_score": null,
+      "grade": null,
+      "confidence": null,
+      "hard_fail": null,
+      "hard_fail_codes": [],
+      "action": "ESCALATE",
+      "next_gate": "PENDING_CAPTURE",
+      "visual_review_status": "PENDING_CAPTURE"
+    },
+    {
+      "case_id": "demo03.t2.ground_vfx_conflict.jiuweihu",
+      "stage": "T2",
+      "status": "PENDING_CAPTURE",
+      "mode": "motion",
+      "ratio": "16:9",
+      "dimension_key": "ground_vfx_conflict",
+      "dimension": "Ground VFX Conflict",
+      "asset_id": "A-12",
+      "enemy_id": "jiuweihu",
+      "target_name": "九尾狐",
+      "motion": "move",
+      "seed": 20260911,
+      "freeze": true,
+      "camera": {
+        "space": "design_1920x1080",
+        "x": 960,
+        "y": 540,
+        "zoom": 1.0
+      },
+      "entity_positions": {
+        "player": {
+          "x": 960,
+          "y": 640
+        },
+        "enemy": {
+          "id": "jiuweihu",
+          "x": 1270,
+          "y": 460
+        }
+      },
+      "animation_state": {
+        "player_animation_state": "move",
+        "enemy_animation_state": "move",
+        "wheel_state": "idle",
+        "attack_state": "none",
+        "animation_phase": 0.5
+      },
+      "state": {
+        "playerAnimationState": "move",
+        "enemyAnimationState": "move",
+        "wheelState": "idle",
+        "attackState": "none",
+        "playerFacing": "right",
+        "enemyFacing": "left"
+      },
+      "asset_refs": [
+        "A-03",
+        "A-10",
+        "A-12",
+        "A-17-01",
+        "A-17-06"
+      ],
+      "asset_paths": [
+        "assets/image/characters/shi_yu_zhe.png",
+        "assets/image/environments/spring_arena.png",
+        "assets/image/enemies/jiuweihu.png",
+        "assets/image/vfx/warnings/circle.png",
+        "assets/image/vfx/warnings/root_line.png"
+      ],
+      "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+      "screenshot_budget": {
+        "min_per_motion": 0,
+        "max_per_motion": 3
+      },
+      "roi": {
+        "roi": null,
+        "roi_scale": 1.75,
+        "roi_scale_min": 1.5,
+        "roi_scale_max": 2.0,
+        "roi_source": "maker_runtime_entity_local_roi",
+        "t1_eligible": false,
+        "status": "PENDING_CAPTURE"
+      },
+      "keyframe_sampling": {
+        "tool": "qa_tooling.py",
+        "strategy": "evenly_spaced",
+        "planned_frame_count": 3,
+        "max_per_motion": 3,
+        "indices": [
+          0,
+          1,
+          2
+        ],
+        "captured_frames": [],
+        "status": "PENDING_CAPTURE"
+      },
+      "contact_sheet": {
+        "tool": "qa_tooling.py",
+        "purpose": "coverage_only",
+        "source_frames": [],
+        "output": null,
+        "status": "PENDING_CAPTURE"
+      },
+      "captured_frames": [],
+      "qa_case": {
+        "case_id": "demo03.t2.ground_vfx_conflict.jiuweihu",
+        "stage": "T2",
+        "status": "PENDING_CAPTURE",
+        "mode": "motion",
+        "ratio": "16:9",
+        "dimension_key": "ground_vfx_conflict",
+        "dimension": "Ground VFX Conflict",
+        "asset_id": "A-12",
+        "enemy_id": "jiuweihu",
+        "target_name": "九尾狐",
+        "motion": "move",
+        "seed": 20260911,
+        "freeze": true,
+        "camera": {
+          "space": "design_1920x1080",
+          "x": 960,
+          "y": 540,
+          "zoom": 1.0
+        },
+        "entity_positions": {
+          "player": {
+            "x": 960,
+            "y": 640
+          },
+          "enemy": {
+            "id": "jiuweihu",
+            "x": 1270,
+            "y": 460
+          }
+        },
+        "animation_state": {
+          "player_animation_state": "move",
+          "enemy_animation_state": "move",
+          "wheel_state": "idle",
+          "attack_state": "none",
+          "animation_phase": 0.5
+        },
+        "state": {
+          "playerAnimationState": "move",
+          "enemyAnimationState": "move",
+          "wheelState": "idle",
+          "attackState": "none",
+          "playerFacing": "right",
+          "enemyFacing": "left"
+        },
+        "asset_refs": [
+          "A-03",
+          "A-10",
+          "A-12",
+          "A-17-01",
+          "A-17-06"
+        ],
+        "asset_paths": [
+          "assets/image/characters/shi_yu_zhe.png",
+          "assets/image/environments/spring_arena.png",
+          "assets/image/enemies/jiuweihu.png",
+          "assets/image/vfx/warnings/circle.png",
+          "assets/image/vfx/warnings/root_line.png"
+        ],
+        "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+        "screenshot_budget": {
+          "min_per_motion": 0,
+          "max_per_motion": 3
+        },
+        "roi": {
+          "roi": null,
+          "roi_scale": 1.75,
+          "roi_scale_min": 1.5,
+          "roi_scale_max": 2.0,
+          "roi_source": "maker_runtime_entity_local_roi",
+          "t1_eligible": false,
+          "status": "PENDING_CAPTURE"
+        },
+        "keyframe_sampling": {
+          "tool": "qa_tooling.py",
+          "strategy": "evenly_spaced",
+          "planned_frame_count": 3,
+          "max_per_motion": 3,
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "captured_frames": [],
+          "status": "PENDING_CAPTURE"
+        },
+        "contact_sheet": {
+          "tool": "qa_tooling.py",
+          "purpose": "coverage_only",
+          "source_frames": [],
+          "output": null,
+          "status": "PENDING_CAPTURE"
+        },
+        "captured_frames": []
+      },
+      "asset_hash": {
+        "assets/image/characters/shi_yu_zhe.png": "5b63afd1743474c57fd4f13690775e3c212ffd7eb12b848e57bde37bda0a2e31",
+        "assets/image/enemies/jiuweihu.png": "9b5b30af1731b0123c948ce2111a5c7531021a0452640476ce3a63dc5b77049c",
+        "assets/image/environments/spring_arena.png": "425152b94da4a7375d8ecedfd8ca981e5957bc6cc093019a0ba86afa096969f9",
+        "assets/image/vfx/warnings/circle.png": "dc654b0fa3ef24ebc2193027c987dbcd97477041ce0d66abea84cddf9186b864",
+        "assets/image/vfx/warnings/root_line.png": "c18022b41c1378749bffd979c42d91aa8b4b7f18e9f9ed510a119abbb3692d6b"
+      },
+      "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
+      "qa_case_hash": "37cb991fea78ab3ec5653849f242ded6c90ff0f6588725c7b97423e4543e49a6",
+      "vision_score": null,
+      "metric_score": null,
+      "final_score": null,
+      "grade": null,
+      "confidence": null,
+      "hard_fail": null,
+      "hard_fail_codes": [],
+      "action": "ESCALATE",
+      "next_gate": "PENDING_CAPTURE",
+      "visual_review_status": "PENDING_CAPTURE"
+    },
+    {
+      "case_id": "demo03.t2.ground_vfx_conflict.bifang",
+      "stage": "T2",
+      "status": "PENDING_CAPTURE",
+      "mode": "motion",
+      "ratio": "16:9",
+      "dimension_key": "ground_vfx_conflict",
+      "dimension": "Ground VFX Conflict",
+      "asset_id": "A-11",
+      "enemy_id": "bifang",
+      "target_name": "毕方",
+      "motion": "move",
+      "seed": 20260911,
+      "freeze": true,
+      "camera": {
+        "space": "design_1920x1080",
+        "x": 960,
+        "y": 540,
+        "zoom": 1.0
+      },
+      "entity_positions": {
+        "player": {
+          "x": 960,
+          "y": 640
+        },
+        "enemy": {
+          "id": "bifang",
+          "x": 1090,
+          "y": 780
+        }
+      },
+      "animation_state": {
+        "player_animation_state": "move",
+        "enemy_animation_state": "move",
+        "wheel_state": "idle",
+        "attack_state": "none",
+        "animation_phase": 0.5
+      },
+      "state": {
+        "playerAnimationState": "move",
+        "enemyAnimationState": "move",
+        "wheelState": "idle",
+        "attackState": "none",
+        "playerFacing": "right",
+        "enemyFacing": "left"
+      },
+      "asset_refs": [
+        "A-03",
+        "A-10",
+        "A-11",
+        "A-17-01",
+        "A-17-06"
+      ],
+      "asset_paths": [
+        "assets/image/characters/shi_yu_zhe.png",
+        "assets/image/environments/spring_arena.png",
+        "assets/image/enemies/bifang.png",
+        "assets/image/vfx/warnings/circle.png",
+        "assets/image/vfx/warnings/root_line.png"
+      ],
+      "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+      "screenshot_budget": {
+        "min_per_motion": 0,
+        "max_per_motion": 3
+      },
+      "roi": {
+        "roi": null,
+        "roi_scale": 1.75,
+        "roi_scale_min": 1.5,
+        "roi_scale_max": 2.0,
+        "roi_source": "maker_runtime_entity_local_roi",
+        "t1_eligible": false,
+        "status": "PENDING_CAPTURE"
+      },
+      "keyframe_sampling": {
+        "tool": "qa_tooling.py",
+        "strategy": "evenly_spaced",
+        "planned_frame_count": 3,
+        "max_per_motion": 3,
+        "indices": [
+          0,
+          1,
+          2
+        ],
+        "captured_frames": [],
+        "status": "PENDING_CAPTURE"
+      },
+      "contact_sheet": {
+        "tool": "qa_tooling.py",
+        "purpose": "coverage_only",
+        "source_frames": [],
+        "output": null,
+        "status": "PENDING_CAPTURE"
+      },
+      "captured_frames": [],
+      "qa_case": {
+        "case_id": "demo03.t2.ground_vfx_conflict.bifang",
+        "stage": "T2",
+        "status": "PENDING_CAPTURE",
+        "mode": "motion",
+        "ratio": "16:9",
+        "dimension_key": "ground_vfx_conflict",
+        "dimension": "Ground VFX Conflict",
+        "asset_id": "A-11",
+        "enemy_id": "bifang",
+        "target_name": "毕方",
+        "motion": "move",
+        "seed": 20260911,
+        "freeze": true,
+        "camera": {
+          "space": "design_1920x1080",
+          "x": 960,
+          "y": 540,
+          "zoom": 1.0
+        },
+        "entity_positions": {
+          "player": {
+            "x": 960,
+            "y": 640
+          },
+          "enemy": {
+            "id": "bifang",
+            "x": 1090,
+            "y": 780
+          }
+        },
+        "animation_state": {
+          "player_animation_state": "move",
+          "enemy_animation_state": "move",
+          "wheel_state": "idle",
+          "attack_state": "none",
+          "animation_phase": 0.5
+        },
+        "state": {
+          "playerAnimationState": "move",
+          "enemyAnimationState": "move",
+          "wheelState": "idle",
+          "attackState": "none",
+          "playerFacing": "right",
+          "enemyFacing": "left"
+        },
+        "asset_refs": [
+          "A-03",
+          "A-10",
+          "A-11",
+          "A-17-01",
+          "A-17-06"
+        ],
+        "asset_paths": [
+          "assets/image/characters/shi_yu_zhe.png",
+          "assets/image/environments/spring_arena.png",
+          "assets/image/enemies/bifang.png",
+          "assets/image/vfx/warnings/circle.png",
+          "assets/image/vfx/warnings/root_line.png"
+        ],
+        "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+        "screenshot_budget": {
+          "min_per_motion": 0,
+          "max_per_motion": 3
+        },
+        "roi": {
+          "roi": null,
+          "roi_scale": 1.75,
+          "roi_scale_min": 1.5,
+          "roi_scale_max": 2.0,
+          "roi_source": "maker_runtime_entity_local_roi",
+          "t1_eligible": false,
+          "status": "PENDING_CAPTURE"
+        },
+        "keyframe_sampling": {
+          "tool": "qa_tooling.py",
+          "strategy": "evenly_spaced",
+          "planned_frame_count": 3,
+          "max_per_motion": 3,
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "captured_frames": [],
+          "status": "PENDING_CAPTURE"
+        },
+        "contact_sheet": {
+          "tool": "qa_tooling.py",
+          "purpose": "coverage_only",
+          "source_frames": [],
+          "output": null,
+          "status": "PENDING_CAPTURE"
+        },
+        "captured_frames": []
+      },
+      "asset_hash": {
+        "assets/image/characters/shi_yu_zhe.png": "5b63afd1743474c57fd4f13690775e3c212ffd7eb12b848e57bde37bda0a2e31",
+        "assets/image/enemies/bifang.png": "0651e5989c4b0ad83cb2d8a1fa1f926c3fe7c3619fda8a3d10b3a50c634bb6d1",
+        "assets/image/environments/spring_arena.png": "425152b94da4a7375d8ecedfd8ca981e5957bc6cc093019a0ba86afa096969f9",
+        "assets/image/vfx/warnings/circle.png": "dc654b0fa3ef24ebc2193027c987dbcd97477041ce0d66abea84cddf9186b864",
+        "assets/image/vfx/warnings/root_line.png": "c18022b41c1378749bffd979c42d91aa8b4b7f18e9f9ed510a119abbb3692d6b"
+      },
+      "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
+      "qa_case_hash": "bf62d87e592246d5cf0a1ac17a23d9b1552cc8710d4c10be6c17cf6c1c3ef1ac",
+      "vision_score": null,
+      "metric_score": null,
+      "final_score": null,
+      "grade": null,
+      "confidence": null,
+      "hard_fail": null,
+      "hard_fail_codes": [],
+      "action": "ESCALATE",
+      "next_gate": "PENDING_CAPTURE",
+      "visual_review_status": "PENDING_CAPTURE"
+    },
+    {
+      "case_id": "demo03.t2.ground_vfx_conflict.kui",
+      "stage": "T2",
+      "status": "PENDING_CAPTURE",
+      "mode": "motion",
+      "ratio": "16:9",
+      "dimension_key": "ground_vfx_conflict",
+      "dimension": "Ground VFX Conflict",
+      "asset_id": "A-13",
+      "enemy_id": "kui",
+      "target_name": "夔",
+      "motion": "move",
+      "seed": 20260911,
+      "freeze": true,
+      "camera": {
+        "space": "design_1920x1080",
+        "x": 960,
+        "y": 540,
+        "zoom": 1.0
+      },
+      "entity_positions": {
+        "player": {
+          "x": 960,
+          "y": 640
+        },
+        "enemy": {
+          "id": "kui",
+          "x": 650,
+          "y": 710
+        }
+      },
+      "animation_state": {
+        "player_animation_state": "move",
+        "enemy_animation_state": "move",
+        "wheel_state": "idle",
+        "attack_state": "none",
+        "animation_phase": 0.5
+      },
+      "state": {
+        "playerAnimationState": "move",
+        "enemyAnimationState": "move",
+        "wheelState": "idle",
+        "attackState": "none",
+        "playerFacing": "right",
+        "enemyFacing": "left"
+      },
+      "asset_refs": [
+        "A-03",
+        "A-10",
+        "A-13",
+        "A-17-01",
+        "A-17-06"
+      ],
+      "asset_paths": [
+        "assets/image/characters/shi_yu_zhe.png",
+        "assets/image/environments/spring_arena.png",
+        "assets/image/enemies/kui.png",
+        "assets/image/vfx/warnings/circle.png",
+        "assets/image/vfx/warnings/root_line.png"
+      ],
+      "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+      "screenshot_budget": {
+        "min_per_motion": 0,
+        "max_per_motion": 3
+      },
+      "roi": {
+        "roi": null,
+        "roi_scale": 1.75,
+        "roi_scale_min": 1.5,
+        "roi_scale_max": 2.0,
+        "roi_source": "maker_runtime_entity_local_roi",
+        "t1_eligible": false,
+        "status": "PENDING_CAPTURE"
+      },
+      "keyframe_sampling": {
+        "tool": "qa_tooling.py",
+        "strategy": "evenly_spaced",
+        "planned_frame_count": 3,
+        "max_per_motion": 3,
+        "indices": [
+          0,
+          1,
+          2
+        ],
+        "captured_frames": [],
+        "status": "PENDING_CAPTURE"
+      },
+      "contact_sheet": {
+        "tool": "qa_tooling.py",
+        "purpose": "coverage_only",
+        "source_frames": [],
+        "output": null,
+        "status": "PENDING_CAPTURE"
+      },
+      "captured_frames": [],
+      "qa_case": {
+        "case_id": "demo03.t2.ground_vfx_conflict.kui",
+        "stage": "T2",
+        "status": "PENDING_CAPTURE",
+        "mode": "motion",
+        "ratio": "16:9",
+        "dimension_key": "ground_vfx_conflict",
+        "dimension": "Ground VFX Conflict",
+        "asset_id": "A-13",
+        "enemy_id": "kui",
+        "target_name": "夔",
+        "motion": "move",
+        "seed": 20260911,
+        "freeze": true,
+        "camera": {
+          "space": "design_1920x1080",
+          "x": 960,
+          "y": 540,
+          "zoom": 1.0
+        },
+        "entity_positions": {
+          "player": {
+            "x": 960,
+            "y": 640
+          },
+          "enemy": {
+            "id": "kui",
+            "x": 650,
+            "y": 710
+          }
+        },
+        "animation_state": {
+          "player_animation_state": "move",
+          "enemy_animation_state": "move",
+          "wheel_state": "idle",
+          "attack_state": "none",
+          "animation_phase": 0.5
+        },
+        "state": {
+          "playerAnimationState": "move",
+          "enemyAnimationState": "move",
+          "wheelState": "idle",
+          "attackState": "none",
+          "playerFacing": "right",
+          "enemyFacing": "left"
+        },
+        "asset_refs": [
+          "A-03",
+          "A-10",
+          "A-13",
+          "A-17-01",
+          "A-17-06"
+        ],
+        "asset_paths": [
+          "assets/image/characters/shi_yu_zhe.png",
+          "assets/image/environments/spring_arena.png",
+          "assets/image/enemies/kui.png",
+          "assets/image/vfx/warnings/circle.png",
+          "assets/image/vfx/warnings/root_line.png"
+        ],
+        "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+        "screenshot_budget": {
+          "min_per_motion": 0,
+          "max_per_motion": 3
+        },
+        "roi": {
+          "roi": null,
+          "roi_scale": 1.75,
+          "roi_scale_min": 1.5,
+          "roi_scale_max": 2.0,
+          "roi_source": "maker_runtime_entity_local_roi",
+          "t1_eligible": false,
+          "status": "PENDING_CAPTURE"
+        },
+        "keyframe_sampling": {
+          "tool": "qa_tooling.py",
+          "strategy": "evenly_spaced",
+          "planned_frame_count": 3,
+          "max_per_motion": 3,
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "captured_frames": [],
+          "status": "PENDING_CAPTURE"
+        },
+        "contact_sheet": {
+          "tool": "qa_tooling.py",
+          "purpose": "coverage_only",
+          "source_frames": [],
+          "output": null,
+          "status": "PENDING_CAPTURE"
+        },
+        "captured_frames": []
+      },
+      "asset_hash": {
+        "assets/image/characters/shi_yu_zhe.png": "5b63afd1743474c57fd4f13690775e3c212ffd7eb12b848e57bde37bda0a2e31",
+        "assets/image/enemies/kui.png": "4f0fa4a68bc2c5d15c15065fee1ed110c2743dc0d8747cc1468c798c67e71f8c",
+        "assets/image/environments/spring_arena.png": "425152b94da4a7375d8ecedfd8ca981e5957bc6cc093019a0ba86afa096969f9",
+        "assets/image/vfx/warnings/circle.png": "dc654b0fa3ef24ebc2193027c987dbcd97477041ce0d66abea84cddf9186b864",
+        "assets/image/vfx/warnings/root_line.png": "c18022b41c1378749bffd979c42d91aa8b4b7f18e9f9ed510a119abbb3692d6b"
+      },
+      "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
+      "qa_case_hash": "a0d0fa0831417ef2675d557057e1b327102777fb0cb8a717e381bf6d04123dbb",
+      "vision_score": null,
+      "metric_score": null,
+      "final_score": null,
+      "grade": null,
+      "confidence": null,
+      "hard_fail": null,
+      "hard_fail_codes": [],
+      "action": "ESCALATE",
+      "next_gate": "PENDING_CAPTURE",
+      "visual_review_status": "PENDING_CAPTURE"
+    },
+    {
+      "case_id": "demo03.t2.attack_state_recognition.jiuweihu",
+      "stage": "T2",
+      "status": "PENDING_CAPTURE",
+      "mode": "motion",
+      "ratio": "16:9",
+      "dimension_key": "attack_state_recognition",
+      "dimension": "Attack State Recognition",
+      "asset_id": "A-12",
+      "enemy_id": "jiuweihu",
+      "target_name": "九尾狐",
+      "motion": "attack",
+      "seed": 20260911,
+      "freeze": true,
+      "camera": {
+        "space": "design_1920x1080",
+        "x": 960,
+        "y": 540,
+        "zoom": 1.0
+      },
+      "entity_positions": {
+        "player": {
+          "x": 960,
+          "y": 640
+        },
+        "enemy": {
+          "id": "jiuweihu",
+          "x": 1270,
+          "y": 460
+        }
+      },
+      "animation_state": {
+        "player_animation_state": "idle",
+        "enemy_animation_state": "hit",
+        "wheel_state": "attack",
+        "attack_state": "attack",
+        "animation_phase": 0.5
+      },
+      "state": {
+        "playerAnimationState": "idle",
+        "enemyAnimationState": "hit",
+        "wheelState": "attack",
+        "attackState": "attack",
+        "playerFacing": "right",
+        "enemyFacing": "left"
+      },
+      "asset_refs": [
+        "A-03",
+        "A-07-03",
+        "A-07-05",
+        "A-08-01",
+        "A-08-02",
+        "A-08-04",
+        "A-10",
+        "A-12",
+        "A-17-01"
+      ],
+      "asset_paths": [
+        "assets/image/characters/shi_yu_zhe.png",
+        "assets/image/wheel/marks.png",
+        "assets/image/wheel/outer.png",
+        "assets/image/wheel/core.png",
+        "assets/image/wheel/inner.png",
+        "assets/image/wheel/middle.png",
+        "assets/image/environments/spring_arena.png",
+        "assets/image/enemies/jiuweihu.png",
+        "assets/image/vfx/warnings/circle.png"
+      ],
+      "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+      "screenshot_budget": {
+        "min_per_motion": 0,
+        "max_per_motion": 3
+      },
+      "roi": {
+        "roi": null,
+        "roi_scale": 1.75,
+        "roi_scale_min": 1.5,
+        "roi_scale_max": 2.0,
+        "roi_source": "maker_runtime_entity_local_roi",
+        "t1_eligible": false,
+        "status": "PENDING_CAPTURE"
+      },
+      "keyframe_sampling": {
+        "tool": "qa_tooling.py",
+        "strategy": "evenly_spaced",
+        "planned_frame_count": 3,
+        "max_per_motion": 3,
+        "indices": [
+          0,
+          1,
+          2
+        ],
+        "captured_frames": [],
+        "status": "PENDING_CAPTURE"
+      },
+      "contact_sheet": {
+        "tool": "qa_tooling.py",
+        "purpose": "coverage_only",
+        "source_frames": [],
+        "output": null,
+        "status": "PENDING_CAPTURE"
+      },
+      "captured_frames": [],
+      "qa_case": {
+        "case_id": "demo03.t2.attack_state_recognition.jiuweihu",
+        "stage": "T2",
+        "status": "PENDING_CAPTURE",
+        "mode": "motion",
+        "ratio": "16:9",
+        "dimension_key": "attack_state_recognition",
+        "dimension": "Attack State Recognition",
+        "asset_id": "A-12",
+        "enemy_id": "jiuweihu",
+        "target_name": "九尾狐",
+        "motion": "attack",
+        "seed": 20260911,
+        "freeze": true,
+        "camera": {
+          "space": "design_1920x1080",
+          "x": 960,
+          "y": 540,
+          "zoom": 1.0
+        },
+        "entity_positions": {
+          "player": {
+            "x": 960,
+            "y": 640
+          },
+          "enemy": {
+            "id": "jiuweihu",
+            "x": 1270,
+            "y": 460
+          }
+        },
+        "animation_state": {
+          "player_animation_state": "idle",
+          "enemy_animation_state": "hit",
+          "wheel_state": "attack",
+          "attack_state": "attack",
+          "animation_phase": 0.5
+        },
+        "state": {
+          "playerAnimationState": "idle",
+          "enemyAnimationState": "hit",
+          "wheelState": "attack",
+          "attackState": "attack",
+          "playerFacing": "right",
+          "enemyFacing": "left"
+        },
+        "asset_refs": [
+          "A-03",
+          "A-07-03",
+          "A-07-05",
+          "A-08-01",
+          "A-08-02",
+          "A-08-04",
+          "A-10",
+          "A-12",
+          "A-17-01"
+        ],
+        "asset_paths": [
+          "assets/image/characters/shi_yu_zhe.png",
+          "assets/image/wheel/marks.png",
+          "assets/image/wheel/outer.png",
+          "assets/image/wheel/core.png",
+          "assets/image/wheel/inner.png",
+          "assets/image/wheel/middle.png",
+          "assets/image/environments/spring_arena.png",
+          "assets/image/enemies/jiuweihu.png",
+          "assets/image/vfx/warnings/circle.png"
+        ],
+        "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+        "screenshot_budget": {
+          "min_per_motion": 0,
+          "max_per_motion": 3
+        },
+        "roi": {
+          "roi": null,
+          "roi_scale": 1.75,
+          "roi_scale_min": 1.5,
+          "roi_scale_max": 2.0,
+          "roi_source": "maker_runtime_entity_local_roi",
+          "t1_eligible": false,
+          "status": "PENDING_CAPTURE"
+        },
+        "keyframe_sampling": {
+          "tool": "qa_tooling.py",
+          "strategy": "evenly_spaced",
+          "planned_frame_count": 3,
+          "max_per_motion": 3,
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "captured_frames": [],
+          "status": "PENDING_CAPTURE"
+        },
+        "contact_sheet": {
+          "tool": "qa_tooling.py",
+          "purpose": "coverage_only",
+          "source_frames": [],
+          "output": null,
+          "status": "PENDING_CAPTURE"
+        },
+        "captured_frames": []
+      },
+      "asset_hash": {
+        "assets/image/characters/shi_yu_zhe.png": "5b63afd1743474c57fd4f13690775e3c212ffd7eb12b848e57bde37bda0a2e31",
+        "assets/image/enemies/jiuweihu.png": "9b5b30af1731b0123c948ce2111a5c7531021a0452640476ce3a63dc5b77049c",
+        "assets/image/environments/spring_arena.png": "425152b94da4a7375d8ecedfd8ca981e5957bc6cc093019a0ba86afa096969f9",
+        "assets/image/vfx/warnings/circle.png": "dc654b0fa3ef24ebc2193027c987dbcd97477041ce0d66abea84cddf9186b864",
+        "assets/image/wheel/core.png": "c8b9af5419a6e076bfa0b5fb8d59a160e40c1d8c8219268129b243292ed97cd6",
+        "assets/image/wheel/inner.png": "eb7052aefcf32d65182d0a0ecc6fc58d8a7ec4cf44e5337ac58fac882f3b2c1c",
+        "assets/image/wheel/marks.png": "9d6712deff61ad219ec10a9d66b5d4abafb353cbf5d51b82ba7861518c449f67",
+        "assets/image/wheel/middle.png": "5710ddfa43072b1bae8b9d4743f7473cb44d76bec6d9129376f3ee6928cf236c",
+        "assets/image/wheel/outer.png": "cbd6dc5b87fe82b3d47aea19e01c531690a517f904c69e6a7c46bf735c66c14f"
+      },
+      "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
+      "qa_case_hash": "f25e5181a5a77609080649e42801b0704eabf23e30e1dc109168035e95b69950",
+      "vision_score": null,
+      "metric_score": null,
+      "final_score": null,
+      "grade": null,
+      "confidence": null,
+      "hard_fail": null,
+      "hard_fail_codes": [],
+      "action": "ESCALATE",
+      "next_gate": "PENDING_CAPTURE",
+      "visual_review_status": "PENDING_CAPTURE"
+    },
+    {
+      "case_id": "demo03.t2.attack_state_recognition.bifang",
+      "stage": "T2",
+      "status": "PENDING_CAPTURE",
+      "mode": "motion",
+      "ratio": "16:9",
+      "dimension_key": "attack_state_recognition",
+      "dimension": "Attack State Recognition",
+      "asset_id": "A-11",
+      "enemy_id": "bifang",
+      "target_name": "毕方",
+      "motion": "attack",
+      "seed": 20260911,
+      "freeze": true,
+      "camera": {
+        "space": "design_1920x1080",
+        "x": 960,
+        "y": 540,
+        "zoom": 1.0
+      },
+      "entity_positions": {
+        "player": {
+          "x": 960,
+          "y": 640
+        },
+        "enemy": {
+          "id": "bifang",
+          "x": 1090,
+          "y": 780
+        }
+      },
+      "animation_state": {
+        "player_animation_state": "idle",
+        "enemy_animation_state": "hit",
+        "wheel_state": "attack",
+        "attack_state": "attack",
+        "animation_phase": 0.5
+      },
+      "state": {
+        "playerAnimationState": "idle",
+        "enemyAnimationState": "hit",
+        "wheelState": "attack",
+        "attackState": "attack",
+        "playerFacing": "right",
+        "enemyFacing": "left"
+      },
+      "asset_refs": [
+        "A-03",
+        "A-07-03",
+        "A-07-05",
+        "A-08-01",
+        "A-08-02",
+        "A-08-04",
+        "A-10",
+        "A-11",
+        "A-17-01"
+      ],
+      "asset_paths": [
+        "assets/image/characters/shi_yu_zhe.png",
+        "assets/image/wheel/marks.png",
+        "assets/image/wheel/outer.png",
+        "assets/image/wheel/core.png",
+        "assets/image/wheel/inner.png",
+        "assets/image/wheel/middle.png",
+        "assets/image/environments/spring_arena.png",
+        "assets/image/enemies/bifang.png",
+        "assets/image/vfx/warnings/circle.png"
+      ],
+      "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+      "screenshot_budget": {
+        "min_per_motion": 0,
+        "max_per_motion": 3
+      },
+      "roi": {
+        "roi": null,
+        "roi_scale": 1.75,
+        "roi_scale_min": 1.5,
+        "roi_scale_max": 2.0,
+        "roi_source": "maker_runtime_entity_local_roi",
+        "t1_eligible": false,
+        "status": "PENDING_CAPTURE"
+      },
+      "keyframe_sampling": {
+        "tool": "qa_tooling.py",
+        "strategy": "evenly_spaced",
+        "planned_frame_count": 3,
+        "max_per_motion": 3,
+        "indices": [
+          0,
+          1,
+          2
+        ],
+        "captured_frames": [],
+        "status": "PENDING_CAPTURE"
+      },
+      "contact_sheet": {
+        "tool": "qa_tooling.py",
+        "purpose": "coverage_only",
+        "source_frames": [],
+        "output": null,
+        "status": "PENDING_CAPTURE"
+      },
+      "captured_frames": [],
+      "qa_case": {
+        "case_id": "demo03.t2.attack_state_recognition.bifang",
+        "stage": "T2",
+        "status": "PENDING_CAPTURE",
+        "mode": "motion",
+        "ratio": "16:9",
+        "dimension_key": "attack_state_recognition",
+        "dimension": "Attack State Recognition",
+        "asset_id": "A-11",
+        "enemy_id": "bifang",
+        "target_name": "毕方",
+        "motion": "attack",
+        "seed": 20260911,
+        "freeze": true,
+        "camera": {
+          "space": "design_1920x1080",
+          "x": 960,
+          "y": 540,
+          "zoom": 1.0
+        },
+        "entity_positions": {
+          "player": {
+            "x": 960,
+            "y": 640
+          },
+          "enemy": {
+            "id": "bifang",
+            "x": 1090,
+            "y": 780
+          }
+        },
+        "animation_state": {
+          "player_animation_state": "idle",
+          "enemy_animation_state": "hit",
+          "wheel_state": "attack",
+          "attack_state": "attack",
+          "animation_phase": 0.5
+        },
+        "state": {
+          "playerAnimationState": "idle",
+          "enemyAnimationState": "hit",
+          "wheelState": "attack",
+          "attackState": "attack",
+          "playerFacing": "right",
+          "enemyFacing": "left"
+        },
+        "asset_refs": [
+          "A-03",
+          "A-07-03",
+          "A-07-05",
+          "A-08-01",
+          "A-08-02",
+          "A-08-04",
+          "A-10",
+          "A-11",
+          "A-17-01"
+        ],
+        "asset_paths": [
+          "assets/image/characters/shi_yu_zhe.png",
+          "assets/image/wheel/marks.png",
+          "assets/image/wheel/outer.png",
+          "assets/image/wheel/core.png",
+          "assets/image/wheel/inner.png",
+          "assets/image/wheel/middle.png",
+          "assets/image/environments/spring_arena.png",
+          "assets/image/enemies/bifang.png",
+          "assets/image/vfx/warnings/circle.png"
+        ],
+        "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+        "screenshot_budget": {
+          "min_per_motion": 0,
+          "max_per_motion": 3
+        },
+        "roi": {
+          "roi": null,
+          "roi_scale": 1.75,
+          "roi_scale_min": 1.5,
+          "roi_scale_max": 2.0,
+          "roi_source": "maker_runtime_entity_local_roi",
+          "t1_eligible": false,
+          "status": "PENDING_CAPTURE"
+        },
+        "keyframe_sampling": {
+          "tool": "qa_tooling.py",
+          "strategy": "evenly_spaced",
+          "planned_frame_count": 3,
+          "max_per_motion": 3,
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "captured_frames": [],
+          "status": "PENDING_CAPTURE"
+        },
+        "contact_sheet": {
+          "tool": "qa_tooling.py",
+          "purpose": "coverage_only",
+          "source_frames": [],
+          "output": null,
+          "status": "PENDING_CAPTURE"
+        },
+        "captured_frames": []
+      },
+      "asset_hash": {
+        "assets/image/characters/shi_yu_zhe.png": "5b63afd1743474c57fd4f13690775e3c212ffd7eb12b848e57bde37bda0a2e31",
+        "assets/image/enemies/bifang.png": "0651e5989c4b0ad83cb2d8a1fa1f926c3fe7c3619fda8a3d10b3a50c634bb6d1",
+        "assets/image/environments/spring_arena.png": "425152b94da4a7375d8ecedfd8ca981e5957bc6cc093019a0ba86afa096969f9",
+        "assets/image/vfx/warnings/circle.png": "dc654b0fa3ef24ebc2193027c987dbcd97477041ce0d66abea84cddf9186b864",
+        "assets/image/wheel/core.png": "c8b9af5419a6e076bfa0b5fb8d59a160e40c1d8c8219268129b243292ed97cd6",
+        "assets/image/wheel/inner.png": "eb7052aefcf32d65182d0a0ecc6fc58d8a7ec4cf44e5337ac58fac882f3b2c1c",
+        "assets/image/wheel/marks.png": "9d6712deff61ad219ec10a9d66b5d4abafb353cbf5d51b82ba7861518c449f67",
+        "assets/image/wheel/middle.png": "5710ddfa43072b1bae8b9d4743f7473cb44d76bec6d9129376f3ee6928cf236c",
+        "assets/image/wheel/outer.png": "cbd6dc5b87fe82b3d47aea19e01c531690a517f904c69e6a7c46bf735c66c14f"
+      },
+      "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
+      "qa_case_hash": "a6d897b7cb322c33ac2671ce0afed0307a4a70d3f1aaef277d782a26f013f80a",
+      "vision_score": null,
+      "metric_score": null,
+      "final_score": null,
+      "grade": null,
+      "confidence": null,
+      "hard_fail": null,
+      "hard_fail_codes": [],
+      "action": "ESCALATE",
+      "next_gate": "PENDING_CAPTURE",
+      "visual_review_status": "PENDING_CAPTURE"
+    },
+    {
+      "case_id": "demo03.t2.attack_state_recognition.kui",
+      "stage": "T2",
+      "status": "PENDING_CAPTURE",
+      "mode": "motion",
+      "ratio": "16:9",
+      "dimension_key": "attack_state_recognition",
+      "dimension": "Attack State Recognition",
+      "asset_id": "A-13",
+      "enemy_id": "kui",
+      "target_name": "夔",
+      "motion": "attack",
+      "seed": 20260911,
+      "freeze": true,
+      "camera": {
+        "space": "design_1920x1080",
+        "x": 960,
+        "y": 540,
+        "zoom": 1.0
+      },
+      "entity_positions": {
+        "player": {
+          "x": 960,
+          "y": 640
+        },
+        "enemy": {
+          "id": "kui",
+          "x": 650,
+          "y": 710
+        }
+      },
+      "animation_state": {
+        "player_animation_state": "idle",
+        "enemy_animation_state": "hit",
+        "wheel_state": "attack",
+        "attack_state": "attack",
+        "animation_phase": 0.5
+      },
+      "state": {
+        "playerAnimationState": "idle",
+        "enemyAnimationState": "hit",
+        "wheelState": "attack",
+        "attackState": "attack",
+        "playerFacing": "right",
+        "enemyFacing": "left"
+      },
+      "asset_refs": [
+        "A-03",
+        "A-07-03",
+        "A-07-05",
+        "A-08-01",
+        "A-08-02",
+        "A-08-04",
+        "A-10",
+        "A-13",
+        "A-17-01"
+      ],
+      "asset_paths": [
+        "assets/image/characters/shi_yu_zhe.png",
+        "assets/image/wheel/marks.png",
+        "assets/image/wheel/outer.png",
+        "assets/image/wheel/core.png",
+        "assets/image/wheel/inner.png",
+        "assets/image/wheel/middle.png",
+        "assets/image/environments/spring_arena.png",
+        "assets/image/enemies/kui.png",
+        "assets/image/vfx/warnings/circle.png"
+      ],
+      "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+      "screenshot_budget": {
+        "min_per_motion": 0,
+        "max_per_motion": 3
+      },
+      "roi": {
+        "roi": null,
+        "roi_scale": 1.75,
+        "roi_scale_min": 1.5,
+        "roi_scale_max": 2.0,
+        "roi_source": "maker_runtime_entity_local_roi",
+        "t1_eligible": false,
+        "status": "PENDING_CAPTURE"
+      },
+      "keyframe_sampling": {
+        "tool": "qa_tooling.py",
+        "strategy": "evenly_spaced",
+        "planned_frame_count": 3,
+        "max_per_motion": 3,
+        "indices": [
+          0,
+          1,
+          2
+        ],
+        "captured_frames": [],
+        "status": "PENDING_CAPTURE"
+      },
+      "contact_sheet": {
+        "tool": "qa_tooling.py",
+        "purpose": "coverage_only",
+        "source_frames": [],
+        "output": null,
+        "status": "PENDING_CAPTURE"
+      },
+      "captured_frames": [],
+      "qa_case": {
+        "case_id": "demo03.t2.attack_state_recognition.kui",
+        "stage": "T2",
+        "status": "PENDING_CAPTURE",
+        "mode": "motion",
+        "ratio": "16:9",
+        "dimension_key": "attack_state_recognition",
+        "dimension": "Attack State Recognition",
+        "asset_id": "A-13",
+        "enemy_id": "kui",
+        "target_name": "夔",
+        "motion": "attack",
+        "seed": 20260911,
+        "freeze": true,
+        "camera": {
+          "space": "design_1920x1080",
+          "x": 960,
+          "y": 540,
+          "zoom": 1.0
+        },
+        "entity_positions": {
+          "player": {
+            "x": 960,
+            "y": 640
+          },
+          "enemy": {
+            "id": "kui",
+            "x": 650,
+            "y": 710
+          }
+        },
+        "animation_state": {
+          "player_animation_state": "idle",
+          "enemy_animation_state": "hit",
+          "wheel_state": "attack",
+          "attack_state": "attack",
+          "animation_phase": 0.5
+        },
+        "state": {
+          "playerAnimationState": "idle",
+          "enemyAnimationState": "hit",
+          "wheelState": "attack",
+          "attackState": "attack",
+          "playerFacing": "right",
+          "enemyFacing": "left"
+        },
+        "asset_refs": [
+          "A-03",
+          "A-07-03",
+          "A-07-05",
+          "A-08-01",
+          "A-08-02",
+          "A-08-04",
+          "A-10",
+          "A-13",
+          "A-17-01"
+        ],
+        "asset_paths": [
+          "assets/image/characters/shi_yu_zhe.png",
+          "assets/image/wheel/marks.png",
+          "assets/image/wheel/outer.png",
+          "assets/image/wheel/core.png",
+          "assets/image/wheel/inner.png",
+          "assets/image/wheel/middle.png",
+          "assets/image/environments/spring_arena.png",
+          "assets/image/enemies/kui.png",
+          "assets/image/vfx/warnings/circle.png"
+        ],
+        "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+        "screenshot_budget": {
+          "min_per_motion": 0,
+          "max_per_motion": 3
+        },
+        "roi": {
+          "roi": null,
+          "roi_scale": 1.75,
+          "roi_scale_min": 1.5,
+          "roi_scale_max": 2.0,
+          "roi_source": "maker_runtime_entity_local_roi",
+          "t1_eligible": false,
+          "status": "PENDING_CAPTURE"
+        },
+        "keyframe_sampling": {
+          "tool": "qa_tooling.py",
+          "strategy": "evenly_spaced",
+          "planned_frame_count": 3,
+          "max_per_motion": 3,
+          "indices": [
+            0,
+            1,
+            2
+          ],
+          "captured_frames": [],
+          "status": "PENDING_CAPTURE"
+        },
+        "contact_sheet": {
+          "tool": "qa_tooling.py",
+          "purpose": "coverage_only",
+          "source_frames": [],
+          "output": null,
+          "status": "PENDING_CAPTURE"
+        },
+        "captured_frames": []
+      },
+      "asset_hash": {
+        "assets/image/characters/shi_yu_zhe.png": "5b63afd1743474c57fd4f13690775e3c212ffd7eb12b848e57bde37bda0a2e31",
+        "assets/image/enemies/kui.png": "4f0fa4a68bc2c5d15c15065fee1ed110c2743dc0d8747cc1468c798c67e71f8c",
+        "assets/image/environments/spring_arena.png": "425152b94da4a7375d8ecedfd8ca981e5957bc6cc093019a0ba86afa096969f9",
+        "assets/image/vfx/warnings/circle.png": "dc654b0fa3ef24ebc2193027c987dbcd97477041ce0d66abea84cddf9186b864",
+        "assets/image/wheel/core.png": "c8b9af5419a6e076bfa0b5fb8d59a160e40c1d8c8219268129b243292ed97cd6",
+        "assets/image/wheel/inner.png": "eb7052aefcf32d65182d0a0ecc6fc58d8a7ec4cf44e5337ac58fac882f3b2c1c",
+        "assets/image/wheel/marks.png": "9d6712deff61ad219ec10a9d66b5d4abafb353cbf5d51b82ba7861518c449f67",
+        "assets/image/wheel/middle.png": "5710ddfa43072b1bae8b9d4743f7473cb44d76bec6d9129376f3ee6928cf236c",
+        "assets/image/wheel/outer.png": "cbd6dc5b87fe82b3d47aea19e01c531690a517f904c69e6a7c46bf735c66c14f"
+      },
+      "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
+      "qa_case_hash": "19be06487410370b73d4d247e148c3e877962ba8ec1afc26389edb02642c703a",
+      "vision_score": null,
+      "metric_score": null,
+      "final_score": null,
+      "grade": null,
+      "confidence": null,
+      "hard_fail": null,
+      "hard_fail_codes": [],
+      "action": "ESCALATE",
+      "next_gate": "PENDING_CAPTURE",
+      "visual_review_status": "PENDING_CAPTURE"
+    }
+  ],
+  "summary": {
+    "total_cases": 15,
+    "pending_capture": 15,
+    "captured": 0,
+    "score_available": false,
+    "pass_count": 0
+  },
+  "next_gate": "PENDING_CAPTURE",
+  "evidence_note": "未取得新的真实 Maker Motion 截图；所有视觉评分、Hard Fail 判定和 PASS 均保持未执行。"
+}

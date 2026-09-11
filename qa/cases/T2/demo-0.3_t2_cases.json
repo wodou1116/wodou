@@ -1,0 +1,161 @@
+{
+  "schema_version": "1.0",
+  "demo": "0.3",
+  "qa_stage": "T2",
+  "asset_qa_skill_version": "1.3",
+  "planner_version": "1.0",
+  "status": "PENDING_CAPTURE",
+  "deterministic": true,
+  "asset_manifest_ref": "qa/asset_manifest.json",
+  "scene_config_ref": "scenes/qa/AssetReadabilityTestScene.lua",
+  "capture_contract": {
+    "mode": "motion",
+    "seed": 20260911,
+    "freeze": true,
+    "camera": {
+      "space": "design_1920x1080",
+      "x": 960,
+      "y": 540,
+      "zoom": 1.0
+    },
+    "entity_positions": {
+      "player": {"x": 960, "y": 640},
+      "jiuweihu": {"x": 1270, "y": 460},
+      "bifang": {"x": 1090, "y": 780},
+      "kui": {"x": 650, "y": 710}
+    },
+    "animation_states": {
+      "idle": {
+        "player_animation_state": "idle",
+        "enemy_animation_state": "idle",
+        "wheel_state": "idle",
+        "attack_state": "idle",
+        "animation_phase": 0.0
+      },
+      "move": {
+        "player_animation_state": "move",
+        "enemy_animation_state": "move",
+        "wheel_state": "idle",
+        "attack_state": "none",
+        "animation_phase": 0.5
+      },
+      "attack": {
+        "player_animation_state": "idle",
+        "enemy_animation_state": "hit",
+        "wheel_state": "attack",
+        "attack_state": "attack",
+        "animation_phase": 0.5
+      }
+    }
+  },
+  "screenshot_budget": {
+    "per_motion_min": 0,
+    "per_motion_max": 3,
+    "out_of_budget_evidence_allowed": false
+  },
+  "roi_policy": {
+    "requested_scale": 1.75,
+    "min_scale": 1.5,
+    "max_scale": 2.0,
+    "basis": "subject_bbox",
+    "source": "maker_runtime_entity_local_roi",
+    "t1_eligible_only_with_capture": true
+  },
+  "contact_sheet": {
+    "tool": "qa_tooling.py",
+    "purpose": "coverage_only",
+    "source": "captured_motion_frames",
+    "status_without_capture": "PENDING_CAPTURE",
+    "output": null
+  },
+  "keyframe_sampling": {
+    "tool": "qa_tooling.py",
+    "strategy": "evenly_spaced",
+    "planned_frame_count": 3,
+    "max_per_motion": 3,
+    "indices": [0, 1, 2],
+    "status_without_capture": "PENDING_CAPTURE"
+  },
+  "hash_cache": {
+    "tool": "qa_tooling.HashCache",
+    "path": "qa/reports/latest/hash_cache.json",
+    "read_only": true,
+    "invalidation_fields": ["size", "mtime_ns"],
+    "persist_planned_hashes": false
+  },
+  "evidence_policy": {
+    "real_maker_motion_screenshots_available": false,
+    "scores_allowed": false,
+    "pass_allowed": false,
+    "missing_capture_status": "PENDING_CAPTURE"
+  },
+  "targets": [
+    {
+      "asset_id": "A-12",
+      "enemy_id": "jiuweihu",
+      "name": "九尾狐",
+      "path": "enemies/jiuweihu.png"
+    },
+    {
+      "asset_id": "A-11",
+      "enemy_id": "bifang",
+      "name": "毕方",
+      "path": "enemies/bifang.png"
+    },
+    {
+      "asset_id": "A-13",
+      "enemy_id": "kui",
+      "name": "夔",
+      "path": "enemies/kui.png"
+    }
+  ],
+  "dimensions": [
+    {
+      "key": "wheel_separation",
+      "name": "Wheel Separation",
+      "motion": "idle",
+      "asset_refs": ["A-03", "A-10", "A-08-01", "A-08-02", "A-07-03", "A-08-04", "A-07-05"]
+    },
+    {
+      "key": "player_readability",
+      "name": "Player Readability",
+      "motion": "move",
+      "asset_refs": ["A-03", "A-10"]
+    },
+    {
+      "key": "combat_presence",
+      "name": "Combat Presence",
+      "motion": "attack",
+      "asset_refs": ["A-03", "A-10", "A-08-01", "A-17-01"]
+    },
+    {
+      "key": "ground_vfx_conflict",
+      "name": "Ground VFX Conflict",
+      "motion": "move",
+      "asset_refs": ["A-03", "A-10", "A-17-01", "A-17-06"]
+    },
+    {
+      "key": "attack_state_recognition",
+      "name": "Attack State Recognition",
+      "motion": "attack",
+      "asset_refs": ["A-03", "A-10", "A-08-01", "A-08-02", "A-07-03", "A-08-04", "A-07-05", "A-17-01"]
+    }
+  ],
+  "cases": [
+    {"case_id": "demo03.t2.wheel_separation.jiuweihu", "dimension_key": "wheel_separation", "asset_id": "A-12", "enemy_id": "jiuweihu", "motion": "idle", "ratio": "16:9"},
+    {"case_id": "demo03.t2.wheel_separation.bifang", "dimension_key": "wheel_separation", "asset_id": "A-11", "enemy_id": "bifang", "motion": "idle", "ratio": "16:9"},
+    {"case_id": "demo03.t2.wheel_separation.kui", "dimension_key": "wheel_separation", "asset_id": "A-13", "enemy_id": "kui", "motion": "idle", "ratio": "16:9"},
+    {"case_id": "demo03.t2.player_readability.jiuweihu", "dimension_key": "player_readability", "asset_id": "A-12", "enemy_id": "jiuweihu", "motion": "move", "ratio": "16:9"},
+    {"case_id": "demo03.t2.player_readability.bifang", "dimension_key": "player_readability", "asset_id": "A-11", "enemy_id": "bifang", "motion": "move", "ratio": "16:9"},
+    {"case_id": "demo03.t2.player_readability.kui", "dimension_key": "player_readability", "asset_id": "A-13", "enemy_id": "kui", "motion": "move", "ratio": "16:9"},
+    {"case_id": "demo03.t2.combat_presence.jiuweihu", "dimension_key": "combat_presence", "asset_id": "A-12", "enemy_id": "jiuweihu", "motion": "attack", "ratio": "16:9"},
+    {"case_id": "demo03.t2.combat_presence.bifang", "dimension_key": "combat_presence", "asset_id": "A-11", "enemy_id": "bifang", "motion": "attack", "ratio": "16:9"},
+    {"case_id": "demo03.t2.combat_presence.kui", "dimension_key": "combat_presence", "asset_id": "A-13", "enemy_id": "kui", "motion": "attack", "ratio": "16:9"},
+    {"case_id": "demo03.t2.ground_vfx_conflict.jiuweihu", "dimension_key": "ground_vfx_conflict", "asset_id": "A-12", "enemy_id": "jiuweihu", "motion": "move", "ratio": "16:9"},
+    {"case_id": "demo03.t2.ground_vfx_conflict.bifang", "dimension_key": "ground_vfx_conflict", "asset_id": "A-11", "enemy_id": "bifang", "motion": "move", "ratio": "16:9"},
+    {"case_id": "demo03.t2.ground_vfx_conflict.kui", "dimension_key": "ground_vfx_conflict", "asset_id": "A-13", "enemy_id": "kui", "motion": "move", "ratio": "16:9"},
+    {"case_id": "demo03.t2.attack_state_recognition.jiuweihu", "dimension_key": "attack_state_recognition", "asset_id": "A-12", "enemy_id": "jiuweihu", "motion": "attack", "ratio": "16:9"},
+    {"case_id": "demo03.t2.attack_state_recognition.bifang", "dimension_key": "attack_state_recognition", "asset_id": "A-11", "enemy_id": "bifang", "motion": "attack", "ratio": "16:9"},
+    {"case_id": "demo03.t2.attack_state_recognition.kui", "dimension_key": "attack_state_recognition", "asset_id": "A-13", "enemy_id": "kui", "motion": "attack", "ratio": "16:9"}
+  ]
+}
