@@ -11,42 +11,44 @@
       "name": "Combat Foundation interfaces and runtime bridge",
       "dependsOn": [],
       "owner": "main",
-      "status": "implemented_pending_review"
+      "status": "accepted"
     },
     {
       "id": "AI-01",
       "name": "Enemy AI V1",
       "dependsOn": ["CF-01"],
       "owner": "enemy_ai_worker",
-      "status": "implemented_pending_review"
+      "status": "accepted"
     },
     {
       "id": "VFX-01",
       "name": "Demo 0.2.1 FourSeasonWheel hotfix",
       "dependsOn": ["CF-01"],
       "owner": "wheel_worker",
-      "status": "implemented_pending_review"
+      "status": "accepted"
     },
     {
       "id": "QA-01",
       "name": "Asset QA T2 deterministic capture preparation",
       "dependsOn": ["CF-01"],
       "owner": "asset_qa_worker",
-      "status": "implemented_pending_review"
+      "status": "accepted"
     },
     {
       "id": "VIS-01",
       "name": "Six Spring solar-term visual state V0.1 validation",
       "dependsOn": ["CF-01"],
       "owner": "visual_state_worker",
-      "status": "implemented_pending_review"
+      "status": "accepted"
     },
     {
       "id": "REV-01",
       "name": "Demo 0.3 round-one architecture review",
       "dependsOn": ["AI-01", "VFX-01", "QA-01", "VIS-01"],
       "owner": "sol_high",
-      "status": "ready"
+      "status": "passed",
+      "result": "DEMO_0_3_ROUND1_ARCH_PASS",
+      "reviewedCommit": "ceb6f3362745754bbc4d3b551db0a91f2de46bb8"
     }
   ],
   "writeScopes": {
