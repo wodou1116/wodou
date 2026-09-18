@@ -28,6 +28,8 @@ local foxRetreat = EnemyMotion.Step(fox, foxEnemy, target, 0.20)
 Assert(foxOrbit.motionState == "approach_orbit" and foxOrbit.keyframe == "orbit", "九尾狐首帧应快速绕行接近")
 Assert(foxOrbit.vy < -90, "九尾狐绕行应产生明显切线速度")
 Assert(foxDash.motionState == "dash" and foxDash.keyframe == "dash", "九尾狐第二关键帧应短突进")
+Assert(type(foxDash.attackIntent) == "table" and foxDash.attackIntent.type == "contact",
+    "九尾狐短突进必须通过 AttackLogic 产出接触攻击 intent")
 Assert(math.abs(foxDash.vx) > math.abs(foxOrbit.vx), "九尾狐短突进应快于绕行")
 Assert(foxRetreat.motionState == "retreat" and foxRetreat.keyframe == "retreat", "九尾狐第三关键帧应短撤")
 Assert(foxRetreat.vx > 0, "九尾狐短撤应远离目标")

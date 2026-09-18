@@ -95,17 +95,34 @@ function RuntimePresentation.Player(time, isMoving, state, stateElapsed, duratio
     return visual
 end
 
-function RuntimePresentation.Enemy(kind, time, phase)
+function RuntimePresentation.Enemy(kind, time, phase, keyframe, attackType)
     local motion = ENEMY_MOTION[kind] or DEFAULT_ENEMY_MOTION
     local bob = Pulse(time or 0, motion.bobFrequency, phase) * motion.bobAmplitude
     local lean = Pulse(time or 0, motion.swayFrequency, phase) * motion.swayDegrees
+    local attackState = attackType ~= nil
+        or keyframe == "dash"
+        or keyframe == "ranged_attack"
+        or keyframe == "melee_attack"
+    local scaleX, scaleY, recoilY, attackRotation = 1, 1, 0, 0
+    if keyframe == "dash" then
+        scaleX, scaleY, attackRotation = 1.12, 0.96, 5
+    elseif keyframe == "ranged_attack" then
+        scaleX, scaleY, recoilY, attackRotation = 0.96, 1.04, -8, -4
+    elseif keyframe == "melee_attack" then
+        scaleX, scaleY, recoilY, attackRotation = 1.08, 0.90, 5, 3
+    end
     return {
         bob = bob,
         lean = lean,
         elevation = motion.elevation,
         elevationOffset = motion.elevationOffset,
-        offsetY = motion.elevationOffset + bob,
-        rotation = lean,
+        offsetY = motion.elevationOffset + bob + recoilY,
+        rotation = lean + attackRotation,
+        scaleX = scaleX,
+        scaleY = scaleY,
+        recoilY = recoilY,
+        attackState = attackState,
+        keyframe = keyframe,
     }
 end
 

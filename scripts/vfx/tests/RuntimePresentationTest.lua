@@ -34,6 +34,13 @@ local fox = Presentation.Enemy("jiuweihu", 0.1, 0.25)
 local kui = Presentation.Enemy("kui", 0.1, 0.25)
 assert(fox.elevation == 0.08 and kui.elevation == 0)
 
+local foxAttack = Presentation.Enemy("jiuweihu", 0.1, 0.25, "dash", "contact")
+local birdAttack = Presentation.Enemy("bifang", 0.1, 0.25, "ranged_attack", "ranged")
+local kuiAttack = Presentation.Enemy("kui", 0.1, 0.25, "melee_attack", "melee")
+assert(foxAttack.attackState and foxAttack.scaleX > 1, "fox dash keyframe must be visually distinct")
+assert(birdAttack.attackState and birdAttack.recoilY < 0, "Bifang ranged keyframe must show airborne recoil")
+assert(kuiAttack.attackState and kuiAttack.scaleY < 1, "Kui melee keyframe must show heavy compression")
+
 local shadow = Presentation.Shadow(100, 0.5)
 assert(near(shadow.width, 60) and near(shadow.height, 18) and near(shadow.opacity, 0.26))
 

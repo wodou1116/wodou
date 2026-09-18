@@ -17,6 +17,7 @@ local enemies = {
             retreatSpeedMultiplier = 1.26,
             dashOrbitWeight = 0.12,
             retreatOrbitWeight = 0.35,
+            attackCooldown = 0.75,
             visualRate = 7.2,
             elevation = 0.08,
             hoverAmplitude = 0.025,

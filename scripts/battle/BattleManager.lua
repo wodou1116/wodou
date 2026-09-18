@@ -15,6 +15,7 @@ local DamageContext = require("combat.DamageContext")
 local DeathContext = require("combat.DeathContext")
 local ProjectileSystem = require("combat.ProjectileSystem")
 local StatSystem = require("combat.StatSystem")
+local MovementAI = require("combat.MovementAI")
 
 local BattleManager = {}
 BattleManager.__index = BattleManager
@@ -50,6 +51,17 @@ local function Normalize(x, y)
         return 0, 0
     end
     return x / length, y / length
+end
+
+local function DefaultEnemyMovement(_, entity, target)
+    local dx, dy = Normalize((target.x or 0) - (entity.x or 0), (target.y or 0) - (entity.y or 0))
+    return {
+        directionX = dx,
+        directionY = dy,
+        speed = entity.statSystem and entity.statSystem:Get("speed", entity.speed) or entity.speed,
+        state = "press",
+        metadata = { keyframe = "press" },
+    }
 end
 
 -- Collision design (all gameplay positions are in 1920x1080 design space):
@@ -244,8 +256,13 @@ function BattleManager:SpawnEnemy(kind, x, y)
         damageTaken = config.damageTaken or 1,
     })
     local motion = nil
+    local movementAI = nil
+    local attackLogic = nil
     if kind == "bifang" or kind == "jiuweihu" or kind == "kui" then
         motion = EnemyMotion.New(kind, self.spawnSerial)
+    else
+        movementAI = MovementAI.New(DefaultEnemyMovement)
+        attackLogic = AttackLogic.New(0.75, 0)
     end
 
     table.insert(self.enemies, {
@@ -266,9 +283,10 @@ function BattleManager:SpawnEnemy(kind, x, y)
         statSystem = enemyStats,
         armor = enemyStats:Get("armor"),
         damageTaken = enemyStats:Get("damageTaken"),
-        hitCooldown = 0,
         facing = x < self.player.x and "right" or "left",
         motion = motion,
+        movementAI = movementAI,
+        attackLogic = attackLogic,
         motionState = "idle",
         animation = AnimationState.New(),
         hitElapsed = nil,
@@ -528,7 +546,6 @@ function BattleManager:UpdateEnemies(timeStep)
     local player = self.player
     for index = #self.enemies, 1, -1 do
         local enemy = self.enemies[index]
-        enemy.hitCooldown = math.max(0, enemy.hitCooldown - timeStep)
         if enemy.hitElapsed then
             enemy.hitElapsed = enemy.hitElapsed + timeStep
             if enemy.hitElapsed >= 0.16 then
@@ -559,26 +576,33 @@ function BattleManager:UpdateEnemies(timeStep)
                     if not self.active then
                         return
                     end
+                elseif command.attackIntent.type == "contact"
+                    and CirclesOverlap(player.x, player.y, player.radius, enemy.x, enemy.y, enemy.radius) then
+                    self:DamagePlayer(enemy.damage, enemy)
+                    if not self.active then
+                        return
+                    end
                 end
             end
         else
-            local dx, dy = Normalize(player.x - enemy.x, player.y - enemy.y)
-            enemy.x = enemy.x + dx * enemy.speed * timeStep
-            enemy.y = enemy.y + dy * enemy.speed * timeStep
-            enemy.facing = dx >= 0 and "right" or "left"
-            enemy.motionState = "press"
-        end
-        enemy.animation:Update(timeStep, true)
-
-        local usesIntentAttack = enemy.kind == "bifang" or enemy.kind == "kui"
-        if not usesIntentAttack and enemy.hitCooldown <= 0
-            and CirclesOverlap(player.x, player.y, player.radius, enemy.x, enemy.y, enemy.radius) then
-            self:DamagePlayer(enemy.damage, enemy)
-            enemy.hitCooldown = 0.75
+            local pose = { x = enemy.x, y = enemy.y, statSystem = enemy.statSystem, speed = enemy.speed }
+            local movement = MovementAI.Step(enemy.movementAI, pose, player, timeStep)
+            if not self.debugFreezeEnemyPositions then
+                enemy.x = movement.x
+                enemy.y = movement.y
+            end
+            enemy.facing = movement.vx >= 0 and "right" or "left"
+            enemy.motionState = movement.state
+            enemy.motionKeyframe = movement.metadata and movement.metadata.keyframe or movement.state
+            local overlapping = CirclesOverlap(player.x, player.y, player.radius, enemy.x, enemy.y, enemy.radius)
+            AttackLogic.Step(enemy.attackLogic, timeStep, overlapping, function()
+                self:DamagePlayer(enemy.damage, enemy)
+            end)
             if not self.active then
                 return
             end
         end
+        enemy.animation:Update(timeStep, true)
     end
 end
 
@@ -891,6 +915,8 @@ function BattleManager:ApplyCapturePose()
                 enemy.attackIntent = { type = "ranged", targetX = self.player.x, targetY = self.player.y }
             elseif state.enemyMotionKeyframe == "melee_attack" then
                 enemy.attackIntent = { type = "melee", targetX = self.player.x, targetY = self.player.y }
+            elseif state.enemyMotionKeyframe == "dash" then
+                enemy.attackIntent = { type = "contact", targetX = self.player.x, targetY = self.player.y }
             else
                 enemy.attackIntent = nil
             end

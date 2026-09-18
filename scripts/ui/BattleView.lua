@@ -876,19 +876,24 @@ function BattleView:UpdatePools()
         local hitWidget = self.enemyHitWidgets[index]
         local enemy = battle.enemies[index]
         if enemy then
-            local motion = RuntimePresentation.Enemy(enemy.kind, battle.elapsed, enemy.visualPhase)
+            local attackType = enemy.attackIntent and enemy.attackIntent.type or nil
+            local motion = RuntimePresentation.Enemy(
+                enemy.kind, battle.elapsed, enemy.visualPhase, enemy.motionKeyframe, attackType
+            )
             local hit = enemy.hitElapsed and RuntimePresentation.Hit(enemy.hitElapsed, 0.16) or nil
             local visualY = enemy.y + motion.offsetY
+            local visualWidth = enemy.size * motion.scaleX
+            local visualHeight = enemy.size * motion.scaleY
             if widget.currentKind ~= enemy.kind then
                 widget:Play(enemy.kind)
                 widget.currentKind = enemy.kind
             end
             widget:SetFlipX(enemy.facing == "left")
             widget:SetStyle({
-                left = enemy.x + (hit and hit.offsetX or 0),
-                top = visualY,
-                width = enemy.size,
-                height = enemy.size,
+                left = enemy.x - (visualWidth - enemy.size) * 0.5 + (hit and hit.offsetX or 0),
+                top = visualY - (visualHeight - enemy.size) * 0.5,
+                width = visualWidth,
+                height = visualHeight,
                 rotate = motion.rotation + (enemy.lean or 0),
                 scale = hit and hit.scale or 1,
                 opacity = 1,

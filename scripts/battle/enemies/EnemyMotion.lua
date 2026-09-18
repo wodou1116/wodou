@@ -130,7 +130,9 @@ end
 
 local function BuildAttackIntent(motion, rule, motionState, targetX, targetY, dt)
     local attackType = nil
-    if rule.archetype == "glide" and motionState == "glide" then
+    if rule.archetype == "orbit" and motionState == "dash" then
+        attackType = "contact"
+    elseif rule.archetype == "glide" and motionState == "glide" then
         attackType = "ranged"
     elseif rule.archetype == "press" and motionState == "melee_attack" then
         attackType = "melee"
@@ -156,7 +158,7 @@ local function BuildAttackIntent(motion, rule, motionState, targetX, targetY, dt
     if attackType == "ranged" then
         intent.range = rule.attackRange
         intent.projectileSpeed = rule.projectileSpeed
-    else
+    elseif attackType == "melee" then
         intent.range = rule.meleeRange
     end
     return intent
@@ -189,8 +191,13 @@ function EnemyMotion.Step(motion, enemy, target, timeStep)
     local motionState = movement.state
     local attackIntent = BuildAttackIntent(motion, rule, motionState, targetX, targetY, dt)
     if attackIntent then
-        motionState = attackIntent.type == "ranged" and "ranged_attack" or "melee_attack"
-        keyframe = motionState
+        if attackIntent.type == "ranged" then
+            motionState = "ranged_attack"
+            keyframe = motionState
+        elseif attackIntent.type == "melee" then
+            motionState = "melee_attack"
+            keyframe = motionState
+        end
     end
 
     local facing, facingX = FacingFor(motion, movement.vx, targetX - enemyX, rule.facingThreshold)

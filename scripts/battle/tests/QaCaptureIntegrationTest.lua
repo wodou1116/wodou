@@ -89,4 +89,35 @@ assert(capturedBifang.animation:Get() == "Move", "T2 attack capture must not sub
 assert(attackBattle.wheelState == "attack" and attackBattle.attackPulse == 0.09,
     "T2 attack capture must drive a visible FourSeasonWheel attack phase")
 
+local foxAttackCase
+for _, case in ipairs(T2CaptureCases.GetCases()) do
+    if case.enemy_id == "jiuweihu" and case.dimension_key == "attack_state_recognition" then
+        foxAttackCase = case
+        break
+    end
+end
+assert(foxAttackCase, "T2 fox attack case is required")
+local foxCapture = CaptureMode.New()
+foxCapture:Configure(T2CaptureCases.BuildCaptureOptions(foxAttackCase))
+local foxBattle = BattleManager.New()
+foxBattle:Prepare({ characterId = "shi_yu_zhe" })
+foxBattle:ConfigureCapture(foxCapture)
+local capturedFox
+for _, enemy in ipairs(foxBattle.enemies) do
+    if enemy.kind == "jiuweihu" then
+        capturedFox = enemy
+        break
+    end
+end
+assert(capturedFox and capturedFox.motionKeyframe == "dash")
+assert(capturedFox.attackIntent and capturedFox.attackIntent.type == "contact",
+    "T2 fox dash capture must expose a real contact attack intent")
+
+local fallbackBattle = BattleManager.New()
+fallbackBattle:Prepare({ characterId = "shi_yu_zhe" })
+fallbackBattle:SpawnEnemy("spring_elite", 400, 400)
+local elite = fallbackBattle.enemies[#fallbackBattle.enemies]
+assert(elite.movementAI and elite.attackLogic,
+    "Elite and Boss fallback AI must also use shared MovementAI and AttackLogic")
+
 print("QaCaptureIntegrationTest: BattleManager capture freeze and motion passed")
