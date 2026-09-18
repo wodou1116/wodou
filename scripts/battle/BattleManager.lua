@@ -2,6 +2,7 @@ local AssetCatalog = require("core.AssetCatalog")
 local EventBus = require("core.EventBus")
 local Logger = require("core.Logger")
 local Skills = require("data.Skills")
+local Enemies = require("data.Enemies")
 local AnimationState = require("animation.AnimationState")
 local BattleBounds = require("battle.BattleBounds")
 local EnemyMotion = require("battle.enemies.EnemyMotion")
@@ -32,9 +33,9 @@ local CAPTURE_ANIMATION_STATES = {
 }
 
 local ENEMY_TYPES = {
-    bifang = { hp = 54, speed = 92, damage = 7, radius = 38, size = 105, xp = 1, sprite = AssetCatalog.enemies.bifang },
-    jiuweihu = { hp = 82, speed = 72, damage = 10, radius = 45, size = 118, xp = 1, sprite = AssetCatalog.enemies.jiuweihu },
-    kui = { hp = 126, speed = 54, damage = 14, radius = 52, size = 132, xp = 2, sprite = AssetCatalog.enemies.kui },
+    bifang = { hp = 54, damage = 7, radius = 38, size = 105, xp = 1, sprite = AssetCatalog.enemies.bifang },
+    jiuweihu = { hp = 82, damage = 10, radius = 45, size = 118, xp = 1, sprite = AssetCatalog.enemies.jiuweihu },
+    kui = { hp = 126, damage = 14, radius = 52, size = 132, xp = 2, sprite = AssetCatalog.enemies.kui },
     spring_elite = { hp = 420, speed = 48, damage = 18, radius = 66, size = 178, xp = 5, sprite = AssetCatalog.enemies.spring_elite },
     jumang = { hp = 1900, speed = 34, damage = 24, radius = 96, size = 260, xp = 20, sprite = AssetCatalog.bosses.jumang, boss = true },
 }
@@ -233,9 +234,11 @@ function BattleManager:SpawnEnemy(kind, x, y)
     end
 
     self.spawnSerial = self.spawnSerial + 1
+    local enemyDefinition = Enemies.Get(kind)
+    local enemySpeed = enemyDefinition and enemyDefinition.stats.speed or config.speed
     local enemyStats = StatSystem.New({
         maxHp = config.hp,
-        speed = config.speed,
+        speed = enemySpeed,
         damage = config.damage,
         armor = config.armor or 0,
         damageTaken = config.damageTaken or 1,
@@ -253,7 +256,7 @@ function BattleManager:SpawnEnemy(kind, x, y)
         y = y,
         hp = config.hp,
         maxHp = config.hp,
-        speed = config.speed,
+        speed = enemySpeed,
         damage = config.damage,
         radius = config.radius,
         size = config.size,
@@ -853,6 +856,7 @@ function BattleManager:ApplyCapturePose()
     self.elapsed = self.captureMode:GetPresentationTime()
     local state = self.captureMode:GetStateMetadata() or {}
     self.wheelState = state.wheelState
+    self.attackPulse = state.wheelState == "attack" and (state.wheelAttackPulse or 0.09) or 0
 
     local function ApplyFacing(entity, facing)
         if entity and (facing == "left" or facing == "right") then
@@ -877,8 +881,20 @@ function BattleManager:ApplyCapturePose()
     ApplyFacing(self.player, state.playerFacing)
     ApplyAnimationState(self.player, state.playerAnimationState or state.animationState)
     for index = 1, #self.enemies do
-        ApplyFacing(self.enemies[index], state.enemyFacing)
-        ApplyAnimationState(self.enemies[index], state.enemyAnimationState)
+        local enemy = self.enemies[index]
+        ApplyFacing(enemy, state.enemyFacing)
+        ApplyAnimationState(enemy, state.enemyAnimationState)
+        if state.enemyKind == enemy.kind and state.enemyMotionKeyframe then
+            enemy.motionState = state.enemyMotionKeyframe
+            enemy.motionKeyframe = state.enemyMotionKeyframe
+            if state.enemyMotionKeyframe == "ranged_attack" then
+                enemy.attackIntent = { type = "ranged", targetX = self.player.x, targetY = self.player.y }
+            elseif state.enemyMotionKeyframe == "melee_attack" then
+                enemy.attackIntent = { type = "melee", targetX = self.player.x, targetY = self.player.y }
+            else
+                enemy.attackIntent = nil
+            end
+        end
     end
 
     local phase = self.captureMode:GetAnimationPhase()
@@ -907,12 +923,25 @@ function BattleManager:UpdateCaptureMetadata()
     if not self.captureMode then
         return
     end
+    local enemyStates = {}
+    for index = 1, #self.enemies do
+        local enemy = self.enemies[index]
+        enemyStates[#enemyStates + 1] = {
+            kind = enemy.kind,
+            motionState = enemy.motionState,
+            motionKeyframe = enemy.motionKeyframe,
+            attackType = enemy.attackIntent and enemy.attackIntent.type or nil,
+        }
+    end
     self.captureMode:SetStateMetadata({
         scenario = self.debugScenario,
         elapsed = self.elapsed,
         enemyCount = #self.enemies,
         projectileCount = #self.projectiles,
         player = self.player and { x = self.player.x, y = self.player.y, hp = self.player.hp } or nil,
+        wheelState = self.wheelState,
+        wheelAttackPulse = self.attackPulse,
+        enemies = enemyStates,
     })
 end
 

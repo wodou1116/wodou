@@ -33,9 +33,9 @@ CaptureCases.KEYFRAME_SAMPLING = {
 
 local PLAYER_POSITION = {x = 960, y = 640}
 local TARGETS = {
-    {asset_id = "A-12", enemy_id = "jiuweihu", name = "九尾狐", x = 1270, y = 460},
-    {asset_id = "A-11", enemy_id = "bifang", name = "毕方", x = 1090, y = 780},
-    {asset_id = "A-13", enemy_id = "kui", name = "夔", x = 650, y = 710},
+    {asset_id = "A-12", enemy_id = "jiuweihu", name = "九尾狐", x = 1270, y = 460, attack_keyframe = "dash"},
+    {asset_id = "A-11", enemy_id = "bifang", name = "毕方", x = 1090, y = 780, attack_keyframe = "ranged_attack"},
+    {asset_id = "A-13", enemy_id = "kui", name = "夔", x = 650, y = 710, attack_keyframe = "melee_attack"},
 }
 
 local MOTION_STATES = {
@@ -55,8 +55,9 @@ local MOTION_STATES = {
     },
     attack = {
         player_animation_state = "idle",
-        enemy_animation_state = "hit",
+        enemy_animation_state = "move",
         wheel_state = "attack",
+        wheel_attack_pulse = 0.09,
         attack_state = "attack",
         animation_phase = 0.5,
     },
@@ -106,12 +107,15 @@ local function CopyValue(value)
     return copy
 end
 
-local function BuildState(animation)
+local function BuildState(animation, target)
     return {
         playerAnimationState = animation.player_animation_state,
         enemyAnimationState = animation.enemy_animation_state,
         wheelState = animation.wheel_state,
+        wheelAttackPulse = animation.wheel_attack_pulse,
         attackState = animation.attack_state,
+        enemyKind = target.enemy_id,
+        enemyMotionKeyframe = animation.attack_state == "attack" and target.attack_keyframe or animation.attack_state,
         playerFacing = "right",
         enemyFacing = "left",
     }
@@ -164,7 +168,7 @@ function CaptureCases.GetCases()
                     enemy = {id = target.enemy_id, x = target.x, y = target.y},
                 },
                 animation_state = CopyValue(animation),
-                state = BuildState(animation),
+                state = BuildState(animation, target),
                 asset_refs = assetRefs,
                 screenshot_budget = CopyValue(CaptureCases.SCREENSHOT_BUDGET),
                 roi_policy = CopyValue(CaptureCases.ROI_POLICY),

@@ -1,4 +1,6 @@
 local Enemies = require("data.Enemies")
+local AttackLogic = require("combat.AttackLogic")
+local MovementAI = require("combat.MovementAI")
 
 local EnemyMotion = {}
 
@@ -14,13 +16,6 @@ local function Normalize(x, y)
     return x / length, y / length, length
 end
 
-local function Approach(current, target, maximumDelta)
-    if current < target then
-        return math.min(current + maximumDelta, target)
-    end
-    return math.max(current - maximumDelta, target)
-end
-
 local function FacingFor(motion, vx, fallbackX, threshold)
     local facingX = motion.facingX
     if math.abs(vx) > (threshold or 0.0001) then
@@ -32,42 +27,37 @@ local function FacingFor(motion, vx, fallbackX, threshold)
     return facingX == 1 and "right" or "left", facingX
 end
 
+local function EffectiveSpeed(enemy, config)
+    if enemy.statSystem and type(enemy.statSystem.Get) == "function" then
+        return enemy.statSystem:Get("speed", enemy.speed or 0)
+    end
+    return enemy.speed or (config.stats and config.stats.speed) or 0
+end
+
+local function MovementStrategy(_, _, _, _, context)
+    return context.intent
+end
+
 function EnemyMotion.New(enemyId, seed)
     local config = Enemies.Get(enemyId)
     assert(config, "unknown enemy motion: " .. tostring(enemyId))
-
-    return {
+    local rule = config.motion
+    local motion = {
         enemyId = enemyId,
         phase = (seed or 0) % (math.pi * 2),
         orbitDirection = (seed or 0) % 2 == 0 and 1 or -1,
         actionTime = 0,
-        attackCooldown = config.motion.attackInitialCooldown or 0,
-        velocityX = 0,
-        velocityY = 0,
     }
+    motion.movement = MovementAI.New(MovementStrategy, {
+        acceleration = rule.acceleration or math.huge,
+        deceleration = rule.stopAcceleration or rule.acceleration or math.huge,
+    })
+    motion.attack = AttackLogic.New(rule.attackCooldown or 1, rule.attackInitialCooldown or 0)
+    return motion
 end
 
--- Returns a frame command; this function does not mutate the enemy or target tables.
--- The caller owns motion state and writes the fields it needs back to its entity.
-function EnemyMotion.Step(motion, enemy, target, timeStep)
-    assert(motion and motion.enemyId, "motion state is required")
-    assert(enemy and target, "enemy and target are required")
-
-    local config = Enemies.Get(motion.enemyId)
-    assert(config, "unknown enemy motion: " .. tostring(motion.enemyId))
-
-    local rule = config.motion
-    local targetX = target.x or 0
-    local targetY = target.y or 0
-    local enemyX = enemy.x or 0
-    local enemyY = enemy.y or 0
-    local dt = timeStep or 0
-    local towardX, towardY, distance = Normalize(targetX - enemyX, targetY - enemyY)
-    local tangentX = -towardY * motion.orbitDirection
-    local tangentY = towardX * motion.orbitDirection
-    local moveX, moveY, motionState, keyframe, attackIntent
-
-    motion.phase = motion.phase + dt * (rule.visualRate or rule.turnRate or 0)
+local function BuildMovementIntent(motion, rule, distance, towardX, towardY, tangentX, tangentY, speed, dt)
+    local moveX, moveY, motionState, keyframe
 
     if rule.archetype == "orbit" then
         local cycleLength = rule.dashDelay + rule.dashDuration + rule.retreatDuration
@@ -86,6 +76,7 @@ function EnemyMotion.Step(motion, enemy, target, timeStep)
                 towardX + tangentX * rule.dashOrbitWeight,
                 towardY + tangentY * rule.dashOrbitWeight
             )
+            speed = speed * rule.dashSpeedMultiplier
             motionState = "dash"
             keyframe = "dash"
         else
@@ -93,6 +84,7 @@ function EnemyMotion.Step(motion, enemy, target, timeStep)
                 -towardX + tangentX * rule.retreatOrbitWeight,
                 -towardY + tangentY * rule.retreatOrbitWeight
             )
+            speed = speed * rule.retreatSpeedMultiplier
             motionState = "retreat"
             keyframe = "retreat"
         end
@@ -101,91 +93,119 @@ function EnemyMotion.Step(motion, enemy, target, timeStep)
         if distance > rule.preferredDistance + rule.distanceBand then
             radialWeight = 1
             motionState = "close"
+            keyframe = "close"
         elseif distance < rule.preferredDistance - rule.distanceBand then
             radialWeight = -1
             motionState = "retreat"
+            keyframe = "retreat"
         else
             motionState = "glide"
+            keyframe = "hover"
         end
-
         local drift = math.sin(motion.phase) * rule.driftWeight
         moveX, moveY = Normalize(
             towardX * radialWeight + tangentX * drift,
             towardY * radialWeight + tangentY * drift
         )
-
-        if motionState == "glide" then
-            motion.attackCooldown = math.max(0, motion.attackCooldown - dt)
-            if motion.attackCooldown == 0 then
-                motionState = "ranged_attack"
-                keyframe = "ranged_attack"
-                attackIntent = {
-                    type = "ranged",
-                    targetX = targetX,
-                    targetY = targetY,
-                    range = rule.attackRange,
-                    projectileSpeed = rule.projectileSpeed,
-                }
-                motion.attackCooldown = rule.attackCooldown
-            else
-                keyframe = "hover"
-            end
-        else
-            keyframe = motionState
-        end
     else
-        motion.attackCooldown = math.max(0, motion.attackCooldown - dt)
         if distance <= rule.meleeRange then
             moveX, moveY = 0, 0
-            motion.velocityX = Approach(motion.velocityX, 0, rule.stopAcceleration * dt)
-            motion.velocityY = Approach(motion.velocityY, 0, rule.stopAcceleration * dt)
             motionState = "melee_attack"
             keyframe = "melee_attack"
-            if motion.attackCooldown == 0 then
-                attackIntent = {
-                    type = "melee",
-                    targetX = targetX,
-                    targetY = targetY,
-                    range = rule.meleeRange,
-                }
-                motion.attackCooldown = rule.attackCooldown
-            end
         else
             moveX, moveY = towardX, towardY
-            motion.velocityX = Approach(motion.velocityX, towardX * rule.speed, rule.acceleration * dt)
-            motion.velocityY = Approach(motion.velocityY, towardY * rule.speed, rule.acceleration * dt)
             motionState = "press"
             keyframe = "press"
         end
     end
 
-    local speed = rule.speed or enemy.speed or 0
-    local vx = moveX * speed
-    local vy = moveY * speed
-    if rule.archetype == "orbit" then
-        if keyframe == "dash" then
-            vx = moveX * rule.dashSpeed
-            vy = moveY * rule.dashSpeed
-        elseif keyframe == "retreat" then
-            vx = moveX * rule.retreatSpeed
-            vy = moveY * rule.retreatSpeed
-        end
-    elseif rule.archetype == "press" then
-        vx = motion.velocityX
-        vy = motion.velocityY
-        moveX, moveY = Normalize(vx, vy)
+    return {
+        directionX = moveX,
+        directionY = moveY,
+        speed = speed,
+        state = motionState,
+        metadata = { keyframe = keyframe },
+    }, keyframe
+end
+
+local function BuildAttackIntent(motion, rule, motionState, targetX, targetY, dt)
+    local attackType = nil
+    if rule.archetype == "glide" and motionState == "glide" then
+        attackType = "ranged"
+    elseif rule.archetype == "press" and motionState == "melee_attack" then
+        attackType = "melee"
     end
-    local facing, facingX = FacingFor(motion, vx, targetX - enemyX, rule.facingThreshold)
+
+    if not attackType then
+        return nil
+    end
+    AttackLogic.SetInterval(motion.attack, rule.attackCooldown or 1)
+    local fired = false
+    AttackLogic.Step(motion.attack, dt, true, function()
+        fired = true
+    end)
+    if not fired then
+        return nil
+    end
+
+    local intent = {
+        type = attackType,
+        targetX = targetX,
+        targetY = targetY,
+    }
+    if attackType == "ranged" then
+        intent.range = rule.attackRange
+        intent.projectileSpeed = rule.projectileSpeed
+    else
+        intent.range = rule.meleeRange
+    end
+    return intent
+end
+
+-- Pure with respect to enemy and target. Stateful AI lives only in motion.
+function EnemyMotion.Step(motion, enemy, target, timeStep)
+    assert(motion and motion.enemyId, "motion state is required")
+    assert(enemy and target, "enemy and target are required")
+
+    local config = Enemies.Get(motion.enemyId)
+    assert(config, "unknown enemy motion: " .. tostring(motion.enemyId))
+    local rule = config.motion
+    local dt = timeStep or 0
+    local targetX = target.x or 0
+    local targetY = target.y or 0
+    local enemyX = enemy.x or 0
+    local enemyY = enemy.y or 0
+    local towardX, towardY, distance = Normalize(targetX - enemyX, targetY - enemyY)
+    local tangentX = -towardY * motion.orbitDirection
+    local tangentY = towardX * motion.orbitDirection
+    local speed = EffectiveSpeed(enemy, config)
+
+    motion.phase = motion.phase + dt * (rule.visualRate or rule.turnRate or 0)
+    local intent, keyframe = BuildMovementIntent(
+        motion, rule, distance, towardX, towardY, tangentX, tangentY, speed, dt
+    )
+    local pose = { x = enemyX, y = enemyY }
+    local movement = MovementAI.Step(motion.movement, pose, target, dt, { intent = intent })
+    local motionState = movement.state
+    local attackIntent = BuildAttackIntent(motion, rule, motionState, targetX, targetY, dt)
+    if attackIntent then
+        motionState = attackIntent.type == "ranged" and "ranged_attack" or "melee_attack"
+        keyframe = motionState
+    end
+
+    local facing, facingX = FacingFor(motion, movement.vx, targetX - enemyX, rule.facingThreshold)
+    local directionX = Normalize(movement.vx, movement.vy)
     local step = 0.5 + math.sin(motion.phase * (rule.stepRate or 1)) * 0.5
     local elevation = (rule.elevation or 0) + math.sin(motion.phase) * (rule.hoverAmplitude or 0)
-    local lean = Clamp(moveX * (rule.leanMax or 0), -(rule.leanMax or 0), rule.leanMax or 0)
-    local nextX = enemyX + vx * dt
-    local nextY = enemyY + vy * dt
+    local lean = Clamp(directionX * (rule.leanMax or 0), -(rule.leanMax or 0), rule.leanMax or 0)
+    movement.state = motionState
+    movement.metadata.keyframe = keyframe
+
     return {
-        x = nextX,
-        y = nextY,
-        vx = vx,
-        vy = vy,
+        x = movement.x,
+        y = movement.y,
+        vx = movement.vx,
+        vy = movement.vy,
         facing = facing,
         facingX = facingX,
         motionState = motionState,
@@ -194,14 +214,7 @@ function EnemyMotion.Step(motion, enemy, target, timeStep)
         elevation = elevation,
         step = step,
         lean = lean,
-        movementIntent = {
-            x = nextX,
-            y = nextY,
-            vx = vx,
-            vy = vy,
-            state = motionState,
-            keyframe = keyframe,
-        },
+        movementIntent = movement,
         attackIntent = attackIntent,
     }
 end

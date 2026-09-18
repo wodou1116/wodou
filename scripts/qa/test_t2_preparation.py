@@ -78,6 +78,10 @@ class T2PreparationTest(unittest.TestCase):
                 self.assertIsNone(case[score_field], score_field)
             self.assertEqual(case["qa_case_hash"], qa_case_hash(case["qa_case"]))
             self.assertTrue(case["asset_hash"])
+            if case["motion"] == "attack":
+                self.assertEqual(case["animation_state"]["enemy_animation_state"], "move")
+                self.assertIn(case["state"]["enemyMotionKeyframe"], {"dash", "ranged_attack", "melee_attack"})
+                self.assertEqual(case["state"]["wheelAttackPulse"], 0.09)
 
     def test_scene_and_hash_cache_provenance_are_recorded_without_writes(self) -> None:
         before_bytes = self.cache_path.read_bytes()

@@ -17,6 +17,7 @@ end
 
 local BattleManager = require("battle.BattleManager")
 local CaptureMode = require("qa.CaptureMode")
+local T2CaptureCases = require("qa.T2CaptureCases")
 
 local frozenCapture = CaptureMode.New()
 frozenCapture:Configure({
@@ -61,5 +62,31 @@ local liveX, liveY = liveEnemy.x, liveEnemy.y
 liveBattle:Update(0.25, 0, 0)
 assert(liveEnemy.x ~= liveX or liveEnemy.y ~= liveY, "unfrozen motion capture must advance entity motion")
 assert(liveBattle.debugFreezeSpawning, "capture scenarios must freeze procedural spawning")
+
+local attackCase
+for _, case in ipairs(T2CaptureCases.GetCases()) do
+    if case.enemy_id == "bifang" and case.dimension_key == "attack_state_recognition" then
+        attackCase = case
+        break
+    end
+end
+assert(attackCase, "T2 bifang attack case is required")
+local attackCapture = CaptureMode.New()
+attackCapture:Configure(T2CaptureCases.BuildCaptureOptions(attackCase))
+local attackBattle = BattleManager.New()
+attackBattle:Prepare({ characterId = "shi_yu_zhe" })
+attackBattle:ConfigureCapture(attackCapture)
+local capturedBifang
+for _, enemy in ipairs(attackBattle.enemies) do
+    if enemy.kind == "bifang" then
+        capturedBifang = enemy
+        break
+    end
+end
+assert(capturedBifang and capturedBifang.motionKeyframe == "ranged_attack")
+assert(capturedBifang.attackIntent and capturedBifang.attackIntent.type == "ranged")
+assert(capturedBifang.animation:Get() == "Move", "T2 attack capture must not substitute the Hit state")
+assert(attackBattle.wheelState == "attack" and attackBattle.attackPulse == 0.09,
+    "T2 attack capture must drive a visible FourSeasonWheel attack phase")
 
 print("QaCaptureIntegrationTest: BattleManager capture freeze and motion passed")

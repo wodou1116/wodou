@@ -41,8 +41,9 @@
       },
       "attack": {
         "player_animation_state": "idle",
-        "enemy_animation_state": "hit",
+        "enemy_animation_state": "move",
         "wheel_state": "attack",
+        "wheel_attack_pulse": 0.09,
         "attack_state": "attack",
         "animation_phase": 0.5
       }
@@ -94,19 +95,22 @@
       "asset_id": "A-12",
       "enemy_id": "jiuweihu",
       "name": "九尾狐",
-      "path": "enemies/jiuweihu.png"
+      "path": "enemies/jiuweihu.png",
+      "attack_keyframe": "dash"
     },
     {
       "asset_id": "A-11",
       "enemy_id": "bifang",
       "name": "毕方",
-      "path": "enemies/bifang.png"
+      "path": "enemies/bifang.png",
+      "attack_keyframe": "ranged_attack"
     },
     {
       "asset_id": "A-13",
       "enemy_id": "kui",
       "name": "夔",
-      "path": "enemies/kui.png"
+      "path": "enemies/kui.png",
+      "attack_keyframe": "melee_attack"
     }
   ],
   "dimensions": [

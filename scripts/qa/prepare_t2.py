@@ -127,7 +127,10 @@ def _case_definition(
         "playerAnimationState": animation["player_animation_state"],
         "enemyAnimationState": animation["enemy_animation_state"],
         "wheelState": animation["wheel_state"],
+        "wheelAttackPulse": animation.get("wheel_attack_pulse"),
         "attackState": animation["attack_state"],
+        "enemyKind": target["enemy_id"],
+        "enemyMotionKeyframe": target["attack_keyframe"] if animation["attack_state"] == "attack" else animation["attack_state"],
         "playerFacing": "right",
         "enemyFacing": "left",
     }

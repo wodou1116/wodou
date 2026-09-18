@@ -20,6 +20,7 @@ end
 local target = { x = 0, y = 0 }
 
 local fox = EnemyMotion.New("jiuweihu", 0)
+Assert(fox.movement and fox.attack, "Enemy AI must use shared MovementAI and AttackLogic state")
 local foxEnemy = { x = 420, y = 0 }
 local foxOrbit = EnemyMotion.Step(fox, foxEnemy, target, 0.25)
 local foxDash = EnemyMotion.Step(fox, foxEnemy, target, 0.20)
@@ -32,6 +33,15 @@ Assert(foxRetreat.motionState == "retreat" and foxRetreat.keyframe == "retreat",
 Assert(foxRetreat.vx > 0, "九尾狐短撤应远离目标")
 AssertIntent(foxOrbit, "九尾狐")
 Assert(foxEnemy.x == 420 and target.x == 0, "运动计算不应改写输入实体")
+
+local statDrivenFox = EnemyMotion.New("jiuweihu", 0)
+local statDrivenCommand = EnemyMotion.Step(statDrivenFox, {
+    x = 420,
+    y = 0,
+    statSystem = { Get = function(_, name) return name == "speed" and 20 or nil end },
+}, target, 0.1)
+local statDrivenSpeed = math.sqrt(statDrivenCommand.vx ^ 2 + statDrivenCommand.vy ^ 2)
+Assert(NearlyEqual(statDrivenSpeed, 20, 0.0001), "Enemy movement must read effective speed from StatSystem")
 
 local bird = EnemyMotion.New("bifang", 0)
 local birdFar = EnemyMotion.Step(bird, { x = 500, y = 0 }, target, 0.1)

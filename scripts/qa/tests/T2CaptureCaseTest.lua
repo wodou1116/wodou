@@ -64,6 +64,13 @@ for _, case in ipairs(cases) do
     AssertEqual(metadata.camera.x, 960)
     AssertEqual(metadata.camera.y, 540)
     AssertEqual(metadata.state.attackState, case.state.attackState)
+    if case.motion == "attack" then
+        AssertEqual(case.animation_state.enemy_animation_state, "move")
+        assert(case.state.enemyMotionKeyframe == "dash"
+            or case.state.enemyMotionKeyframe == "ranged_attack"
+            or case.state.enemyMotionKeyframe == "melee_attack")
+        AssertEqual(case.state.wheelAttackPulse, 0.09)
+    end
     AssertEqual(capture:IsFrozen(), true)
     capture:ApplySeed()
     capture:Clear()

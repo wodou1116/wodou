@@ -57,8 +57,9 @@
       },
       "attack": {
         "player_animation_state": "idle",
-        "enemy_animation_state": "hit",
+        "enemy_animation_state": "move",
         "wheel_state": "attack",
+        "wheel_attack_pulse": 0.09,
         "attack_state": "attack",
         "animation_phase": 0.5
       }
@@ -235,21 +236,21 @@
     "assets/image/wheel/outer.png": "cbd6dc5b87fe82b3d47aea19e01c531690a517f904c69e6a7c46bf735c66c14f"
   },
   "qa_case_hashes": {
-    "demo03.t2.wheel_separation.jiuweihu": "8c2d4e84ef14e210873db201c6580953eb258ec05411b0d06ca6eee277d10b03",
-    "demo03.t2.wheel_separation.bifang": "3ffd3935b48a6f299e6967ec4865889d56bf22038df3be524c75a1c290d85a99",
-    "demo03.t2.wheel_separation.kui": "14b3509594be9292e45e920ca59260d4cf0fe717ae1bebd8392e3f6261e20be3",
-    "demo03.t2.player_readability.jiuweihu": "baa5bf91d6408f39119f1e2163280354bcc26fae0a80b80b4aab05a8adb200cc",
-    "demo03.t2.player_readability.bifang": "26f90117e05d639e452d8a93411b059183e961e75ee64fcd5a10c0053762abe8",
-    "demo03.t2.player_readability.kui": "d7d1d02e1f3b281b2d8a6c26dc203f8432b75fa80d0a8a0e238fc70746992a6a",
-    "demo03.t2.combat_presence.jiuweihu": "d0372c336903a95d8fca1e73fcb5ab4c0048b527a16f59fb5502d341f9b42cdb",
-    "demo03.t2.combat_presence.bifang": "5115bff967b4429e8ecd35551b6d4cefcaeabd85982a4d345e8d7b81d9c28d59",
-    "demo03.t2.combat_presence.kui": "2ee864c2743e895fca6d1799557466dbd33a3ea01bf65386adf3040213c06c1a",
-    "demo03.t2.ground_vfx_conflict.jiuweihu": "37cb991fea78ab3ec5653849f242ded6c90ff0f6588725c7b97423e4543e49a6",
-    "demo03.t2.ground_vfx_conflict.bifang": "bf62d87e592246d5cf0a1ac17a23d9b1552cc8710d4c10be6c17cf6c1c3ef1ac",
-    "demo03.t2.ground_vfx_conflict.kui": "a0d0fa0831417ef2675d557057e1b327102777fb0cb8a717e381bf6d04123dbb",
-    "demo03.t2.attack_state_recognition.jiuweihu": "f25e5181a5a77609080649e42801b0704eabf23e30e1dc109168035e95b69950",
-    "demo03.t2.attack_state_recognition.bifang": "a6d897b7cb322c33ac2671ce0afed0307a4a70d3f1aaef277d782a26f013f80a",
-    "demo03.t2.attack_state_recognition.kui": "19be06487410370b73d4d247e148c3e877962ba8ec1afc26389edb02642c703a"
+    "demo03.t2.wheel_separation.jiuweihu": "c83e7657ee4b9771cf5e8f7fcbb4cb390da6d25ed0e0f9309018fae83435e956",
+    "demo03.t2.wheel_separation.bifang": "97ba319212755bec5555369a8b674916d7d8d894aa8656bd1e0e4f7ee010efd3",
+    "demo03.t2.wheel_separation.kui": "b27bf6b12405298ade5cb8747d9327dba2b144e8b8465b370aee98ed49409d56",
+    "demo03.t2.player_readability.jiuweihu": "34a8df1fa73a0da4b46c518d8d66af28a6eaf3bb7a4b6794a88e3d79d1586b50",
+    "demo03.t2.player_readability.bifang": "512c14f5d76af769dd3a411526d8244136ec451420cc4a7f4066d1d09bf69cf3",
+    "demo03.t2.player_readability.kui": "fcc83db60c3304105b74ba7b51f55e2da9be271f1ad9833d5be02cd1cddfbcbc",
+    "demo03.t2.combat_presence.jiuweihu": "a6227b798e95975987ba7d47d349fd1a55851bc8e437e6bb3ca5d21bd220885d",
+    "demo03.t2.combat_presence.bifang": "4e203851e8e670d255e3093727c6807150f9fe906cbcfb7a3e12b0b35bd10ea6",
+    "demo03.t2.combat_presence.kui": "09cf261dc9aa6d6186acfd479bdf24457eb6e7fe86a1694f915f1470e41bccb7",
+    "demo03.t2.ground_vfx_conflict.jiuweihu": "6306e058bfab6ca607f56fee8c82afd6ac1665889843f9d8fdef17ea3e1062a0",
+    "demo03.t2.ground_vfx_conflict.bifang": "6bc567fa5e21446f4ae1e070f6974420ba7687aa190f85ba92c248ae1eee610e",
+    "demo03.t2.ground_vfx_conflict.kui": "76cffb1051c31d31506fe203571c5527255c6850e13a4f559750adf9e3cfa973",
+    "demo03.t2.attack_state_recognition.jiuweihu": "6590022c44592db8612e498712c2672d39cdbc4f3f291d69de67e95007c5016f",
+    "demo03.t2.attack_state_recognition.bifang": "62ee82cb4bb564394486fe790400ddadd3ffd55c12440523404799862a243f6d",
+    "demo03.t2.attack_state_recognition.kui": "d86adba154000b994cc3a3a1cc41a11a668c007bbc216cd89bccca4eb6cba3aa"
   },
   "coverage": {
     "target_asset_ids": [
@@ -309,7 +310,10 @@
         "playerAnimationState": "idle",
         "enemyAnimationState": "idle",
         "wheelState": "idle",
+        "wheelAttackPulse": null,
         "attackState": "idle",
+        "enemyKind": "jiuweihu",
+        "enemyMotionKeyframe": "idle",
         "playerFacing": "right",
         "enemyFacing": "left"
       },
@@ -410,7 +414,10 @@
           "playerAnimationState": "idle",
           "enemyAnimationState": "idle",
           "wheelState": "idle",
+          "wheelAttackPulse": null,
           "attackState": "idle",
+          "enemyKind": "jiuweihu",
+          "enemyMotionKeyframe": "idle",
           "playerFacing": "right",
           "enemyFacing": "left"
         },
@@ -481,7 +488,7 @@
         "assets/image/wheel/outer.png": "cbd6dc5b87fe82b3d47aea19e01c531690a517f904c69e6a7c46bf735c66c14f"
       },
       "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
-      "qa_case_hash": "8c2d4e84ef14e210873db201c6580953eb258ec05411b0d06ca6eee277d10b03",
+      "qa_case_hash": "c83e7657ee4b9771cf5e8f7fcbb4cb390da6d25ed0e0f9309018fae83435e956",
       "vision_score": null,
       "metric_score": null,
       "final_score": null,
@@ -535,7 +542,10 @@
         "playerAnimationState": "idle",
         "enemyAnimationState": "idle",
         "wheelState": "idle",
+        "wheelAttackPulse": null,
         "attackState": "idle",
+        "enemyKind": "bifang",
+        "enemyMotionKeyframe": "idle",
         "playerFacing": "right",
         "enemyFacing": "left"
       },
@@ -636,7 +646,10 @@
           "playerAnimationState": "idle",
           "enemyAnimationState": "idle",
           "wheelState": "idle",
+          "wheelAttackPulse": null,
           "attackState": "idle",
+          "enemyKind": "bifang",
+          "enemyMotionKeyframe": "idle",
           "playerFacing": "right",
           "enemyFacing": "left"
         },
@@ -707,7 +720,7 @@
         "assets/image/wheel/outer.png": "cbd6dc5b87fe82b3d47aea19e01c531690a517f904c69e6a7c46bf735c66c14f"
       },
       "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
-      "qa_case_hash": "3ffd3935b48a6f299e6967ec4865889d56bf22038df3be524c75a1c290d85a99",
+      "qa_case_hash": "97ba319212755bec5555369a8b674916d7d8d894aa8656bd1e0e4f7ee010efd3",
       "vision_score": null,
       "metric_score": null,
       "final_score": null,
@@ -761,7 +774,10 @@
         "playerAnimationState": "idle",
         "enemyAnimationState": "idle",
         "wheelState": "idle",
+        "wheelAttackPulse": null,
         "attackState": "idle",
+        "enemyKind": "kui",
+        "enemyMotionKeyframe": "idle",
         "playerFacing": "right",
         "enemyFacing": "left"
       },
@@ -862,7 +878,10 @@
           "playerAnimationState": "idle",
           "enemyAnimationState": "idle",
           "wheelState": "idle",
+          "wheelAttackPulse": null,
           "attackState": "idle",
+          "enemyKind": "kui",
+          "enemyMotionKeyframe": "idle",
           "playerFacing": "right",
           "enemyFacing": "left"
         },
@@ -933,7 +952,7 @@
         "assets/image/wheel/outer.png": "cbd6dc5b87fe82b3d47aea19e01c531690a517f904c69e6a7c46bf735c66c14f"
       },
       "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
-      "qa_case_hash": "14b3509594be9292e45e920ca59260d4cf0fe717ae1bebd8392e3f6261e20be3",
+      "qa_case_hash": "b27bf6b12405298ade5cb8747d9327dba2b144e8b8465b370aee98ed49409d56",
       "vision_score": null,
       "metric_score": null,
       "final_score": null,
@@ -987,7 +1006,10 @@
         "playerAnimationState": "move",
         "enemyAnimationState": "move",
         "wheelState": "idle",
+        "wheelAttackPulse": null,
         "attackState": "none",
+        "enemyKind": "jiuweihu",
+        "enemyMotionKeyframe": "none",
         "playerFacing": "right",
         "enemyFacing": "left"
       },
@@ -1078,7 +1100,10 @@
           "playerAnimationState": "move",
           "enemyAnimationState": "move",
           "wheelState": "idle",
+          "wheelAttackPulse": null,
           "attackState": "none",
+          "enemyKind": "jiuweihu",
+          "enemyMotionKeyframe": "none",
           "playerFacing": "right",
           "enemyFacing": "left"
         },
@@ -1134,7 +1159,7 @@
         "assets/image/environments/spring_arena.png": "425152b94da4a7375d8ecedfd8ca981e5957bc6cc093019a0ba86afa096969f9"
       },
       "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
-      "qa_case_hash": "baa5bf91d6408f39119f1e2163280354bcc26fae0a80b80b4aab05a8adb200cc",
+      "qa_case_hash": "34a8df1fa73a0da4b46c518d8d66af28a6eaf3bb7a4b6794a88e3d79d1586b50",
       "vision_score": null,
       "metric_score": null,
       "final_score": null,
@@ -1188,7 +1213,10 @@
         "playerAnimationState": "move",
         "enemyAnimationState": "move",
         "wheelState": "idle",
+        "wheelAttackPulse": null,
         "attackState": "none",
+        "enemyKind": "bifang",
+        "enemyMotionKeyframe": "none",
         "playerFacing": "right",
         "enemyFacing": "left"
       },
@@ -1279,7 +1307,10 @@
           "playerAnimationState": "move",
           "enemyAnimationState": "move",
           "wheelState": "idle",
+          "wheelAttackPulse": null,
           "attackState": "none",
+          "enemyKind": "bifang",
+          "enemyMotionKeyframe": "none",
           "playerFacing": "right",
           "enemyFacing": "left"
         },
@@ -1335,7 +1366,7 @@
         "assets/image/environments/spring_arena.png": "425152b94da4a7375d8ecedfd8ca981e5957bc6cc093019a0ba86afa096969f9"
       },
       "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
-      "qa_case_hash": "26f90117e05d639e452d8a93411b059183e961e75ee64fcd5a10c0053762abe8",
+      "qa_case_hash": "512c14f5d76af769dd3a411526d8244136ec451420cc4a7f4066d1d09bf69cf3",
       "vision_score": null,
       "metric_score": null,
       "final_score": null,
@@ -1389,7 +1420,10 @@
         "playerAnimationState": "move",
         "enemyAnimationState": "move",
         "wheelState": "idle",
+        "wheelAttackPulse": null,
         "attackState": "none",
+        "enemyKind": "kui",
+        "enemyMotionKeyframe": "none",
         "playerFacing": "right",
         "enemyFacing": "left"
       },
@@ -1480,7 +1514,10 @@
           "playerAnimationState": "move",
           "enemyAnimationState": "move",
           "wheelState": "idle",
+          "wheelAttackPulse": null,
           "attackState": "none",
+          "enemyKind": "kui",
+          "enemyMotionKeyframe": "none",
           "playerFacing": "right",
           "enemyFacing": "left"
         },
@@ -1536,7 +1573,7 @@
         "assets/image/environments/spring_arena.png": "425152b94da4a7375d8ecedfd8ca981e5957bc6cc093019a0ba86afa096969f9"
       },
       "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
-      "qa_case_hash": "d7d1d02e1f3b281b2d8a6c26dc203f8432b75fa80d0a8a0e238fc70746992a6a",
+      "qa_case_hash": "fcc83db60c3304105b74ba7b51f55e2da9be271f1ad9833d5be02cd1cddfbcbc",
       "vision_score": null,
       "metric_score": null,
       "final_score": null,
@@ -1581,16 +1618,20 @@
       },
       "animation_state": {
         "player_animation_state": "idle",
-        "enemy_animation_state": "hit",
+        "enemy_animation_state": "move",
         "wheel_state": "attack",
+        "wheel_attack_pulse": 0.09,
         "attack_state": "attack",
         "animation_phase": 0.5
       },
       "state": {
         "playerAnimationState": "idle",
-        "enemyAnimationState": "hit",
+        "enemyAnimationState": "move",
         "wheelState": "attack",
+        "wheelAttackPulse": 0.09,
         "attackState": "attack",
+        "enemyKind": "jiuweihu",
+        "enemyMotionKeyframe": "dash",
         "playerFacing": "right",
         "enemyFacing": "left"
       },
@@ -1676,16 +1717,20 @@
         },
         "animation_state": {
           "player_animation_state": "idle",
-          "enemy_animation_state": "hit",
+          "enemy_animation_state": "move",
           "wheel_state": "attack",
+          "wheel_attack_pulse": 0.09,
           "attack_state": "attack",
           "animation_phase": 0.5
         },
         "state": {
           "playerAnimationState": "idle",
-          "enemyAnimationState": "hit",
+          "enemyAnimationState": "move",
           "wheelState": "attack",
+          "wheelAttackPulse": 0.09,
           "attackState": "attack",
+          "enemyKind": "jiuweihu",
+          "enemyMotionKeyframe": "dash",
           "playerFacing": "right",
           "enemyFacing": "left"
         },
@@ -1747,7 +1792,7 @@
         "assets/image/wheel/core.png": "c8b9af5419a6e076bfa0b5fb8d59a160e40c1d8c8219268129b243292ed97cd6"
       },
       "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
-      "qa_case_hash": "d0372c336903a95d8fca1e73fcb5ab4c0048b527a16f59fb5502d341f9b42cdb",
+      "qa_case_hash": "a6227b798e95975987ba7d47d349fd1a55851bc8e437e6bb3ca5d21bd220885d",
       "vision_score": null,
       "metric_score": null,
       "final_score": null,
@@ -1792,16 +1837,20 @@
       },
       "animation_state": {
         "player_animation_state": "idle",
-        "enemy_animation_state": "hit",
+        "enemy_animation_state": "move",
         "wheel_state": "attack",
+        "wheel_attack_pulse": 0.09,
         "attack_state": "attack",
         "animation_phase": 0.5
       },
       "state": {
         "playerAnimationState": "idle",
-        "enemyAnimationState": "hit",
+        "enemyAnimationState": "move",
         "wheelState": "attack",
+        "wheelAttackPulse": 0.09,
         "attackState": "attack",
+        "enemyKind": "bifang",
+        "enemyMotionKeyframe": "ranged_attack",
         "playerFacing": "right",
         "enemyFacing": "left"
       },
@@ -1887,16 +1936,20 @@
         },
         "animation_state": {
           "player_animation_state": "idle",
-          "enemy_animation_state": "hit",
+          "enemy_animation_state": "move",
           "wheel_state": "attack",
+          "wheel_attack_pulse": 0.09,
           "attack_state": "attack",
           "animation_phase": 0.5
         },
         "state": {
           "playerAnimationState": "idle",
-          "enemyAnimationState": "hit",
+          "enemyAnimationState": "move",
           "wheelState": "attack",
+          "wheelAttackPulse": 0.09,
           "attackState": "attack",
+          "enemyKind": "bifang",
+          "enemyMotionKeyframe": "ranged_attack",
           "playerFacing": "right",
           "enemyFacing": "left"
         },
@@ -1958,7 +2011,7 @@
         "assets/image/wheel/core.png": "c8b9af5419a6e076bfa0b5fb8d59a160e40c1d8c8219268129b243292ed97cd6"
       },
       "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
-      "qa_case_hash": "5115bff967b4429e8ecd35551b6d4cefcaeabd85982a4d345e8d7b81d9c28d59",
+      "qa_case_hash": "4e203851e8e670d255e3093727c6807150f9fe906cbcfb7a3e12b0b35bd10ea6",
       "vision_score": null,
       "metric_score": null,
       "final_score": null,
@@ -2003,16 +2056,20 @@
       },
       "animation_state": {
         "player_animation_state": "idle",
-        "enemy_animation_state": "hit",
+        "enemy_animation_state": "move",
         "wheel_state": "attack",
+        "wheel_attack_pulse": 0.09,
         "attack_state": "attack",
         "animation_phase": 0.5
       },
       "state": {
         "playerAnimationState": "idle",
-        "enemyAnimationState": "hit",
+        "enemyAnimationState": "move",
         "wheelState": "attack",
+        "wheelAttackPulse": 0.09,
         "attackState": "attack",
+        "enemyKind": "kui",
+        "enemyMotionKeyframe": "melee_attack",
         "playerFacing": "right",
         "enemyFacing": "left"
       },
@@ -2098,16 +2155,20 @@
         },
         "animation_state": {
           "player_animation_state": "idle",
-          "enemy_animation_state": "hit",
+          "enemy_animation_state": "move",
           "wheel_state": "attack",
+          "wheel_attack_pulse": 0.09,
           "attack_state": "attack",
           "animation_phase": 0.5
         },
         "state": {
           "playerAnimationState": "idle",
-          "enemyAnimationState": "hit",
+          "enemyAnimationState": "move",
           "wheelState": "attack",
+          "wheelAttackPulse": 0.09,
           "attackState": "attack",
+          "enemyKind": "kui",
+          "enemyMotionKeyframe": "melee_attack",
           "playerFacing": "right",
           "enemyFacing": "left"
         },
@@ -2169,7 +2230,7 @@
         "assets/image/wheel/core.png": "c8b9af5419a6e076bfa0b5fb8d59a160e40c1d8c8219268129b243292ed97cd6"
       },
       "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
-      "qa_case_hash": "2ee864c2743e895fca6d1799557466dbd33a3ea01bf65386adf3040213c06c1a",
+      "qa_case_hash": "09cf261dc9aa6d6186acfd479bdf24457eb6e7fe86a1694f915f1470e41bccb7",
       "vision_score": null,
       "metric_score": null,
       "final_score": null,
@@ -2223,7 +2284,10 @@
         "playerAnimationState": "move",
         "enemyAnimationState": "move",
         "wheelState": "idle",
+        "wheelAttackPulse": null,
         "attackState": "none",
+        "enemyKind": "jiuweihu",
+        "enemyMotionKeyframe": "none",
         "playerFacing": "right",
         "enemyFacing": "left"
       },
@@ -2318,7 +2382,10 @@
           "playerAnimationState": "move",
           "enemyAnimationState": "move",
           "wheelState": "idle",
+          "wheelAttackPulse": null,
           "attackState": "none",
+          "enemyKind": "jiuweihu",
+          "enemyMotionKeyframe": "none",
           "playerFacing": "right",
           "enemyFacing": "left"
         },
@@ -2380,7 +2447,7 @@
         "assets/image/vfx/warnings/root_line.png": "c18022b41c1378749bffd979c42d91aa8b4b7f18e9f9ed510a119abbb3692d6b"
       },
       "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
-      "qa_case_hash": "37cb991fea78ab3ec5653849f242ded6c90ff0f6588725c7b97423e4543e49a6",
+      "qa_case_hash": "6306e058bfab6ca607f56fee8c82afd6ac1665889843f9d8fdef17ea3e1062a0",
       "vision_score": null,
       "metric_score": null,
       "final_score": null,
@@ -2434,7 +2501,10 @@
         "playerAnimationState": "move",
         "enemyAnimationState": "move",
         "wheelState": "idle",
+        "wheelAttackPulse": null,
         "attackState": "none",
+        "enemyKind": "bifang",
+        "enemyMotionKeyframe": "none",
         "playerFacing": "right",
         "enemyFacing": "left"
       },
@@ -2529,7 +2599,10 @@
           "playerAnimationState": "move",
           "enemyAnimationState": "move",
           "wheelState": "idle",
+          "wheelAttackPulse": null,
           "attackState": "none",
+          "enemyKind": "bifang",
+          "enemyMotionKeyframe": "none",
           "playerFacing": "right",
           "enemyFacing": "left"
         },
@@ -2591,7 +2664,7 @@
         "assets/image/vfx/warnings/root_line.png": "c18022b41c1378749bffd979c42d91aa8b4b7f18e9f9ed510a119abbb3692d6b"
       },
       "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
-      "qa_case_hash": "bf62d87e592246d5cf0a1ac17a23d9b1552cc8710d4c10be6c17cf6c1c3ef1ac",
+      "qa_case_hash": "6bc567fa5e21446f4ae1e070f6974420ba7687aa190f85ba92c248ae1eee610e",
       "vision_score": null,
       "metric_score": null,
       "final_score": null,
@@ -2645,7 +2718,10 @@
         "playerAnimationState": "move",
         "enemyAnimationState": "move",
         "wheelState": "idle",
+        "wheelAttackPulse": null,
         "attackState": "none",
+        "enemyKind": "kui",
+        "enemyMotionKeyframe": "none",
         "playerFacing": "right",
         "enemyFacing": "left"
       },
@@ -2740,7 +2816,10 @@
           "playerAnimationState": "move",
           "enemyAnimationState": "move",
           "wheelState": "idle",
+          "wheelAttackPulse": null,
           "attackState": "none",
+          "enemyKind": "kui",
+          "enemyMotionKeyframe": "none",
           "playerFacing": "right",
           "enemyFacing": "left"
         },
@@ -2802,7 +2881,7 @@
         "assets/image/vfx/warnings/root_line.png": "c18022b41c1378749bffd979c42d91aa8b4b7f18e9f9ed510a119abbb3692d6b"
       },
       "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
-      "qa_case_hash": "a0d0fa0831417ef2675d557057e1b327102777fb0cb8a717e381bf6d04123dbb",
+      "qa_case_hash": "76cffb1051c31d31506fe203571c5527255c6850e13a4f559750adf9e3cfa973",
       "vision_score": null,
       "metric_score": null,
       "final_score": null,
@@ -2847,16 +2926,20 @@
       },
       "animation_state": {
         "player_animation_state": "idle",
-        "enemy_animation_state": "hit",
+        "enemy_animation_state": "move",
         "wheel_state": "attack",
+        "wheel_attack_pulse": 0.09,
         "attack_state": "attack",
         "animation_phase": 0.5
       },
       "state": {
         "playerAnimationState": "idle",
-        "enemyAnimationState": "hit",
+        "enemyAnimationState": "move",
         "wheelState": "attack",
+        "wheelAttackPulse": 0.09,
         "attackState": "attack",
+        "enemyKind": "jiuweihu",
+        "enemyMotionKeyframe": "dash",
         "playerFacing": "right",
         "enemyFacing": "left"
       },
@@ -2950,16 +3033,20 @@
         },
         "animation_state": {
           "player_animation_state": "idle",
-          "enemy_animation_state": "hit",
+          "enemy_animation_state": "move",
           "wheel_state": "attack",
+          "wheel_attack_pulse": 0.09,
           "attack_state": "attack",
           "animation_phase": 0.5
         },
         "state": {
           "playerAnimationState": "idle",
-          "enemyAnimationState": "hit",
+          "enemyAnimationState": "move",
           "wheelState": "attack",
+          "wheelAttackPulse": 0.09,
           "attackState": "attack",
+          "enemyKind": "jiuweihu",
+          "enemyMotionKeyframe": "dash",
           "playerFacing": "right",
           "enemyFacing": "left"
         },
@@ -3033,7 +3120,7 @@
         "assets/image/wheel/outer.png": "cbd6dc5b87fe82b3d47aea19e01c531690a517f904c69e6a7c46bf735c66c14f"
       },
       "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
-      "qa_case_hash": "f25e5181a5a77609080649e42801b0704eabf23e30e1dc109168035e95b69950",
+      "qa_case_hash": "6590022c44592db8612e498712c2672d39cdbc4f3f291d69de67e95007c5016f",
       "vision_score": null,
       "metric_score": null,
       "final_score": null,
@@ -3078,16 +3165,20 @@
       },
       "animation_state": {
         "player_animation_state": "idle",
-        "enemy_animation_state": "hit",
+        "enemy_animation_state": "move",
         "wheel_state": "attack",
+        "wheel_attack_pulse": 0.09,
         "attack_state": "attack",
         "animation_phase": 0.5
       },
       "state": {
         "playerAnimationState": "idle",
-        "enemyAnimationState": "hit",
+        "enemyAnimationState": "move",
         "wheelState": "attack",
+        "wheelAttackPulse": 0.09,
         "attackState": "attack",
+        "enemyKind": "bifang",
+        "enemyMotionKeyframe": "ranged_attack",
         "playerFacing": "right",
         "enemyFacing": "left"
       },
@@ -3181,16 +3272,20 @@
         },
         "animation_state": {
           "player_animation_state": "idle",
-          "enemy_animation_state": "hit",
+          "enemy_animation_state": "move",
           "wheel_state": "attack",
+          "wheel_attack_pulse": 0.09,
           "attack_state": "attack",
           "animation_phase": 0.5
         },
         "state": {
           "playerAnimationState": "idle",
-          "enemyAnimationState": "hit",
+          "enemyAnimationState": "move",
           "wheelState": "attack",
+          "wheelAttackPulse": 0.09,
           "attackState": "attack",
+          "enemyKind": "bifang",
+          "enemyMotionKeyframe": "ranged_attack",
           "playerFacing": "right",
           "enemyFacing": "left"
         },
@@ -3264,7 +3359,7 @@
         "assets/image/wheel/outer.png": "cbd6dc5b87fe82b3d47aea19e01c531690a517f904c69e6a7c46bf735c66c14f"
       },
       "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
-      "qa_case_hash": "a6d897b7cb322c33ac2671ce0afed0307a4a70d3f1aaef277d782a26f013f80a",
+      "qa_case_hash": "62ee82cb4bb564394486fe790400ddadd3ffd55c12440523404799862a243f6d",
       "vision_score": null,
       "metric_score": null,
       "final_score": null,
@@ -3309,16 +3404,20 @@
       },
       "animation_state": {
         "player_animation_state": "idle",
-        "enemy_animation_state": "hit",
+        "enemy_animation_state": "move",
         "wheel_state": "attack",
+        "wheel_attack_pulse": 0.09,
         "attack_state": "attack",
         "animation_phase": 0.5
       },
       "state": {
         "playerAnimationState": "idle",
-        "enemyAnimationState": "hit",
+        "enemyAnimationState": "move",
         "wheelState": "attack",
+        "wheelAttackPulse": 0.09,
         "attackState": "attack",
+        "enemyKind": "kui",
+        "enemyMotionKeyframe": "melee_attack",
         "playerFacing": "right",
         "enemyFacing": "left"
       },
@@ -3412,16 +3511,20 @@
         },
         "animation_state": {
           "player_animation_state": "idle",
-          "enemy_animation_state": "hit",
+          "enemy_animation_state": "move",
           "wheel_state": "attack",
+          "wheel_attack_pulse": 0.09,
           "attack_state": "attack",
           "animation_phase": 0.5
         },
         "state": {
           "playerAnimationState": "idle",
-          "enemyAnimationState": "hit",
+          "enemyAnimationState": "move",
           "wheelState": "attack",
+          "wheelAttackPulse": 0.09,
           "attackState": "attack",
+          "enemyKind": "kui",
+          "enemyMotionKeyframe": "melee_attack",
           "playerFacing": "right",
           "enemyFacing": "left"
         },
@@ -3495,7 +3598,7 @@
         "assets/image/wheel/outer.png": "cbd6dc5b87fe82b3d47aea19e01c531690a517f904c69e6a7c46bf735c66c14f"
       },
       "scene_config_hash": "c4c527256c4c83e0480214ed38cff35a476b98452111132db96e1186ba4ad737",
-      "qa_case_hash": "19be06487410370b73d4d247e148c3e877962ba8ec1afc26389edb02642c703a",
+      "qa_case_hash": "d86adba154000b994cc3a3a1cc41a11a668c007bbc216cd89bccca4eb6cba3aa",
       "vision_score": null,
       "metric_score": null,
       "final_score": null,
